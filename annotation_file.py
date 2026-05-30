@@ -41,15 +41,23 @@ class Annotation:
   unfinished: bool
   ignore: bool
   checked: bool
-  kind: AnnotationType
   inner: PlainAnnotation | KanjiAnnotation | LoanAnnotation
 
   def serialize(self) -> dict:
+    if isinstance(self.inner, PlainAnnotation):
+      kind = AnnotationType.PLAIN_ANNOTATION
+    elif isinstance(self.inner, KanjiAnnotation):
+      kind = AnnotationType.KANJI_ANNOTATION
+    elif isinstance(self.inner, LoanAnnotation):
+      kind = AnnotationType.LOAN_ANNOTATION
+    else:
+      raise AssertionError('unhandled annotation type')
+
     return {
       'unfinished': self.unfinished,
       'ignore': self.ignore,
       'checked': self.checked,
-      'kind': int(self.kind),
+      'type': int(kind),
       'inner': self.inner.serialize(),
     }
 
