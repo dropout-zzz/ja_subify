@@ -1,6 +1,7 @@
 import dataclasses
 from dataclasses import dataclass
 from enum import IntEnum
+import json
 
 @dataclass
 class PlainAnnotation:
@@ -128,3 +129,9 @@ class AnnotationFile:
       version=d['version'],
       lines=[DialogueLine.deserialize(x) for x in d['lines']],
     )
+
+def annotation_parse(s: str) -> AnnotationFile:
+  return AnnotationFile.deserialize(json.loads(s))
+
+def annotation_save(af: AnnotationFile) -> str:
+  return json.dumps(af.serialize(), sort_keys=True, indent=2, ensure_ascii=False)
