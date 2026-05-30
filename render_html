@@ -5,6 +5,7 @@ from annotation_file import (
   annotation_parse,
   PlainAnnotation,
   LoanAnnotation,
+  KanjiAnnotation,
 )
 import html
 
@@ -32,6 +33,11 @@ def main():
         args.html_file.write(f'<span>{html.escape(annotation.inner.text)}</span>')
       elif isinstance(annotation.inner, LoanAnnotation):
         args.html_file.write(f'<ruby>{html.escape(annotation.inner.base)}<rt>{html.escape(annotation.inner.romanized)}</ruby>')
+      elif isinstance(annotation.inner, KanjiAnnotation):
+        args.html_file.write('<span>')
+        for chars in annotation.inner.fragments:
+          args.html_file.write(f'<ruby>{html.escape(chars.base)}<rt>{html.escape(chars.reading)}</ruby>')
+        args.html_file.write('</span>')
       else:
         raise AssertionError('unhandled annotation type')
 
