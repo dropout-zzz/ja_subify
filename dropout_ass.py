@@ -35,6 +35,6 @@ def dropout_parse_ass(s):
 
     fields = line.removeprefix('Dialogue:').lstrip().split(',', maxsplit=n_crap_fields)
 
-    cleaned_text = PATTERN_ASS_TAGS.sub('', fields[-1])
+    cleaned_text = PATTERN_ASS_TAGS.sub('', fields[-1]).replace('\\N', '\n')
 
     yield cleaned_text
