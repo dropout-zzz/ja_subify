@@ -14,6 +14,10 @@ class PlainAnnotation:
   def deserialize(cls, d: dict):
     return cls(text=d['text'])
 
+  def validate(self):
+    if not isinstance(self.text, str):
+      raise AssertionError
+
 @dataclass
 class KanjiCharacters:
   base: str
@@ -26,6 +30,12 @@ class KanjiCharacters:
   def deserialize(cls, d: dict):
     return cls(base=d['base'], reading=d['reading'])
 
+  def validate(self):
+    if not isinstance(self.base, str):
+      raise AssertionError
+    if not isinstance(self.reading, str):
+      raise AssertionError
+
 @dataclass
 class KanjiAnnotation:
   fragments: list[KanjiCharacters] = dataclasses.field(default_factory=list)
@@ -36,6 +46,14 @@ class KanjiAnnotation:
   @classmethod
   def deserialize(cls, d: dict):
     return cls(fragments=[KanjiCharacters.deserialize(x) for x in d['fragments']])
+
+  def validate(self):
+    if not isinstance(self.fragments, list):
+      raise AssertionError
+    for x in self.fragments:
+      if not isinstance(x, KanjiCharacters):
+        raise AssertionError
+      x.validate()
 
 @dataclass
 class LoanAnnotation:
@@ -48,6 +66,12 @@ class LoanAnnotation:
   @classmethod
   def deserialize(cls, d: dict):
     return cls(base=d['base'], romanized=d['romanized'])
+
+  def validate(self):
+    if not isinstance(self.base, str):
+      raise AssertionError
+    if not isinstance(self.romanized, str):
+      raise AssertionError
 
 class AnnotationType(IntEnum):
   PLAIN_ANNOTATION = 0
@@ -78,6 +102,17 @@ class Annotation:
       'type': int(kind),
       'inner': self.inner.serialize(),
     }
+
+  def validate(self):
+    if not isinstance(self.inner, (PlainAnnotation, KanjiAnnotation, LoanAnnotation)):
+      raise AssertionError
+    self.inner.validate()
+    if not isinstance(self.unfinished, bool):
+      raise AssertionError
+    if not isinstance(self.ignore, bool):
+      raise AssertionError
+    if not isinstance(self.checked, bool):
+      raise AssertionError
 
   @classmethod
   def deserialize(cls, d: dict):
@@ -110,6 +145,14 @@ class DialogueLine:
   def deserialize(cls, d: dict):
     return cls(fragments=[Annotation.deserialize(x) for x in d['fragments']])
 
+  def validate(self):
+    if not isinstance(self.fragments, list):
+      raise AssertionError
+    for x in self.fragments:
+      if not isinstance(x, Annotation):
+        raise AssertionError
+      x.validate()
+
 VER_CURRENT = 0
 
 @dataclass
@@ -129,6 +172,16 @@ class AnnotationFile:
       version=d['version'],
       lines=[DialogueLine.deserialize(x) for x in d['lines']],
     )
+
+  def validate(self):
+    if not isinstance(self.version, int):
+      raise AssertionError
+    if not isinstance(self.lines, list):
+      raise AssertionError
+    for x in self.lines:
+      if not isinstance(x, DialogueLine):
+        raise AssertionError
+      x.validate()
 
 def annotation_parse(s: str) -> AnnotationFile:
   return AnnotationFile.deserialize(json.loads(s))
