@@ -26,12 +26,12 @@ def dropout_parse_ass(s):
   n_crap_fields = field_count - 1
 
   for line in lines:
-    if not line.startswith('Dialogue:'):
-      continue
-
     if line.startswith('['):
       # we're out of Events section
       break
+
+    if not line.startswith('Dialogue:'):
+      continue
 
     fields = line.removeprefix('Dialogue:').lstrip().split(',', maxsplit=n_crap_fields)
 
