@@ -68,9 +68,15 @@ class DialogueLine:
   def serialize(self) -> dict:
     return {'fragments': [x.serialize() for x in self.fragments]}
 
+VER_CURRENT = 0
+
 @dataclass
 class AnnotationFile:
+  version: int
   lines: list[DialogueLine]
 
   def serialize(self) -> dict:
-    return {'lines': [x.serialize() for x in self.lines]}
+    return {
+      'version': self.version,
+      'lines': [x.serialize() for x in self.lines],
+    }
