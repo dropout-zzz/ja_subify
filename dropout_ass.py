@@ -43,6 +43,8 @@ def dropout_parse_ass(s):
 
     fields = remove_line_type(line, S_DIALOGUE).split(FIELD_SEP, maxsplit=n_crap_fields)
 
+    assert len(fields) == field_count, 'incorrect field count'
+
     cleaned_text = PATTERN_ASS_TAGS.sub('', fields[-1]).replace('\\N', '\n')
 
     yield cleaned_text
