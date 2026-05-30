@@ -80,7 +80,7 @@ class Annotation:
 
   @classmethod
   def deserialize(cls, d: dict):
-    kind = d['type']
+    kind = AnnotationType(d['type'])
     match kind:
       case AnnotationType.PLAIN_ANNOTATION:
         inner = PlainAnnotation.deserialize(d['inner'])
