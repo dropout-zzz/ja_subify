@@ -6,7 +6,7 @@ from annotation_file import (
   DialogueLine,
   Annotation,
   PlainAnnotation,
-  annotation_save
+  annotation_save,
 )
 
 def main():
