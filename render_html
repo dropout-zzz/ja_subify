@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+import argparse
+from argparse import ArgumentParser
+from annotation_file import annotation_parse, PlainAnnotation
+import html
+
+def main():
+  ap = ArgumentParser()
+
+  ap.add_argument('annotation_file', type=argparse.FileType('r'))
+  ap.add_argument('--html-file', '-o', type=argparse.FileType('w'), required=True)
+
+  args = ap.parse_args()
+
+  af = annotation_parse(args.annotation_file.read())
+
+  print('<!doctype html>', file=args.html_file)
+  print('<html lang="ja">', file=args.html_file)
+  print('<head>', file=args.html_file)
+  print('<meta charset="utf-8"/>', file=args.html_file)
+  print('<meta name="viewport" content="width=device-width"/>', file=args.html_file)
+  print('</head>', file=args.html_file)
+  print('<body>', file=args.html_file)
+
+  for line in af.lines:
+    for annotation in line.fragments:
+      if isinstance(annotation.inner, PlainAnnotation):
+        args.html_file.write(f'<span>{html.escape(annotation.inner.text)}</span>')
+      else:
+        raise AssertionError('unhandled annotation type')
+
+    print('<br/>', file=args.html_file)
+
+  print('</body>', file=args.html_file)
+  print('</html>', file=args.html_file)
+
+main()
