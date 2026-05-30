@@ -1,3 +1,4 @@
+import dataclasses
 from dataclasses import dataclass
 from enum import IntEnum
 
@@ -15,7 +16,7 @@ class PlainAnnotation:
 @dataclass
 class KanjiCharacters:
   base: str
-  reading: str
+  reading: str = ''
 
   def serialize(self) -> dict:
     return {'base': self.base, 'reading': self.reading}
@@ -26,7 +27,7 @@ class KanjiCharacters:
 
 @dataclass
 class KanjiAnnotation:
-  fragments: list[KanjiCharacters]
+  fragments: list[KanjiCharacters] = dataclasses.field(default_factory=list)
 
   def serialize(self) -> dict:
     return {'fragments': [x.serialize() for x in self.fragments]}
@@ -38,7 +39,7 @@ class KanjiAnnotation:
 @dataclass
 class LoanAnnotation:
   base: str
-  romanized: str
+  romanized: str = ''
 
   def serialize(self) -> dict:
     return {'base': self.base, 'romanized': self.romanized}
@@ -54,10 +55,10 @@ class AnnotationType(IntEnum):
 
 @dataclass
 class Annotation:
-  unfinished: bool
-  ignore: bool
-  checked: bool
   inner: PlainAnnotation | KanjiAnnotation | LoanAnnotation
+  unfinished: bool = False
+  ignore: bool = False
+  checked: bool = False
 
   def serialize(self) -> dict:
     if isinstance(self.inner, PlainAnnotation):
@@ -99,7 +100,7 @@ class Annotation:
 
 @dataclass
 class DialogueLine:
-  fragments: list[Annotation]
+  fragments: list[Annotation] = dataclasses.field(default_factory=list)
 
   def serialize(self) -> dict:
     return {'fragments': [x.serialize() for x in self.fragments]}
@@ -112,8 +113,8 @@ VER_CURRENT = 0
 
 @dataclass
 class AnnotationFile:
-  version: int
-  lines: list[DialogueLine]
+  version: int = VER_CURRENT
+  lines: list[DialogueLine] = dataclasses.field(default_factory=list)
 
   def serialize(self) -> dict:
     return {
