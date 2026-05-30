@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+from PySide6.QtWidgets import (
+  QApplication,
+  QMainWindow,
+  QLabel,
+)
+from PySide6.QtCore import (
+  Qt,
+)
+
+class DictViewer(QMainWindow):
+  def __init__(self):
+    QMainWindow.__init__(self)
+
+    self.__lbl_tip = QLabel(text='1. add new kanji word\n'
+                                 '2. add new eng word',
+                            alignment=Qt.AlignmentFlag.AlignCenter)
+
+    self.setCentralWidget(self.__lbl_tip)
+
+def main():
+  app = QApplication()
+  dv = DictViewer()
+  dv.show()
+  app.exec()
+
+main()
