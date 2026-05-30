@@ -2,6 +2,14 @@ import re
 
 PATTERN_ASS_TAGS = re.compile(r'\{[^}]+\}')
 
+S_FORMAT = 'Format:'
+S_DIALOGUE = 'Dialogue:'
+
+FIELD_SEP = ','
+
+def remove_line_type(s1: str, s2: str) -> str:
+  return s1.removeprefix(s2).lstrip()
+
 def dropout_parse_ass(s):
   lines = iter(s.splitlines())
   for line in lines:
@@ -15,9 +23,9 @@ def dropout_parse_ass(s):
   except StopIteration as e:
     raise ValueError('expect Format line') from e
 
-  assert fields_line.startswith('Format:'), 'cannot find Format line'
+  assert fields_line.startswith(S_FORMAT), 'cannot find Format line'
 
-  field_names = [x.strip() for x in fields_line.removeprefix('Format:').lstrip().split(',')]
+  field_names = [x.strip() for x in remove_line_type(fields_line, S_FORMAT).split(FIELD_SEP)]
   field_count = len(field_names)
 
   assert field_count > 0, 'no field found'
@@ -30,10 +38,10 @@ def dropout_parse_ass(s):
       # we're out of Events section
       break
 
-    if not line.startswith('Dialogue:'):
+    if not line.startswith(S_DIALOGUE):
       continue
 
-    fields = line.removeprefix('Dialogue:').lstrip().split(',', maxsplit=n_crap_fields)
+    fields = remove_line_type(line, S_DIALOGUE).split(FIELD_SEP, maxsplit=n_crap_fields)
 
     cleaned_text = PATTERN_ASS_TAGS.sub('', fields[-1]).replace('\\N', '\n')
 
