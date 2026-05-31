@@ -13,9 +13,12 @@ class LoanWordList:
 
 COL_SEP = '\t'
 
+class LoanWordAlreadyExist(Exception):
+  pass
+
 def append_into_loan_words(lwl: LoanWordList, path: str, word: LoanWord):
   if word.base in lwl.inner:
-    raise ValueError('word already exists')
+    raise LoanWordAlreadyExist
   with open(path, 'ab') as f:
     lwl.off += f.write(f'{word.base}{COL_SEP}{word.romanized}\n'.encode())
   lwl.inner[word.base] = word
