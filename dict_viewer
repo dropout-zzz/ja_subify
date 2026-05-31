@@ -149,7 +149,7 @@ def main():
   lwl = load_loan_words(args.loan_dictionary)
 
   app = QApplication()
-  dv = DictViewer(nwl, args.dictionary_file, lwl, args.dictionary_file)
+  dv = DictViewer(nwl, args.dictionary_file, lwl, args.loan_dictionary)
   dv.show()
   app.exec()
 
