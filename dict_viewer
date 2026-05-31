@@ -15,6 +15,7 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import (
   QShortcut,
+  QKeySequence,
 )
 from normal_word_db import load_normal_words, NormalWordList
 from loan_word_db import load_loan_words, LoanWordList, append_into_loan_words, LoanWordAlreadyExist, LoanWord, reload_into_loan_words
@@ -98,6 +99,9 @@ class DictViewer(QMainWindow):
     self.__key_new_loan = QShortcut(Qt.Key.Key_2, self)
     self.__key_new_loan.activated.connect(self.__do_new_loan)
 
+    self.__key_quit = QShortcut(QKeySequence.StandardKey.Cancel, self)
+    self.__key_quit.activated.connect(self.__do_quit)
+
   @Slot()
   def __do_new_word(self):
     print('new word')
@@ -137,6 +141,11 @@ class DictViewer(QMainWindow):
       print('word already exist in db')
     else:
       print('word added successfully')
+
+  @Slot()
+  def __do_quit(self):
+    print('quit')
+    self.close()
 
 def main():
   ap = ArgumentParser()
