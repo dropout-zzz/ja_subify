@@ -1,3 +1,9 @@
+import re
+
+# this is confusing
+# but mpv actually allows mixing ASS syntax in SRT
+PATTERN_ASS_TAGS = re.compile(r'\{[^}]+\}')
+
 def _next_line(it) -> tuple[str, bool]:
   try:
     return next(it), False
@@ -18,7 +24,7 @@ def dropout_parse_srt(s: str):
       if line == '':
         # dialogue boundary
         break
-      texts.append(line)
+      texts.append(PATTERN_ASS_TAGS.sub('', line))
 
     if eof and len(texts) == 0:
       break
