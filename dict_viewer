@@ -17,7 +17,7 @@ from PySide6.QtGui import (
   QShortcut,
 )
 from normal_word_db import load_normal_words, NormalWordList
-from loan_word_db import load_loan_words, LoanWordList, append_into_loan_words, LoanWordAlreadyExist, LoanWord
+from loan_word_db import load_loan_words, LoanWordList, append_into_loan_words, LoanWordAlreadyExist, LoanWord, reload_into_loan_words
 
 class InputBaseWordDialog(QDialog):
   def __init__(self, parent: QWidget):
@@ -130,6 +130,7 @@ class DictViewer(QMainWindow):
     romanized = irwd.getLoanWordResult()
     print(f'romanized: {romanized!r}')
 
+    reload_into_loan_words(self.__lwl, self.__loan_dict_path)
     try:
       append_into_loan_words(self.__lwl, self.__loan_dict_path, LoanWord(base=base, romanized=romanized))
     except LoanWordAlreadyExist:
