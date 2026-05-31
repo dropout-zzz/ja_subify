@@ -9,6 +9,7 @@ from annotation_file import (
 )
 import html
 from loan_word_db import load_loan_words, LoanWordList
+from normal_word_db import load_normal_words, NormalWordList
 
 def main():
   ap = ArgumentParser()
@@ -16,6 +17,7 @@ def main():
   ap.add_argument('annotation_file', type=argparse.FileType('r'))
   ap.add_argument('--html-file', '-o', type=argparse.FileType('w'), required=True)
   ap.add_argument('--loans-blacklist', '-l')
+  ap.add_argument('--word-blacklist', '-w')
 
   args = ap.parse_args()
 
@@ -25,6 +27,11 @@ def main():
     lwl = load_loan_words(args.loans_blacklist)
   else:
     lwl = LoanWordList()
+
+  if args.word_blacklist:
+    nwl = load_normal_words(args.word_blacklist, count_known=True)
+  else:
+    nwl = NormalWordList(count_known=True)
 
   print('<!doctype html>', file=args.html_file)
   print('<html lang="ja">', file=args.html_file)
@@ -46,7 +53,10 @@ def main():
       elif isinstance(annotation.inner, KanjiAnnotation):
         args.html_file.write('<span>')
         for chars in annotation.inner.fragments:
-          args.html_file.write(f'<ruby>{html.escape(chars.base)}<rt>{html.escape(chars.reading)}</ruby>')
+          if (chars.base, chars.reading) in nwl.known:
+            args.html_file.write(f'<span>{html.escape(chars.base)}</span>')
+          else:
+            args.html_file.write(f'<ruby>{html.escape(chars.base)}<rt>{html.escape(chars.reading)}</ruby>')
         args.html_file.write('</span>')
       else:
         raise AssertionError('unhandled annotation type')

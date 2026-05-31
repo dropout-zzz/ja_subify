@@ -89,11 +89,19 @@ class NormalTemplate:
 @dataclass
 class NormalWordList:
   inner: dict[str, NormalTemplate] = dataclasses.field(default_factory=dict)
+  known: set[tuple[str, str]] = dataclasses.field(default_factory=set)
   off: int = 0
+  count_known: bool = False
 
   def check(self):
     for x in self.inner.values():
       x.validate()
+
+def _register_known_normal_words(nwl: NormalWordList, word: NormalTemplate):
+  for fragment in word.fragments:
+    if not isinstance(fragment, FragmentKanjiCharacters):
+      continue
+    nwl.known.add((fragment.base, fragment.reading))
 
 def append_into_normal_words(nwl: NormalWordList, path: str, word: NormalTemplate):
   if word.base in nwl.inner:
@@ -103,6 +111,8 @@ def append_into_normal_words(nwl: NormalWordList, path: str, word: NormalTemplat
     f.write(b'\n')
     nwl.off += n + 1
   nwl.inner[word.base] = word
+  if nwl.count_known:
+    _register_known_normal_words(nwl, word)
 
 def _load_into_normal_words(nwl: NormalWordList, s: str):
   for line in s.splitlines():
@@ -110,10 +120,12 @@ def _load_into_normal_words(nwl: NormalWordList, s: str):
     if word.base in nwl.inner:
       raise ValueError(f'duplicate word {word.base!r}')
     nwl.inner[word.base] = word
+    if nwl.count_known:
+      _register_known_normal_words(nwl, word)
 
-def load_normal_words(path: str) -> NormalWordList:
+def load_normal_words(path: str, count_known: bool = False) -> NormalWordList:
   with open(path, 'rb') as f:
-    nwl = NormalWordList()
+    nwl = NormalWordList(count_known=count_known)
 
     _load_into_normal_words(nwl, (content := f.read()).decode())
     nwl.off = len(content)
