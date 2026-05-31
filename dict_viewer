@@ -4,6 +4,10 @@ from PySide6.QtWidgets import (
   QApplication,
   QMainWindow,
   QLabel,
+  QDialog,
+  QWidget,
+  QVBoxLayout,
+  QLineEdit,
 )
 from PySide6.QtCore import (
   Qt,
@@ -14,6 +18,32 @@ from PySide6.QtGui import (
 )
 from normal_word_db import load_normal_words, NormalWordList
 from loan_word_db import load_loan_words, LoanWordList
+
+class InputBaseWordDialog(QDialog):
+  def __init__(self, parent: QWidget):
+    QDialog.__init__(self, parent)
+
+    self.__layout = QVBoxLayout(self)
+    self.__edit = QLineEdit()
+    self.__layout.addWidget(self.__edit)
+
+    self.__result = ''
+
+    self.__edit.returnPressed.connect(self.__do_commit)
+
+  @Slot()
+  def __do_commit(self):
+    self.__result = self.__edit.text()
+
+    if self.__result == '':
+      print('word cannot be empty')
+      return
+
+    self.done(QDialog.DialogCode.Accepted)
+
+  def getBaseWordResult(self) -> str:
+    assert self.__result != ''
+    return self.__result
 
 class DictViewer(QMainWindow):
   def __init__(self, nwl: NormalWordList, dict_path: str, lwl: LoanWordList, loan_dict_path: str):
@@ -39,6 +69,14 @@ class DictViewer(QMainWindow):
   @Slot()
   def __do_new_word(self):
     print('new word')
+
+    ibwd = InputBaseWordDialog(self)
+    if ibwd.exec() == QDialog.DialogCode.Rejected:
+      print('user canceled')
+      return
+
+    base = ibwd.getBaseWordResult()
+    print(f'base: {base!r}')
 
   @Slot()
   def __do_new_loan(self):
