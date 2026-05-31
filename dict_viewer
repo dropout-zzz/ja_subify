@@ -7,6 +7,10 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import (
   Qt,
+  Slot,
+)
+from PySide6.QtGui import (
+  QShortcut,
 )
 from normal_word_db import load_normal_words, NormalWordList
 from loan_word_db import load_loan_words, LoanWordList
@@ -25,6 +29,20 @@ class DictViewer(QMainWindow):
                             alignment=Qt.AlignmentFlag.AlignCenter)
 
     self.setCentralWidget(self.__lbl_tip)
+
+    self.__key_new_word = QShortcut(Qt.Key.Key_1, self)
+    self.__key_new_word.activated.connect(self.__do_new_word)
+
+    self.__key_new_loan = QShortcut(Qt.Key.Key_2, self)
+    self.__key_new_loan.activated.connect(self.__do_new_loan)
+
+  @Slot()
+  def __do_new_word(self):
+    print('new word')
+
+  @Slot()
+  def __do_new_loan(self):
+    print('new loan')
 
 def main():
   ap = ArgumentParser()
