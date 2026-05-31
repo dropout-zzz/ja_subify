@@ -10,7 +10,7 @@ FIELD_SEP = ','
 def remove_line_type(s1: str, s2: str) -> str:
   return s1.removeprefix(s2).lstrip()
 
-def dropout_parse_ass(s):
+def dropout_parse_ass(s: str):
   lines = iter(s.splitlines())
   for line in lines:
     if line == '[Events]':
