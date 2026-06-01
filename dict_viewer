@@ -234,9 +234,14 @@ class CutterDialog(QDialog):
         self.__remaining_base = remaining_base
         self.__remaining_reading = remaining_reading
 
-        if self.__remaining_base == '':
+        drained = (self.__remaining_base == '', self.__remaining_reading == '')
+        if any(drained):
+          if not all(drained):
+            print('ran out of chars')
+            self.reject()
+            return
+
           # we're done
-          assert self.__remaining_reading == ''
           self.accept()
           return
 
@@ -330,7 +335,7 @@ class DictViewer(QMainWindow):
 
     cutter = CutterDialog(self, base, flat)
     if cutter.exec() == QDialog.DialogCode.Rejected:
-      print('user canceled')
+      print('user canceled or error occurred')
       return
 
     reload_into_normal_words(self.__nwl, self.__dict_path)
