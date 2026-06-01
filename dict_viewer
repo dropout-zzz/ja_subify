@@ -18,7 +18,7 @@ from PySide6.QtGui import (
   QKeySequence,
   QFont,
 )
-from normal_word_db import load_normal_words, NormalWordList, NormalTemplate, FragmentIgnore, FragmentKanjiCharacters
+from normal_word_db import load_normal_words, NormalWordList, NormalTemplate, FragmentIgnore, FragmentKanjiCharacters, append_into_normal_words, NormalWordAlreadyExist, reload_into_normal_words
 from loan_word_db import load_loan_words, LoanWordList, append_into_loan_words, LoanWordAlreadyExist, LoanWord, reload_into_loan_words
 import html
 from enum import Enum
@@ -332,6 +332,14 @@ class DictViewer(QMainWindow):
     if cutter.exec() == QDialog.DialogCode.Rejected:
       print('user canceled')
       return
+
+    reload_into_normal_words(self.__nwl, self.__dict_path)
+    try:
+      append_into_normal_words(self.__nwl, self.__dict_path, cutter.getNormalWord())
+    except NormalWordAlreadyExist:
+      print('word already exist in db')
+    else:
+      print('word added successfully')
 
   @Slot()
   def __do_new_loan(self):
