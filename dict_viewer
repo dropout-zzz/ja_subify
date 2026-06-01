@@ -24,6 +24,8 @@ class InputBaseWordDialog(QDialog):
   def __init__(self, parent: QWidget):
     QDialog.__init__(self, parent)
 
+    self.resize(250, 0)
+
     self.__layout = QVBoxLayout(self)
     self.__edit = QLineEdit()
     self.__layout.addWidget(self.__edit)
@@ -49,6 +51,8 @@ class InputBaseWordDialog(QDialog):
 class InputRomanizedWordDialog(QDialog):
   def __init__(self, parent: QWidget, base: str):
     QDialog.__init__(self, parent)
+
+    self.resize(250, 0)
 
     self.__layout = QVBoxLayout(self)
 
@@ -81,6 +85,8 @@ class InputRomanizedWordDialog(QDialog):
 class InputFlatReadingDialog(QDialog):
   def __init__(self, parent: QWidget, base: str):
     QDialog.__init__(self, parent)
+
+    self.resize(250, 0)
 
     self.__layout = QVBoxLayout(self)
 
