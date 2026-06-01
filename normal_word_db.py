@@ -43,7 +43,7 @@ class FragmentType(IntEnum):
 @dataclass
 class NormalTemplate:
   base: str
-  fragments: list[FragmentIgnore | FragmentKanjiCharacters]
+  fragments: list[FragmentIgnore | FragmentKanjiCharacters] = dataclasses.field(default_factory=list)
 
   def serialize(self) -> dict:
     fragments = []
