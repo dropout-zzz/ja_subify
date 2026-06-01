@@ -16,9 +16,13 @@ from PySide6.QtCore import (
 from PySide6.QtGui import (
   QShortcut,
   QKeySequence,
+  QFont,
 )
-from normal_word_db import load_normal_words, NormalWordList
+from normal_word_db import load_normal_words, NormalWordList, NormalTemplate, FragmentIgnore, FragmentKanjiCharacters
 from loan_word_db import load_loan_words, LoanWordList, append_into_loan_words, LoanWordAlreadyExist, LoanWord, reload_into_loan_words
+import html
+from enum import Enum
+import enum
 
 class InputBaseWordDialog(QDialog):
   def __init__(self, parent: QWidget):
@@ -116,6 +120,170 @@ class InputFlatReadingDialog(QDialog):
     assert self.__result != ''
     return self.__result
 
+class CutterStage(Enum):
+  STAGE_BASE = enum.auto()
+  STAGE_READING = enum.auto()
+
+class CutterDialog(QDialog):
+  def __init__(self, parent: QWidget, base: str, flat: str):
+    QDialog.__init__(self, parent)
+
+    self.__staging = NormalTemplate(base)
+
+    # uncommited ranges
+    self.__remaining_base = base
+    self.__remaining_reading = flat
+
+    # initial values
+    self.__sel_base = 1
+    self.__sel_reading = 1
+    self.__stage = CutterStage.STAGE_BASE
+
+    self.__layout = QVBoxLayout(self)
+
+    self.__lbl_tip = QLabel(text='arrow keys to select, enter to commit')
+    self.__lbl_base = QLabel()
+    self.__lbl_reading = QLabel()
+
+    self.__font = QFont()
+    self.__font.setPointSize(20)
+
+    self.__lbl_base.setFont(self.__font)
+    self.__lbl_reading.setFont(self.__font)
+
+    self.__layout.addWidget(self.__lbl_tip)
+    self.__layout.addWidget(self.__lbl_base)
+    self.__layout.addWidget(self.__lbl_reading)
+
+    self.__update_previews()
+
+    self.__key_cursor_left = QShortcut(Qt.Key.Key_Left, self)
+    self.__key_cursor_left.activated.connect(self.__do_move_cursor_left)
+
+    self.__key_cursor_right = QShortcut(Qt.Key.Key_Right, self)
+    self.__key_cursor_right.activated.connect(self.__do_move_cursor_right)
+
+    self.__key_commit = QShortcut(Qt.Key.Key_Return, self)
+    self.__key_commit.activated.connect(self.__do_commit)
+
+  def __update_previews(self):
+    chunks_base = []
+    chunks_reading = []
+
+    # FIXME:
+    # dunno how to display full-width spaces in Qt
+    # so imma do this for now
+    indicator_on = '<font color="blue">▶　</font>'
+    indicator_off = '<font color="blue">▷　</font>'
+    match self.__stage:
+      case CutterStage.STAGE_BASE:
+        chunks_base.append(indicator_on)
+        chunks_reading.append(indicator_off)
+      case CutterStage.STAGE_READING:
+        chunks_base.append(indicator_off)
+        chunks_reading.append(indicator_on)
+
+    # previously committed ranges
+    for fragment in self.__staging.fragments:
+      if isinstance(fragment, FragmentIgnore):
+        chunk = f'<font color="grey">{html.escape(fragment.text)}</font>'
+        chunks_base.append(chunk)
+        chunks_reading.append(chunk)
+      elif isinstance(fragment, FragmentKanjiCharacters):
+        chunks_base.append(f'<font color="grey">{html.escape(fragment.base)}</font>')
+        chunks_reading.append(f'<font color="grey">{html.escape(fragment.reading)}</font>')
+      else:
+        raise AssertionError('unhandled fragment type')
+
+    selection_base = self.__remaining_base[:self.__sel_base]
+    remaining_base = self.__remaining_base[self.__sel_base:]
+    chunks_base.append(f'<font color="red">{html.escape(selection_base)}</font>')
+    chunks_base.append(f'<span>{html.escape(remaining_base)}</span>')
+
+    selection_reading = self.__remaining_reading[:self.__sel_reading]
+    remaining_reading = self.__remaining_reading[self.__sel_reading:]
+    chunks_reading.append(f'<font color="red">{html.escape(selection_reading)}</font>')
+    chunks_reading.append(f'<span>{html.escape(remaining_reading)}</span>')
+
+    self.__lbl_base.setText(''.join(chunks_base))
+    self.__lbl_reading.setText(''.join(chunks_reading))
+
+  @Slot()
+  def __do_commit(self):
+    match self.__stage:
+      case CutterStage.STAGE_BASE:
+        self.__stage = CutterStage.STAGE_READING
+      case CutterStage.STAGE_READING:
+        # actually commit
+
+        selection_base = self.__remaining_base[:self.__sel_base]
+        remaining_base = self.__remaining_base[self.__sel_base:]
+
+        selection_reading = self.__remaining_reading[:self.__sel_reading]
+        remaining_reading = self.__remaining_reading[self.__sel_reading:]
+
+        if selection_base == selection_reading:
+          # 送り仮名そのまま
+          print(f'commit ignore: {selection_base!r}')
+          self.__staging.fragments.append(FragmentIgnore(text=selection_base))
+        else:
+          # ふりがな
+          print(f'commit kanji_chars: {selection_base}({selection_reading})')
+          self.__staging.fragments.append(FragmentKanjiCharacters(base=selection_base, reading=selection_reading))
+
+        self.__remaining_base = remaining_base
+        self.__remaining_reading = remaining_reading
+
+        if self.__remaining_base == '':
+          # we're done
+          assert self.__remaining_reading == ''
+          self.accept()
+          return
+
+        # reset
+        self.__stage = CutterStage.STAGE_BASE
+        self.__sel_base = 1
+        self.__sel_reading = 1
+      case _:
+        raise AssertionError
+
+    self.__update_previews()
+
+  @Slot()
+  def __do_move_cursor_left(self):
+    match self.__stage:
+      case CutterStage.STAGE_BASE:
+        if self.__sel_base == 1:
+          return
+        self.__sel_base -= 1
+      case CutterStage.STAGE_READING:
+        if self.__sel_reading == 1:
+          return
+        self.__sel_reading -= 1
+      case _:
+        raise AssertionError
+
+    self.__update_previews()
+
+  @Slot()
+  def __do_move_cursor_right(self):
+    match self.__stage:
+      case CutterStage.STAGE_BASE:
+        if self.__sel_base == len(self.__remaining_base):
+          return
+        self.__sel_base += 1
+      case CutterStage.STAGE_READING:
+        if self.__sel_reading == len(self.__remaining_reading):
+          return
+        self.__sel_reading += 1
+      case _:
+        raise AssertionError
+
+    self.__update_previews()
+
+  def getNormalWord(self) -> NormalTemplate:
+    return self.__staging
+
 class DictViewer(QMainWindow):
   def __init__(self, nwl: NormalWordList, dict_path: str, lwl: LoanWordList, loan_dict_path: str):
     QMainWindow.__init__(self)
@@ -159,6 +327,11 @@ class DictViewer(QMainWindow):
 
     flat = ifrd.getFlatWordResult()
     print(f'flat: {flat!r}')
+
+    cutter = CutterDialog(self, base, flat)
+    if cutter.exec() == QDialog.DialogCode.Rejected:
+      print('user canceled')
+      return
 
   @Slot()
   def __do_new_loan(self):
