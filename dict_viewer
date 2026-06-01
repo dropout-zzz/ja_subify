@@ -259,10 +259,12 @@ class CutterDialog(QDialog):
     match self.__stage:
       case CutterStage.STAGE_BASE:
         if self.__sel_base == 1:
+          print('invalid move')
           return
         self.__sel_base -= 1
       case CutterStage.STAGE_READING:
         if self.__sel_reading == 1:
+          print('invalid move')
           return
         self.__sel_reading -= 1
       case _:
@@ -275,10 +277,12 @@ class CutterDialog(QDialog):
     match self.__stage:
       case CutterStage.STAGE_BASE:
         if self.__sel_base == len(self.__remaining_base):
+          print('invalid move')
           return
         self.__sel_base += 1
       case CutterStage.STAGE_READING:
         if self.__sel_reading == len(self.__remaining_reading):
+          print('invalid move')
           return
         self.__sel_reading += 1
       case _:
