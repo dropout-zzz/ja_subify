@@ -103,9 +103,12 @@ def _register_known_normal_words(nwl: NormalWordList, word: NormalTemplate):
       continue
     nwl.known.add((fragment.base, fragment.reading))
 
+class NormalWordAlreadyExist(Exception):
+  pass
+
 def append_into_normal_words(nwl: NormalWordList, path: str, word: NormalTemplate):
   if word.base in nwl.inner:
-    raise ValueError('word already exist')
+    raise NormalWordAlreadyExist
   with open(path, 'ab') as f:
     n = f.write(json.dumps(word.serialize(), sort_keys=True, ensure_ascii=False).encode())
     f.write(b'\n')
