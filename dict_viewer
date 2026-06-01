@@ -78,6 +78,38 @@ class InputRomanizedWordDialog(QDialog):
     assert self.__result != ''
     return self.__result
 
+class InputFlatReadingDialog(QDialog):
+  def __init__(self, parent: QWidget, base: str):
+    QDialog.__init__(self, parent)
+
+    self.__layout = QVBoxLayout(self)
+
+    self.__hint_base = QLineEdit(text=base)
+    self.__hint_base.setEnabled(False)
+
+    self.__edit = QLineEdit()
+
+    self.__layout.addWidget(self.__hint_base)
+    self.__layout.addWidget(self.__edit)
+
+    self.__result = ''
+
+    self.__edit.returnPressed.connect(self.__do_commit)
+
+  @Slot()
+  def __do_commit(self):
+    self.__result = self.__edit.text()
+
+    if self.__result == '':
+      print('word cannot be empty')
+      return
+
+    self.done(QDialog.DialogCode.Accepted)
+
+  def getFlatWordResult(self) -> str:
+    assert self.__result != ''
+    return self.__result
+
 class DictViewer(QMainWindow):
   def __init__(self, nwl: NormalWordList, dict_path: str, lwl: LoanWordList, loan_dict_path: str):
     QMainWindow.__init__(self)
@@ -113,6 +145,14 @@ class DictViewer(QMainWindow):
 
     base = ibwd.getBaseWordResult()
     print(f'base: {base!r}')
+
+    ifrd = InputFlatReadingDialog(self, base)
+    if ifrd.exec() == QDialog.DialogCode.Rejected:
+      print('user canceled')
+      return
+
+    flat = ifrd.getFlatWordResult()
+    print(f'flat: {flat!r}')
 
   @Slot()
   def __do_new_loan(self):
