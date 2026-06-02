@@ -40,7 +40,7 @@ def main():
   print('<meta charset="utf-8"/>', file=args.html_file)
   print('<meta name="viewport" content="width=device-width"/>', file=args.html_file)
   print('</head>', file=args.html_file)
-  print('<body style="font-size: 200%; font-family: serif;">', file=args.html_file)
+  print('<body style="font-size: 200%; font-family: serif; margin: 1rem;">', file=args.html_file)
 
   for line in af.lines:
     args.html_file.write('<p>')
