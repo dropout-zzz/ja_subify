@@ -118,6 +118,7 @@ class AnnotationEdit(QMainWindow):
 
     self.setCentralWidget(self.__webview)
 
+  @Slot()
   def show(self):
     QMainWindow.show(self)
     self.__loading_dlg.open()
