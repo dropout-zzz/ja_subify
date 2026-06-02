@@ -5,8 +5,12 @@ from PySide6.QtWidgets import (
   QMainWindow,
 )
 from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtCore import (
   QUrl,
+  QObject,
+  Slot,
+  Signal,
 )
 from annotation_file import (
   annotation_parse,
@@ -27,6 +31,13 @@ class UserLoanDictionary:
   inner: LoanWordList
   path: str
 
+class AnimechoWebBridge(QObject):
+  webLoadFinished = Signal()
+
+  @Slot()
+  def notifyNativeLoadFinished(self):
+    self.webLoadFinished.emit()
+
 class AnnotationEdit(QMainWindow):
   def __init__(self, af: AnnotationFile, annotation_path: str, nwls: list[UserNormalDictionary], lwls: list[UserLoanDictionary]):
     QMainWindow.__init__(self)
@@ -37,10 +48,22 @@ class AnnotationEdit(QMainWindow):
     self.__nwls = nwls
     self.__lwls = lwls
 
+    self.__web = AnimechoWebBridge()
+
+    self.__web.webLoadFinished.connect(self.__handle_web_load_finished)
+
+    self.__webchan = QWebChannel()
+    self.__webchan.registerObject('animecho', self.__web)
+
     self.__webview = QWebEngineView()
     self.__webview.setUrl(QUrl('qrc:/animecho/animecho.html'))
+    self.__webview.page().setWebChannel(self.__webchan)
 
     self.setCentralWidget(self.__webview)
+
+  @Slot()
+  def __handle_web_load_finished(self):
+    print('web is up')
 
 def main():
   ap = ArgumentParser()
