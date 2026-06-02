@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+
+# FIXME: sometimes this program segfaults on start up
+#        i have no idea why it happens
+
 from argparse import ArgumentParser
 from PySide6.QtWidgets import (
   QApplication,
@@ -49,6 +53,8 @@ class AnimechoWebBridge(QObject):
     self.webLoadFinished.emit()
 
 class WaitingWebDialog(QDialog):
+  # XXX: is this really useful? does it work?
+
   def __init__(self, parent: QWidget):
     QDialog.__init__(self, parent)
 
