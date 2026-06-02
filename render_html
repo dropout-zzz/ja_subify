@@ -43,6 +43,8 @@ def main():
   print('<body>', file=args.html_file)
 
   for line in af.lines:
+    args.html_file.write('<p>')
+
     for annotation in line.fragments:
       if isinstance(annotation.inner, PlainAnnotation):
         args.html_file.write(f'<span>{html.escape(annotation.inner.text)}</span>')
@@ -62,7 +64,7 @@ def main():
       else:
         raise AssertionError('unhandled annotation type')
 
-    print('<br/>', file=args.html_file)
+    print('</p>', file=args.html_file)
 
   print('</body>', file=args.html_file)
   print('</html>', file=args.html_file)
