@@ -47,8 +47,13 @@ class UserLoanDictionary:
   path: str
 
 class AnimechoWebBridge(QObject):
+  # -- called from web into native --
   webLoadFinished = Signal()
+
+  # -- called from native into web --
   nativeUpdateContent = Signal(str)
+
+  # -- glues for web-native calls --
 
   @Slot()
   def notifyNativeLoadFinished(self):
