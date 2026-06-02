@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
   QVBoxLayout,
   QLabel,
   QPushButton,
+  QProgressBar,
 )
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebChannel import QWebChannel
@@ -63,11 +64,13 @@ class WaitingWebDialog(QDialog):
     self.__layout = QVBoxLayout(self)
 
     self.__lbl_indicator = QLabel(text='Waiting for internal Web view to boot...')
+    self.__spinner = QProgressBar(maximum=0)
     self.__btn_quit = QPushButton('Quit App Now')
 
     self.__btn_quit.clicked.connect(self.__do_quit_app)
 
     self.__layout.addWidget(self.__lbl_indicator)
+    self.__layout.addWidget(self.__spinner)
     self.__layout.addWidget(self.__btn_quit)
 
   def closeEvent(self, event: QCloseEvent):
