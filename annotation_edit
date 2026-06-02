@@ -138,11 +138,18 @@ class AnnotationEdit(QMainWindow):
     QMainWindow.show(self)
     self.__loading_dlg.open()
 
+  def __rerender_animecho(self):
+    tags = []
+
+    self.__web.nativeUpdateContent.emit(''.join(tags))
+
   @Slot()
   def __handle_web_load_finished(self):
     print('web is up')
 
     self.__loading_dlg.tryCloseNormally()
+
+    self.__rerender_animecho()
 
 def main():
   ap = ArgumentParser()
