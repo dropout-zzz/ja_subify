@@ -25,23 +25,32 @@ cript src=\x22qrc:/\
 cho.js\x22></script\
 >\x0a  </body>\x0a</ht\
 ml>\x0a\
-\x00\x00\x00\xed\
+\x00\x00\x01q\
 c\
 onst animechoRoo\
 t = document.get\
 ElementById('ani\
-mecho-root');\x0a\x0ac\
-onst animechoWeb\
-Chan = new QWebC\
-hannel(qt.webCha\
-nnelTransport, f\
-unction(channel)\
- {\x0a  const anime\
-cho = channel.ob\
-jects.animecho;\x0a\
-\x0a  animecho.noti\
-fyNativeLoadFini\
-shed();\x0a});\x0a\
+mecho-root');\x0a\x0af\
+unction animecho\
+UpdateContent(s)\
+ {\x0a  animechoRoo\
+t.innerHTML = s;\
+\x0a}\x0a\x0aconst animec\
+hoWebChan = new \
+QWebChannel(qt.w\
+ebChannelTranspo\
+rt, function(cha\
+nnel) {\x0a  const \
+animecho = chann\
+el.objects.anime\
+cho;\x0a\x0a  animecho\
+.nativeUpdateCon\
+tent.connect(ani\
+mechoUpdateConte\
+nt)\x0a\x0a  animecho.\
+notifyNativeLoad\
+Finished();\x0a});\x0a\
+\
 "
 
 qt_resource_name = b"\
@@ -65,7 +74,7 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x02\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x006\x00\x00\x00\x00\x00\x01\x00\x00\x01\x09\
-\x00\x00\x01\x9e\x89%\xdc\x11\
+\x00\x00\x01\x9e\x8az\x16\xe2\
 \x00\x00\x00\x16\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
 \x00\x00\x01\x9e\x88\xcb\x14\x8d\
 "

@@ -48,6 +48,7 @@ class UserLoanDictionary:
 
 class AnimechoWebBridge(QObject):
   webLoadFinished = Signal()
+  nativeUpdateContent = Signal(str)
 
   @Slot()
   def notifyNativeLoadFinished(self):
