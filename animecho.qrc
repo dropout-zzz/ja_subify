@@ -2,5 +2,6 @@
   <qresource prefix="/animecho">
     <file>animecho.html</file>
     <file>animecho.js</file>
+    <file>animecho.css</file>
   </qresource>
 </RCC>
