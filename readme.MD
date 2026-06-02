@@ -9,7 +9,7 @@ Tools to convert untranslated Japanese anime subtitles into text documents, quic
 
 It is not desirable to always show every furigana or romanized loan words.
 
-The HTML renderer allows you to specify a local user dictionary file.
+The HTML renderer allows you to specify a local user dictionary file. It is recommended to use one.
 
 The renderer will skip known words and readings that is present in the blacklist files.
 
