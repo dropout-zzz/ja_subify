@@ -9,13 +9,29 @@ from annotation_file import (
   annotation_parse,
   AnnotationFile,
 )
+from dataclasses import dataclass
+from normal_word_db import NormalWordList, load_normal_words
+from loan_word_db import LoanWordList, load_loan_words
+
+@dataclass
+class UserNormalDictionary:
+  inner: NormalWordList
+  path: str
+
+@dataclass
+class UserLoanDictionary:
+  inner: LoanWordList
+  path: str
 
 class AnnotationEdit(QMainWindow):
-  def __init__(self, af: AnnotationFile, annotation_path: str):
+  def __init__(self, af: AnnotationFile, annotation_path: str, nwls: list[UserNormalDictionary], lwls: list[UserLoanDictionary]):
     QMainWindow.__init__(self)
 
     self.__af = af
     self.__annotation_path = annotation_path
+
+    self.__nwls = nwls
+    self.__lwls = lwls
 
     self.__webview = QWebEngineView()
 
@@ -25,14 +41,19 @@ def main():
   ap = ArgumentParser()
 
   ap.add_argument('annotation_file')
+  ap.add_argument('--dictionary', '-d', action='append', default=[], help='use WordDB. can pass multiple')
+  ap.add_argument('--loan-dictionary', '-l', action='append', default=[], help='use loanword WordDB. can pass multiple')
 
   args = ap.parse_args()
 
   with open(args.annotation_file, 'r') as f:
     af = annotation_parse(f.read())
 
+  nwls = [UserNormalDictionary(inner=load_normal_words(x), path=x) for x in args.dictionary]
+  lwls = [UserLoanDictionary(inner=load_loan_words(x), path=x) for x in args.loan_dictionary]
+
   app = QApplication()
-  ae = AnnotationEdit(af, args.annotation_file)
+  ae = AnnotationEdit(af, args.annotation_file, nwls, lwls)
   ae.show()
   app.exec()
 
