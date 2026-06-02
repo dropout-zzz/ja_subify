@@ -1,6 +1,8 @@
 ja_subify
 =========
 
+Tools to convert untranslated Japanese anime subtitles into text documents, quickly add Furigana to them and render as HTML.
+
 ## Documentation
 
 ### Blacklisting words
