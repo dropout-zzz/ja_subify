@@ -3,6 +3,11 @@ from argparse import ArgumentParser
 from PySide6.QtWidgets import (
   QApplication,
   QMainWindow,
+  QDialog,
+  QWidget,
+  QVBoxLayout,
+  QLabel,
+  QPushButton,
 )
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebChannel import QWebChannel
@@ -11,6 +16,11 @@ from PySide6.QtCore import (
   QObject,
   Slot,
   Signal,
+  Qt,
+)
+from PySide6.QtGui import (
+  QCloseEvent,
+  QKeyEvent,
 )
 from annotation_file import (
   annotation_parse,
@@ -38,6 +48,46 @@ class AnimechoWebBridge(QObject):
   def notifyNativeLoadFinished(self):
     self.webLoadFinished.emit()
 
+class WaitingWebDialog(QDialog):
+  def __init__(self, parent: QWidget):
+    QDialog.__init__(self, parent)
+
+    self.__can_quit = False
+
+    self.__layout = QVBoxLayout(self)
+
+    self.__lbl_indicator = QLabel(text='Waiting for internal Web view to boot...')
+    self.__btn_quit = QPushButton('Quit App Now')
+
+    self.__btn_quit.clicked.connect(self.__do_quit_app)
+
+    self.__layout.addWidget(self.__lbl_indicator)
+    self.__layout.addWidget(self.__btn_quit)
+
+  def closeEvent(self, event: QCloseEvent):
+    if self.__can_quit:
+      QDialog.closeEvent(self, event)
+      return
+
+    print('you cant close this dialog, please hit the quit app button instead')
+    event.ignore()
+
+  def keyPressEvent(self, event: QKeyEvent):
+    if event.key() == Qt.Key.Key_Escape:
+      print('you cant close this dialog, please hit the quit app button instead')
+      event.ignore()
+    else:
+      QDialog.keyPressEvent(self, event)
+
+  @Slot()
+  def __do_quit_app(self):
+    self.__can_quit = True
+    app.quit()
+
+  def closeNormally(self):
+    self.__can_quit = True
+    self.accept()
+
 class AnnotationEdit(QMainWindow):
   def __init__(self, af: AnnotationFile, annotation_path: str, nwls: list[UserNormalDictionary], lwls: list[UserLoanDictionary]):
     QMainWindow.__init__(self)
@@ -47,6 +97,8 @@ class AnnotationEdit(QMainWindow):
 
     self.__nwls = nwls
     self.__lwls = lwls
+
+    self.__loading_dlg = WaitingWebDialog(self)
 
     self.__web = AnimechoWebBridge()
 
@@ -61,11 +113,20 @@ class AnnotationEdit(QMainWindow):
 
     self.setCentralWidget(self.__webview)
 
+  def showWithLoadingDlg(self):
+    self.show()
+    self.__loading_dlg.open()
+
   @Slot()
   def __handle_web_load_finished(self):
     print('web is up')
 
+    if self.__loading_dlg.result() != QDialog.DialogCode.Accepted:
+      self.__loading_dlg.closeNormally()
+
 def main():
+  global app
+
   ap = ArgumentParser()
 
   ap.add_argument('annotation_file')
@@ -82,7 +143,7 @@ def main():
 
   app = QApplication()
   ae = AnnotationEdit(af, args.annotation_file, nwls, lwls)
-  ae.show()
+  ae.showWithLoadingDlg()
   app.exec()
 
 main()
