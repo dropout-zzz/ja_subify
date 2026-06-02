@@ -73,18 +73,22 @@ class WaitingWebDialog(QDialog):
     event.ignore()
 
   def keyPressEvent(self, event: QKeyEvent):
-    if event.key() == Qt.Key.Key_Escape:
-      print('you cant close this dialog, please hit the quit app button instead')
-      event.ignore()
-    else:
+    if event.key() != Qt.Key.Key_Escape:
       QDialog.keyPressEvent(self, event)
+      return
+
+    print('you cant close this dialog, please hit the quit app button instead')
+    event.ignore()
 
   @Slot()
   def __do_quit_app(self):
     self.__can_quit = True
-    app.quit()
+    QApplication.quit()
 
-  def closeNormally(self):
+  def tryCloseNormally(self):
+    if self.result() == QDialog.DialogCode.Accepted:
+      return
+
     self.__can_quit = True
     self.accept()
 
@@ -113,20 +117,17 @@ class AnnotationEdit(QMainWindow):
 
     self.setCentralWidget(self.__webview)
 
-  def showWithLoadingDlg(self):
-    self.show()
+  def show(self):
+    QMainWindow.show(self)
     self.__loading_dlg.open()
 
   @Slot()
   def __handle_web_load_finished(self):
     print('web is up')
 
-    if self.__loading_dlg.result() != QDialog.DialogCode.Accepted:
-      self.__loading_dlg.closeNormally()
+    self.__loading_dlg.tryCloseNormally()
 
 def main():
-  global app
-
   ap = ArgumentParser()
 
   ap.add_argument('annotation_file')
@@ -143,7 +144,7 @@ def main():
 
   app = QApplication()
   ae = AnnotationEdit(af, args.annotation_file, nwls, lwls)
-  ae.showWithLoadingDlg()
+  ae.show()
   app.exec()
 
 main()
