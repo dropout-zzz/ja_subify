@@ -5,6 +5,9 @@ from PySide6.QtWidgets import (
   QMainWindow,
 )
 from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtCore import (
+  QUrl,
+)
 from annotation_file import (
   annotation_parse,
   AnnotationFile,
@@ -12,6 +15,7 @@ from annotation_file import (
 from dataclasses import dataclass
 from normal_word_db import NormalWordList, load_normal_words
 from loan_word_db import LoanWordList, load_loan_words
+import animecho_rc
 
 @dataclass
 class UserNormalDictionary:
@@ -34,6 +38,7 @@ class AnnotationEdit(QMainWindow):
     self.__lwls = lwls
 
     self.__webview = QWebEngineView()
+    self.__webview.setUrl(QUrl('qrc:/animecho/animecho.html'))
 
     self.setCentralWidget(self.__webview)
 
