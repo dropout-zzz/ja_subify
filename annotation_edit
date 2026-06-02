@@ -83,6 +83,7 @@ class WaitingWebDialog(QDialog):
   @Slot()
   def __do_quit_app(self):
     self.__can_quit = True
+    self.reject()
     QApplication.quit()
 
   def tryCloseNormally(self):
