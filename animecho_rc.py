@@ -32,7 +32,7 @@ l.js\x22></script>\x0a\
 /animecho.js\x22></\
 script>\x0a  </body\
 >\x0a</html>\x0a\
-\x00\x00\x03\x18\
+\x00\x00\x04P\
 c\
 onst KEY_ANIMECH\
 O_SCROLL = 'anim\
@@ -61,30 +61,49 @@ croll, 10));\x0a  }\
  document.docume\
 ntElement.style.\
 opacity = '1';\x0a}\
-\x0a\x0aconst animecho\
-WebChan = new QW\
-ebChannel(qt.web\
-ChannelTransport\
-, function(chann\
-el) {\x0a  const an\
-imecho = channel\
-.objects.animech\
-o;\x0a\x0a  animecho.n\
-ativeUpdateConte\
-nt.connect(anime\
-choUpdateContent\
-)\x0a\x0a  animecho.no\
-tifyNativeLoadFi\
-nished();\x0a});\x0a\x0aa\
-ddEventListener(\
-'beforeunload', \
-function(event) \
-{\x0a  localStorage\
-.setItem(KEY_ANI\
-MECHO_SCROLL, sc\
-rollY.toString()\
-);\x0a});\x0a\
-\x00\x00\x00j\
+\x0a\x0avar animechoNa\
+tiveCb = null;\x0a\x0a\
+const animechoWe\
+bChan = new QWeb\
+Channel(qt.webCh\
+annelTransport, \
+function(channel\
+) {\x0a  const anim\
+echo = channel.o\
+bjects.animecho;\
+\x0a\x0a  // calls fro\
+m native into we\
+b\x0a  animecho.nat\
+iveUpdateContent\
+.connect(animech\
+oUpdateContent)\x0a\
+\x0a  // calls from\
+ web into native\
+\x0a  animechoNativ\
+eCb = animecho.n\
+otifyNativeCalle\
+dback;\x0a\x0a  animec\
+ho.notifyNativeL\
+oadFinished();\x0a}\
+);\x0a\x0aaddEventList\
+ener('beforeunlo\
+ad', function(ev\
+ent) {\x0a  localSt\
+orage.setItem(KE\
+Y_ANIMECHO_SCROL\
+L, scrollY.toStr\
+ing());\x0a});\x0a\x0afun\
+ction animechoCb\
+(lidx, aidx) {\x0a \
+ if (animechoNat\
+iveCb === null) \
+{\x0a    console.er\
+ror(\x22native is n\
+ot ready\x22);\x0a    \
+return;\x0a  }\x0a\x0a  a\
+nimechoNativeCb(\
+lidx, aidx);\x0a}\x0a\
+\x00\x00\x00\x97\
 b\
 ody {\x0a  font-siz\
 e: 125%;\x0a}\x0a\x0ahtml\
@@ -92,7 +111,10 @@ e: 125%;\x0a}\x0a\x0ahtml\
 -in */\x0a  transit\
 ion: opacity 800\
 ms ease;\x0a  opaci\
-ty: 0;\x0a}\x0a\
+ty: 0;\x0a}\x0a\x0a.anime\
+cho-unfinished {\
+\x0a  cursor: point\
+er;\x0a}\x0a\
 "
 
 qt_resource_name = b"\
@@ -119,10 +141,10 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00\x02\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00R\x00\x00\x00\x00\x00\x01\x00\x00\x04\x9b\
-\x00\x00\x01\x9e\x8d\xd1n\x91\
+\x00\x00\x00R\x00\x00\x00\x00\x00\x01\x00\x00\x05\xd3\
+\x00\x00\x01\x9e\x8e\x8dN\x02\
 \x00\x00\x006\x00\x00\x00\x00\x00\x01\x00\x00\x01\x7f\
-\x00\x00\x01\x9e\x8d\xd0.\xf4\
+\x00\x00\x01\x9e\x8e\xa3{\xc9\
 \x00\x00\x00\x16\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
 \x00\x00\x01\x9e\x8dv<k\
 "

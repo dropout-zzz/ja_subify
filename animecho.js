@@ -16,10 +16,16 @@ function animechoUpdateContent(s, restore_scroll) {
   document.documentElement.style.opacity = '1';
 }
 
+var animechoNativeCb = null;
+
 const animechoWebChan = new QWebChannel(qt.webChannelTransport, function(channel) {
   const animecho = channel.objects.animecho;
 
+  // calls from native into web
   animecho.nativeUpdateContent.connect(animechoUpdateContent)
+
+  // calls from web into native
+  animechoNativeCb = animecho.notifyNativeCalledback;
 
   animecho.notifyNativeLoadFinished();
 });
@@ -27,3 +33,12 @@ const animechoWebChan = new QWebChannel(qt.webChannelTransport, function(channel
 addEventListener('beforeunload', function(event) {
   localStorage.setItem(KEY_ANIMECHO_SCROLL, scrollY.toString());
 });
+
+function animechoCb(lidx, aidx) {
+  if (animechoNativeCb === null) {
+    console.error("native is not ready");
+    return;
+  }
+
+  animechoNativeCb(lidx, aidx);
+}

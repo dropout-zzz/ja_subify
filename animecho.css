@@ -7,3 +7,7 @@ html {
   transition: opacity 800ms ease;
   opacity: 0;
 }
+
+.animecho-unfinished {
+  cursor: pointer;
+}
