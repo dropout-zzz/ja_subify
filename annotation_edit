@@ -22,6 +22,8 @@ from PySide6.QtCore import (
   Slot,
   Signal,
   Qt,
+  QTimer,
+  QEvent,
 )
 from PySide6.QtGui import (
   QCloseEvent,
@@ -30,11 +32,15 @@ from PySide6.QtGui import (
 from annotation_file import (
   annotation_parse,
   AnnotationFile,
+  PlainAnnotation,
+  LoanAnnotation,
+  KanjiAnnotation,
 )
 from dataclasses import dataclass
 from normal_word_db import NormalWordList, load_normal_words
 from loan_word_db import LoanWordList, load_loan_words
 import animecho_rc
+import html
 
 @dataclass
 class UserNormalDictionary:
@@ -51,7 +57,7 @@ class AnimechoWebBridge(QObject):
   webLoadFinished = Signal()
 
   # -- called from native into web --
-  nativeUpdateContent = Signal(str)
+  nativeUpdateContent = Signal(str, bool)
 
   # -- glues for web-native calls --
 
@@ -112,6 +118,8 @@ class AnnotationEdit(QMainWindow):
   def __init__(self, af: AnnotationFile, annotation_path: str, nwls: list[UserNormalDictionary], lwls: list[UserLoanDictionary]):
     QMainWindow.__init__(self)
 
+    self.resize(600, 700)
+
     self.__af = af
     self.__annotation_path = annotation_path
 
@@ -120,6 +128,12 @@ class AnnotationEdit(QMainWindow):
 
     self.__loading_dlg = WaitingWebDialog(self)
 
+    # give enough time for webview to load
+    self.__startup_debounce = QTimer(singleShot=True, interval=1000)
+    self.__startup_debounce.timeout.connect(self.__startup_debounce_finished)
+
+    self.__web_loaded = False
+
     self.__web = AnimechoWebBridge()
 
     self.__web.webLoadFinished.connect(self.__handle_web_load_finished)
@@ -127,29 +141,76 @@ class AnnotationEdit(QMainWindow):
     self.__webchan = QWebChannel()
     self.__webchan.registerObject('animecho', self.__web)
 
-    self.__webview = QWebEngineView()
+    self.__central_widget = QWidget()
+    self.__webview = QWebEngineView(self.__central_widget)
+
+    # hack to prevent flicker
+    self.__webview.setGeometry(0, 0, 1, 1)
+
     self.__webview.setUrl(QUrl('qrc:/animecho/animecho.html'))
     self.__webview.page().setWebChannel(self.__webchan)
 
-    self.setCentralWidget(self.__webview)
+    self.setCentralWidget(self.__central_widget)
 
   @Slot()
   def show(self):
     QMainWindow.show(self)
     self.__loading_dlg.open()
 
-  def __rerender_animecho(self):
+  def changeEvent(self, event: QEvent):
+    if event.type() == QEvent.Type.PaletteChange:
+      # light/dark theme change
+      # for some reasons we need to refresh web page
+      # for theme change to apply in web view
+      print('theme changed')
+      self.__webview.reload()
+
+    QMainWindow.changeEvent(self, event)
+
+  def __rerender_animecho(self, restore_scroll: bool = False):
     tags = []
 
-    self.__web.nativeUpdateContent.emit(''.join(tags))
+    for line in self.__af.lines:
+      tags.append('<p>')
+
+      for annotation in line.fragments:
+        if isinstance(annotation.inner, PlainAnnotation):
+          tags.append(f'<span>{html.escape(annotation.inner.text)}</span>')
+        elif isinstance(annotation.inner, LoanAnnotation):
+          tags.append(f'<span>{html.escape(annotation.inner.base)}</span>')
+        elif isinstance(annotation.inner, KanjiAnnotation):
+          tags.append('<span>')
+
+          for chars in annotation.inner.fragments:
+            tags.append(f'<span>{html.escape(chars.base)}</span>')
+
+          tags.append('</span>')
+        else:
+          raise AssertionError('unhandled annotation type')
+
+      tags.append('</p>')
+
+    self.__web.nativeUpdateContent.emit(''.join(tags), restore_scroll)
 
   @Slot()
-  def __handle_web_load_finished(self):
-    print('web is up')
+  def __startup_debounce_finished(self):
+    # since we set size to 1x1 on startup to prevent flickers
+    # we have to update it to current window size
+    size = self.size()
+    self.__webview.setGeometry(0, 0, size.width(), size.height())
 
     self.__loading_dlg.tryCloseNormally()
 
-    self.__rerender_animecho()
+  @Slot()
+  def __handle_web_load_finished(self):
+    if self.__web_loaded:
+      print('web reloaded')
+      self.__rerender_animecho(restore_scroll=True)
+    else:
+      print('web is up')
+      self.__rerender_animecho()
+      self.__startup_debounce.start()
+      self.__web_loaded = True
 
 def main():
   ap = ArgumentParser()

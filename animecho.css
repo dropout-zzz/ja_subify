@@ -1,0 +1,9 @@
+body {
+  font-size: 125%;
+}
+
+html {
+  /* for fade-in */
+  transition: opacity 800ms ease;
+  opacity: 0;
+}
