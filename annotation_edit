@@ -41,6 +41,7 @@ from normal_word_db import NormalWordList, load_normal_words
 from loan_word_db import LoanWordList, load_loan_words
 import animecho_rc
 import html
+from typing import override
 
 @dataclass
 class UserNormalDictionary:
@@ -85,6 +86,7 @@ class WaitingWebDialog(QDialog):
     self.__layout.addWidget(self.__spinner)
     self.__layout.addWidget(self.__btn_quit)
 
+  @override
   def closeEvent(self, event: QCloseEvent):
     if self.__can_quit:
       QDialog.closeEvent(self, event)
@@ -93,6 +95,7 @@ class WaitingWebDialog(QDialog):
     print('you cant close this dialog, please hit the quit app button instead')
     event.ignore()
 
+  @override
   def keyPressEvent(self, event: QKeyEvent):
     if event.key() != Qt.Key.Key_Escape:
       QDialog.keyPressEvent(self, event)
@@ -152,11 +155,13 @@ class AnnotationEdit(QMainWindow):
 
     self.setCentralWidget(self.__central_widget)
 
+  @override
   @Slot()
   def show(self):
     QMainWindow.show(self)
     self.__loading_dlg.open()
 
+  @override
   def changeEvent(self, event: QEvent):
     if event.type() == QEvent.Type.PaletteChange:
       # light/dark theme change
