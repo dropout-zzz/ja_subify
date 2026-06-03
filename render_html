@@ -19,6 +19,7 @@ def main():
   ap.add_argument('--loans-blacklist', '-l')
   ap.add_argument('--word-blacklist', '-w')
   ap.add_argument('--no-labeling', '-n', action='store_true', help='disable all furigana')
+  ap.add_argument('--no-loans', '-L', action='store_true')
 
   args = ap.parse_args()
 
@@ -50,7 +51,7 @@ def main():
       if isinstance(annotation.inner, PlainAnnotation):
         args.html_file.write(f'<span>{html.escape(annotation.inner.text)}</span>')
       elif isinstance(annotation.inner, LoanAnnotation):
-        if args.no_labeling or annotation.inner.base in lwl.inner:
+        if args.no_labeling or args.no_loans or annotation.inner.base in lwl.inner:
           args.html_file.write(f'<span>{html.escape(annotation.inner.base)}</span>')
         else:
           args.html_file.write(f'<ruby>{html.escape(annotation.inner.base)}<rt>{html.escape(annotation.inner.romanized)}</ruby>')
