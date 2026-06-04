@@ -36,6 +36,7 @@ from PySide6.QtGui import (
   QShortcut,
   QAction,
   QKeySequence,
+  QIcon,
 )
 from annotation_file import (
   annotation_parse,
@@ -331,7 +332,14 @@ class AnnotationEdit(QMainWindow):
                                  shortcut=QKeySequence.StandardKey.Save)
     self.__action_save.triggered.connect(self.__do_save)
 
+    self.__action_quit = QAction(text='Quit',
+                                 shortcut=QKeySequence.StandardKey.Quit,
+                                 icon=QIcon.fromTheme(QIcon.ThemeIcon.ApplicationExit))
+    self.__action_quit.triggered.connect(self.__do_quit)
+
     self.__menu_file.addAction(self.__action_save)
+    self.__menu_file.addSeparator()
+    self.__menu_file.addAction(self.__action_quit)
 
     self.__menubar.addMenu(self.__menu_file)
 
@@ -440,6 +448,10 @@ class AnnotationEdit(QMainWindow):
     print('saved annotation file')
 
     self.__update_ux_dirty(False)
+
+  @Slot()
+  def __do_quit(self):
+    self.close()
 
   @override
   def closeEvent(self, event: QCloseEvent):
