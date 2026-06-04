@@ -521,6 +521,7 @@ class AnnotationEdit(QMainWindow):
       new_annotations.append(Annotation(inner=PlainAnnotation(old_text[sel[1]:]), unfinished=True))
 
     dialogue.fragments.pop(aidx)
+    # insert(extend) at index
     dialogue.fragments[aidx:aidx] = new_annotations
 
     self.__rerender_animecho()
