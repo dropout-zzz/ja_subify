@@ -45,6 +45,19 @@ class NormalTemplate:
   base: str
   fragments: list[FragmentIgnore | FragmentKanjiCharacters] = dataclasses.field(default_factory=list)
 
+  def get_normalized(self) -> str:
+    buff = []
+
+    for fragment in self.fragments:
+      if isinstance(fragment, FragmentIgnore):
+        buff.append(fragment.text)
+      elif isinstance(fragment, FragmentKanjiCharacters):
+        buff.append(fragment.reading)
+      else:
+        raise AssertionError('unhandled fragment type')
+
+    return ''.join(buff)
+
   def serialize(self) -> dict:
     fragments = []
 

@@ -39,6 +39,7 @@ from PySide6.QtGui import (
   QAction,
   QKeySequence,
   QIcon,
+  QFont,
 )
 from annotation_file import (
   annotation_parse,
@@ -48,9 +49,11 @@ from annotation_file import (
   KanjiAnnotation,
   Annotation,
   annotation_save,
+  KanjiCharacters,
+  DialogueLine,
 )
 from dataclasses import dataclass
-from normal_word_db import NormalWordList, load_normal_words
+from normal_word_db import NormalWordList, load_normal_words, reload_into_normal_words, FragmentIgnore, FragmentKanjiCharacters
 from loan_word_db import LoanWordList, load_loan_words, reload_into_loan_words
 import animecho_rc
 import html
@@ -143,12 +146,18 @@ class CreateSegmentType(Enum):
   CREATE_IGNORE_SEGMENT = enum.auto()
 
 class SelectSegmentTypeDialog(QDialog):
-  def __init__(self, parent: QWidget):
+  def __init__(self, parent: QWidget, preview: str):
     QDialog.__init__(self, parent)
 
     self.__result = None
 
     self.__layout = QVBoxLayout()
+
+    self.__font = QFont()
+    self.__font.setPointSize(15)
+
+    self.__lbl_preview = QLabel(text=preview)
+    self.__lbl_preview.setFont(self.__font)
 
     self.__lbl_tip = QLabel('[1]. Label Kanji word...\n'
                             '[2]. Label loan word...\n'
@@ -157,6 +166,7 @@ class SelectSegmentTypeDialog(QDialog):
     self.__btn_cancel = QPushButton('Cancel')
     self.__btn_cancel.clicked.connect(self.__do_cancel)
 
+    self.__layout.addWidget(self.__lbl_preview)
     self.__layout.addWidget(self.__lbl_tip)
     self.__layout.addWidget(self.__btn_cancel)
 
@@ -344,6 +354,8 @@ class AnnotationEdit(QMainWindow):
 
     self.__status_bar.addWidget(self.__lbl_unsaved)
 
+    self.__status_bar.messageChanged.connect(self.__handle_status_bar_msg)
+
     self.setStatusBar(self.__status_bar)
 
     self.__loading_dlg = WaitingWebDialog(self)
@@ -429,7 +441,7 @@ class AnnotationEdit(QMainWindow):
         elif isinstance(annotation.inner, LoanAnnotation):
           tags.append(f'<span class="animecho-loan">{html.escape(annotation.inner.base)}</span>')
         elif isinstance(annotation.inner, KanjiAnnotation):
-          tags.append('<span>')
+          tags.append('<span class="animecho-kanji">')
 
           for chars in annotation.inner.fragments:
             tags.append(f'<span>{html.escape(chars.base)}</span>')
@@ -451,6 +463,8 @@ class AnnotationEdit(QMainWindow):
 
     self.__loading_dlg.tryCloseNormally()
 
+    self.__status_bar.showMessage('Ready.', timeout=2000)
+
   @Slot()
   def __handle_web_load_finished(self):
     if self.__web_loaded:
@@ -462,8 +476,13 @@ class AnnotationEdit(QMainWindow):
       self.__startup_debounce.start()
       self.__web_loaded = True
 
+  @Slot(str)
+  def __handle_status_bar_msg(self, message: str):
+    if self.isWindowModified() or self.__lbl_unsaved.isVisible():
+      self.__lbl_unsaved.setVisible(message == '')
+
   def __update_ux_dirty(self, dirty: bool):
-    self.__lbl_unsaved.setVisible(dirty)
+    self.__lbl_unsaved.setVisible(dirty and self.__status_bar.currentMessage() == '')
     self.setWindowModified(dirty)
     self.__action_save.setEnabled(dirty)
 
@@ -476,6 +495,7 @@ class AnnotationEdit(QMainWindow):
       f.write('\n')
 
     print('saved annotation file')
+    self.__status_bar.showMessage('Saved annotation', timeout=2000)
 
     self.__update_ux_dirty(False)
 
@@ -503,6 +523,7 @@ class AnnotationEdit(QMainWindow):
       event.accept()
     else:
       print('user canceled quit')
+      self.__status_bar.showMessage('Canceled quit', timeout=2000)
       event.ignore()
 
   @Slot(int, int)
@@ -518,14 +539,16 @@ class AnnotationEdit(QMainWindow):
 
     print(f'selected fragment: {old_text!r}')
 
-    sstd = SelectSegmentTypeDialog(self)
+    sstd = SelectSegmentTypeDialog(self, old_text)
     if sstd.exec() == QDialog.DialogCode.Rejected:
       print('user canceled')
+      self.__status_bar.showMessage('Canceled labeling', timeout=2000)
       return
 
     cutter = CutterDialog(self, old_text)
     if cutter.exec() == QDialog.DialogCode.Rejected:
       print('user canecled')
+      self.__status_bar.showMessage('Canceled labeling', timeout=2000)
       return
 
     sel = cutter.getSelectionRange()
@@ -534,7 +557,9 @@ class AnnotationEdit(QMainWindow):
     match sstd.getCreateSegmentType():
       case CreateSegmentType.CREATE_IGNORE_SEGMENT:
         print(f'ignore: {sel_text!r}')
-        new_annotation = Annotation(inner=PlainAnnotation(sel_text), ignore=True)
+        self.__status_bar.showMessage(f'Ignore segment: {sel_text!r}', timeout=2000)
+
+        new_annotation = [Annotation(inner=PlainAnnotation(sel_text), ignore=True)]
       case CreateSegmentType.CREATE_LOAN_SEGMENT:
         matches = []
 
@@ -546,18 +571,61 @@ class AnnotationEdit(QMainWindow):
 
         if len(matches) == 0:
           print('no match in dictionary')
+          self.__status_bar.showMessage('No dictionary match', timeout=2000)
           return
 
         swcd = SelectWordCandidateDialog(self, [x.romanized for x in matches])
         if swcd.exec() == QDialog.DialogCode.Rejected:
           print('user canceled')
+          self.__status_bar.showMessage('Canceled labeling', timeout=2000)
           return
 
         loan = matches[swcd.getCandidateIndex()]
 
         print(f'loan: {loan.base}({loan.romanized})')
+        self.__status_bar.showMessage(f'Loan word: {loan.base} {loan.romanized}', timeout=2000)
 
-        new_annotation = Annotation(inner=LoanAnnotation(base=loan.base, romanized=loan.romanized))
+        new_annotation = [Annotation(inner=LoanAnnotation(base=loan.base, romanized=loan.romanized))]
+      case CreateSegmentType.CREATE_KANJI_SEGMENT:
+        matches = []
+
+        for loaded_dict in self.__nwls:
+          reload_into_normal_words(loaded_dict.inner, loaded_dict.path)
+
+          if sel_text in loaded_dict.inner.inner:
+            matches.append(loaded_dict.inner.inner[sel_text])
+
+        if len(matches) == 0:
+          print('no match in dictionary')
+          self.__status_bar.showMessage('No dictionary match', timeout=2000)
+          return
+
+        normalized = [x.get_normalized() for x in matches]
+
+        swcd = SelectWordCandidateDialog(self, normalized)
+        if swcd.exec() == QDialog.DialogCode.Rejected:
+          print('user canceled')
+          self.__status_bar.showMessage('Canceled labeling', timeout=2000)
+          return
+
+        idx = swcd.getCandidateIndex()
+        nw = matches[idx]
+
+        print(f'kanji word: {nw.base} {normalized[idx]}')
+        self.__status_bar.showMessage(f'Kanji word: {nw.base} {normalized[idx]}', timeout=2000)
+
+        new_annotation = []
+
+        for template_fragment in nw.fragments:
+          if isinstance(template_fragment, FragmentIgnore):
+            new_annotation.append(Annotation(inner=PlainAnnotation(template_fragment.text), ignore=True))
+          elif isinstance(template_fragment, FragmentKanjiCharacters):
+            if len(new_annotation) > 0 and isinstance(new_annotation[-1].inner, KanjiAnnotation):
+              new_annotation[-1].inner.fragments.append(KanjiCharacters(base=template_fragment.base, reading=template_fragment.reading))
+            else:
+              new_annotation.append(Annotation(inner=KanjiAnnotation(fragments=[KanjiCharacters(base=template_fragment.base, reading=template_fragment.reading)])))
+          else:
+            raise AssertionError('unhandled template fragment type')
       case _:
         raise AssertionError
 
@@ -568,7 +636,7 @@ class AnnotationEdit(QMainWindow):
     if sel[0] != 0:
       new_annotations.append(Annotation(inner=PlainAnnotation(old_text[:sel[0]]), unfinished=True))
 
-    new_annotations.append(new_annotation)
+    new_annotations.extend(new_annotation)
 
     if sel[1] != len(old_text):
       new_annotations.append(Annotation(inner=PlainAnnotation(old_text[sel[1]:]), unfinished=True))
@@ -576,6 +644,27 @@ class AnnotationEdit(QMainWindow):
     dialogue.fragments.pop(aidx)
     # insert(extend) at index
     dialogue.fragments[aidx:aidx] = new_annotations
+
+    line_new = DialogueLine()
+
+    for i in dialogue.fragments:
+      if not isinstance(i.inner, PlainAnnotation):
+        line_new.fragments.append(i)
+        continue
+
+      if not i.ignore:
+        line_new.fragments.append(i)
+        continue
+
+      if len(line_new.fragments) == 0 or not isinstance(line_new.fragments[-1].inner, PlainAnnotation) or not line_new.fragments[-1].ignore:
+        line_new.fragments.append(i)
+        continue
+
+      line_new.fragments[-1].inner.text += i.inner.text
+
+    line_new.validate()
+    self.__af.lines.pop(lidx)
+    self.__af.lines.insert(lidx, line_new)
 
     self.__rerender_animecho()
     self.__update_ux_dirty(True)
