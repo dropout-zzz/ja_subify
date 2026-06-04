@@ -291,6 +291,7 @@ class AnnotationEdit(QMainWindow):
     QMainWindow.__init__(self)
 
     self.resize(600, 700)
+    self.setWindowTitle(f'[*] {annotation_path}')
 
     self.__af = af
     self.__annotation_path = annotation_path
@@ -402,6 +403,7 @@ class AnnotationEdit(QMainWindow):
 
   def __update_ux_dirty(self, dirty: bool):
     self.__lbl_unsaved.setVisible(dirty)
+    self.setWindowModified(dirty)
 
   @Slot(int, int)
   def __handle_web_calledback(self, lidx: int, aidx: int):
