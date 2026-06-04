@@ -28,6 +28,7 @@ from PySide6.QtCore import (
 from PySide6.QtGui import (
   QCloseEvent,
   QKeyEvent,
+  QShortcut,
 )
 from annotation_file import (
   annotation_parse,
@@ -42,6 +43,8 @@ from loan_word_db import LoanWordList, load_loan_words
 import animecho_rc
 import html
 from typing import override
+import enum
+from enum import Enum
 
 @dataclass
 class UserNormalDictionary:
@@ -121,6 +124,63 @@ class WaitingWebDialog(QDialog):
 
     self.__can_quit = True
     self.accept()
+
+class CreateSegmentType(Enum):
+  CREATE_KANJI_SEGMENT = enum.auto()
+  CREATE_LOAN_SEGMENT = enum.auto()
+  CREATE_IGNORE_SEGMENT = enum.auto()
+
+class SelectSegmentTypeDialog(QDialog):
+  def __init__(self, parent: QWidget):
+    QDialog.__init__(self, parent)
+
+    self.__result = None
+
+    self.__layout = QVBoxLayout()
+
+    self.__lbl_tip = QLabel('[1]. Label Kanji word...\n'
+                            '[2]. Label loan word...\n'
+                            '[3]. Ignore segment...')
+
+    self.__btn_cancel = QPushButton('Cancel')
+    self.__btn_cancel.clicked.connect(self.__do_cancel)
+
+    self.__layout.addWidget(self.__lbl_tip)
+    self.__layout.addWidget(self.__btn_cancel)
+
+    self.setLayout(self.__layout)
+
+    self.__key_create_kanji = QShortcut(Qt.Key.Key_1, self)
+    self.__key_create_kanji.activated.connect(self.__do_create_kanji)
+
+    self.__key_create_loan = QShortcut(Qt.Key.Key_2, self)
+    self.__key_create_loan.activated.connect(self.__do_create_loan)
+
+    self.__key_create_ignore = QShortcut(Qt.Key.Key_3, self)
+    self.__key_create_ignore.activated.connect(self.__do_create_ignore)
+
+  @Slot()
+  def __do_create_kanji(self):
+    self.__result = CreateSegmentType.CREATE_KANJI_SEGMENT
+    self.accept()
+
+  @Slot()
+  def __do_create_loan(self):
+    self.__result = CreateSegmentType.CREATE_LOAN_SEGMENT
+    self.accept()
+
+  @Slot()
+  def __do_create_ignore(self):
+    self.__result = CreateSegmentType.CREATE_IGNORE_SEGMENT
+    self.accept()
+
+  @Slot()
+  def __do_cancel(self):
+    self.reject()
+
+  def getCreateSegmentType(self) -> CreateSegmentType:
+    assert self.__result is not None
+    return self.__result
 
 class AnnotationEdit(QMainWindow):
   def __init__(self, af: AnnotationFile, annotation_path: str, nwls: list[UserNormalDictionary], lwls: list[UserLoanDictionary]):
@@ -235,6 +295,11 @@ class AnnotationEdit(QMainWindow):
     assert isinstance(annotation.inner, PlainAnnotation)
 
     print(f'selected fragment: {annotation.inner.text!r}')
+
+    sstd = SelectSegmentTypeDialog(self)
+    if sstd.exec() == QDialog.DialogCode.Rejected:
+      print('user canceled')
+      return
 
 def main():
   ap = ArgumentParser()
