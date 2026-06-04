@@ -15,6 +15,9 @@ from PySide6.QtWidgets import (
   QProgressBar,
   QStatusBar,
   QMessageBox,
+  QMenuBar,
+  QMenu,
+  QStyle,
 )
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebChannel import QWebChannel
@@ -31,6 +34,8 @@ from PySide6.QtGui import (
   QCloseEvent,
   QKeyEvent,
   QShortcut,
+  QAction,
+  QKeySequence,
 )
 from annotation_file import (
   annotation_parse,
@@ -39,6 +44,7 @@ from annotation_file import (
   LoanAnnotation,
   KanjiAnnotation,
   Annotation,
+  annotation_save,
 )
 from dataclasses import dataclass
 from normal_word_db import NormalWordList, load_normal_words
@@ -315,6 +321,22 @@ class AnnotationEdit(QMainWindow):
     self.__startup_debounce = QTimer(singleShot=True, interval=1000)
     self.__startup_debounce.timeout.connect(self.__startup_debounce_finished)
 
+    self.__menubar = QMenuBar()
+
+    self.__menu_file = QMenu(title='File')
+
+    self.__action_save = QAction(text='Save',
+                                 enabled=False,
+                                 icon=self.style().standardIcon(QStyle.StandardPixmap.SP_DialogSaveButton),
+                                 shortcut=QKeySequence.StandardKey.Save)
+    self.__action_save.triggered.connect(self.__do_save)
+
+    self.__menu_file.addAction(self.__action_save)
+
+    self.__menubar.addMenu(self.__menu_file)
+
+    self.setMenuBar(self.__menubar)
+
     self.__web_loaded = False
 
     self.__web = AnimechoWebBridge()
@@ -405,6 +427,19 @@ class AnnotationEdit(QMainWindow):
   def __update_ux_dirty(self, dirty: bool):
     self.__lbl_unsaved.setVisible(dirty)
     self.setWindowModified(dirty)
+    self.__action_save.setEnabled(dirty)
+
+  @Slot()
+  def __do_save(self):
+    self.__af.validate()
+
+    with open(self.__annotation_path, 'w') as f:
+      f.write(annotation_save(self.__af))
+      f.write('\n')
+
+    print('saved annotation file')
+
+    self.__update_ux_dirty(False)
 
   @override
   def closeEvent(self, event: QCloseEvent):
