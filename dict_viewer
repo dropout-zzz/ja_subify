@@ -242,6 +242,7 @@ class CutterDialog(QDialog):
             return
 
           # we're done
+          self.__staging.validate()
           self.accept()
           return
 
