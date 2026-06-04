@@ -1,1 +1,6 @@
 {"base": "鼻歌", "fragments": [{"inner": {"base": "鼻", "reading": "はな"}, "type": 1}, {"inner": {"base": "歌", "reading": "うた"}, "type": 1}]}
+{"base": "港", "fragments": [{"inner": {"base": "港", "reading": "みなと"}, "type": 1}]}
+{"base": "高級品", "fragments": [{"inner": {"base": "高", "reading": "こう"}, "type": 1}, {"inner": {"base": "級", "reading": "きゅう"}, "type": 1}, {"inner": {"base": "品", "reading": "ひん"}, "type": 1}]}
+{"base": "盛り込みます", "fragments": [{"inner": {"base": "盛", "reading": "も"}, "type": 1}, {"inner": {"text": "り"}, "type": 0}, {"inner": {"base": "込", "reading": "こ"}, "type": 1}, {"inner": {"text": "みます"}, "type": 0}]}
+{"base": "前提", "fragments": [{"inner": {"base": "前", "reading": "ぜん"}, "type": 1}, {"inner": {"base": "提", "reading": "てい"}, "type": 1}]}
+{"base": "具", "fragments": [{"inner": {"base": "具", "reading": "ぐ"}, "type": 1}]}
