@@ -18,6 +18,8 @@ from PySide6.QtWidgets import (
   QMenuBar,
   QMenu,
   QStyle,
+  QListWidget,
+  QListWidgetItem,
 )
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebChannel import QWebChannel
@@ -49,7 +51,7 @@ from annotation_file import (
 )
 from dataclasses import dataclass
 from normal_word_db import NormalWordList, load_normal_words
-from loan_word_db import LoanWordList, load_loan_words
+from loan_word_db import LoanWordList, load_loan_words, reload_into_loan_words
 import animecho_rc
 import html
 from typing import override
@@ -294,6 +296,34 @@ class CutterDialog(QDialog):
   def getSelectionRange(self) -> tuple[int, int]:
     return self.__sel_a, self.__sel_b
 
+class SelectWordCandidateDialog(QDialog):
+  def __init__(self, parent: QWidget, candidates: list[str]):
+    QDialog.__init__(self, parent)
+
+    self.__result = None
+
+    self.__layout = QVBoxLayout()
+
+    self.__lbl_hint = QLabel('Select a candidate. ENTER to confirm, ESC to cancel.')
+    self.__listview = QListWidget()
+
+    self.__listview.addItems(candidates)
+    self.__listview.itemActivated.connect(self.__do_finish)
+
+    self.__layout.addWidget(self.__lbl_hint)
+    self.__layout.addWidget(self.__listview)
+
+    self.setLayout(self.__layout)
+
+  @Slot(QListWidgetItem)
+  def __do_finish(self, item: QListWidgetItem):
+    self.__result = self.__listview.row(item)
+    self.accept()
+
+  def getCandidateIndex(self) -> int:
+    assert self.__result is not None
+    return self.__result
+
 class AnnotationEdit(QMainWindow):
   def __init__(self, af: AnnotationFile, annotation_path: str, nwls: list[UserNormalDictionary], lwls: list[UserLoanDictionary]):
     QMainWindow.__init__(self)
@@ -397,7 +427,7 @@ class AnnotationEdit(QMainWindow):
             assert annotation.ignore
             tags.append(f'<span class="animecho-ignore">{html.escape(annotation.inner.text)}</span>')
         elif isinstance(annotation.inner, LoanAnnotation):
-          tags.append(f'<span>{html.escape(annotation.inner.base)}</span>')
+          tags.append(f'<span class="animecho-loan">{html.escape(annotation.inner.base)}</span>')
         elif isinstance(annotation.inner, KanjiAnnotation):
           tags.append('<span>')
 
@@ -505,6 +535,29 @@ class AnnotationEdit(QMainWindow):
       case CreateSegmentType.CREATE_IGNORE_SEGMENT:
         print(f'ignore: {sel_text!r}')
         new_annotation = Annotation(inner=PlainAnnotation(sel_text), ignore=True)
+      case CreateSegmentType.CREATE_LOAN_SEGMENT:
+        matches = []
+
+        for loaded_dict in self.__lwls:
+          reload_into_loan_words(loaded_dict.inner, loaded_dict.path)
+
+          if sel_text in loaded_dict.inner.inner:
+            matches.append(loaded_dict.inner.inner[sel_text])
+
+        if len(matches) == 0:
+          print('no match in dictionary')
+          return
+
+        swcd = SelectWordCandidateDialog(self, [x.romanized for x in matches])
+        if swcd.exec() == QDialog.DialogCode.Rejected:
+          print('user canceled')
+          return
+
+        loan = matches[swcd.getCandidateIndex()]
+
+        print(f'loan: {loan.base}({loan.romanized})')
+
+        new_annotation = Annotation(inner=LoanAnnotation(base=loan.base, romanized=loan.romanized))
       case _:
         raise AssertionError
 
