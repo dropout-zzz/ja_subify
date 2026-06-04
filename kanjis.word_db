@@ -4,3 +4,4 @@
 {"base": "盛り込みます", "fragments": [{"inner": {"base": "盛", "reading": "も"}, "type": 1}, {"inner": {"text": "り"}, "type": 0}, {"inner": {"base": "込", "reading": "こ"}, "type": 1}, {"inner": {"text": "みます"}, "type": 0}]}
 {"base": "前提", "fragments": [{"inner": {"base": "前", "reading": "ぜん"}, "type": 1}, {"inner": {"base": "提", "reading": "てい"}, "type": 1}]}
 {"base": "具", "fragments": [{"inner": {"base": "具", "reading": "ぐ"}, "type": 1}]}
+{"base": "食べたかった", "fragments": [{"inner": {"base": "食", "reading": "た"}, "type": 1}, {"inner": {"text": "べたかった"}, "type": 0}]}
