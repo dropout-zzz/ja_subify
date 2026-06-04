@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
   QPushButton,
   QProgressBar,
   QStatusBar,
+  QMessageBox,
 )
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebChannel import QWebChannel
@@ -404,6 +405,28 @@ class AnnotationEdit(QMainWindow):
   def __update_ux_dirty(self, dirty: bool):
     self.__lbl_unsaved.setVisible(dirty)
     self.setWindowModified(dirty)
+
+  @override
+  def closeEvent(self, event: QCloseEvent):
+    if not self.isWindowModified():
+      print('quitting editor window')
+      QMainWindow.closeEvent(self, event)
+      return
+
+    print('attempted to quit with unsaved changes!')
+
+    pressed = QMessageBox.question(self, None,
+                                   'The file is MODIFIED, '
+                                   'and is NOT SAVED yet. '
+                                   'You will LOSE them if you quit now, procceed anyway?',
+                                   defaultButton=QMessageBox.StandardButton.No)
+
+    if pressed == QMessageBox.StandardButton.Yes:
+      print('quit with unsaved changes')
+      event.accept()
+    else:
+      print('user canceled quit')
+      event.ignore()
 
   @Slot(int, int)
   def __handle_web_calledback(self, lidx: int, aidx: int):
