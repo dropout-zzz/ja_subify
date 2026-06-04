@@ -12,3 +12,7 @@ html {
 .animecho-unfinished {
   cursor: pointer;
 }
+
+.animecho-ignore {
+  color: grey;
+}

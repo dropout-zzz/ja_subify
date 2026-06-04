@@ -36,6 +36,7 @@ from annotation_file import (
   PlainAnnotation,
   LoanAnnotation,
   KanjiAnnotation,
+  Annotation,
 )
 from dataclasses import dataclass
 from normal_word_db import NormalWordList, load_normal_words
@@ -352,7 +353,7 @@ class AnnotationEdit(QMainWindow):
             tags.append(f'<span class="animecho-unfinished" onclick="animechoCb({lidx},{aidx})">{html.escape(annotation.inner.text)}</span>')
           else:
             assert annotation.ignore
-            tags.append(f'<span>{html.escape(annotation.inner.text)}</span>')
+            tags.append(f'<span class="animecho-ignore">{html.escape(annotation.inner.text)}</span>')
         elif isinstance(annotation.inner, LoanAnnotation):
           tags.append(f'<span>{html.escape(annotation.inner.base)}</span>')
         elif isinstance(annotation.inner, KanjiAnnotation):
@@ -391,22 +392,53 @@ class AnnotationEdit(QMainWindow):
 
   @Slot(int, int)
   def __handle_web_calledback(self, lidx: int, aidx: int):
-    annotation = self.__af.lines[lidx].fragments[aidx]
+    dialogue = self.__af.lines[lidx]
+
+    annotation = dialogue.fragments[aidx]
 
     assert annotation.unfinished
     assert isinstance(annotation.inner, PlainAnnotation)
 
-    print(f'selected fragment: {annotation.inner.text!r}')
+    old_text = annotation.inner.text
+
+    print(f'selected fragment: {old_text!r}')
 
     sstd = SelectSegmentTypeDialog(self)
     if sstd.exec() == QDialog.DialogCode.Rejected:
       print('user canceled')
       return
 
-    cutter = CutterDialog(self, annotation.inner.text)
+    cutter = CutterDialog(self, old_text)
     if cutter.exec() == QDialog.DialogCode.Rejected:
       print('user canecled')
       return
+
+    sel = cutter.getSelectionRange()
+    sel_text = old_text[sel[0]:sel[1]]
+
+    match sstd.getCreateSegmentType():
+      case CreateSegmentType.CREATE_IGNORE_SEGMENT:
+        print(f'ignore: {sel_text!r}')
+        new_annotation = Annotation(inner=PlainAnnotation(sel_text), ignore=True)
+      case _:
+        raise AssertionError
+
+    # now, actually modify AF object
+
+    new_annotations = []
+
+    if sel[0] != 0:
+      new_annotations.append(Annotation(inner=PlainAnnotation(old_text[:sel[0]]), unfinished=True))
+
+    new_annotations.append(new_annotation)
+
+    if sel[1] != len(old_text):
+      new_annotations.append(Annotation(inner=PlainAnnotation(old_text[sel[1]:]), unfinished=True))
+
+    dialogue.fragments.pop(aidx)
+    dialogue.fragments[aidx:aidx] = new_annotations
+
+    self.__rerender_animecho()
 
 def main():
   ap = ArgumentParser()
