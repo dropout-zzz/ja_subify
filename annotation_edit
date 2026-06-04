@@ -182,6 +182,108 @@ class SelectSegmentTypeDialog(QDialog):
     assert self.__result is not None
     return self.__result
 
+class CutterStage(Enum):
+  STAGE_A = enum.auto()
+  STAGE_B = enum.auto()
+
+class CutterDialog(QDialog):
+  def __init__(self, parent: QWidget, text: str):
+    QDialog.__init__(self, parent)
+
+    self.__text = text
+
+    self.__sel_a = 0
+    self.__sel_b = len(text)
+    self.__stage = CutterStage.STAGE_A
+
+    self.__layout = QVBoxLayout()
+
+    self.__lbl_tip = QLabel('Arrows to select, ENTER to commit, ESC to cancel.')
+    self.__lbl_preview = QLabel()
+
+    self.__layout.addWidget(self.__lbl_tip)
+    self.__layout.addWidget(self.__lbl_preview)
+
+    self.setLayout(self.__layout)
+
+    self.__rerender_preview()
+
+    self.__key_cursor_left = QShortcut(Qt.Key.Key_Left, self)
+    self.__key_cursor_left.activated.connect(self.__do_move_cursor_left)
+
+    self.__key_cursor_right = QShortcut(Qt.Key.Key_Right, self)
+    self.__key_cursor_right.activated.connect(self.__do_move_cursor_right)
+
+    self.__key_commit = QShortcut(Qt.Key.Key_Return, self)
+    self.__key_commit.activated.connect(self.__do_commit)
+
+  @Slot()
+  def __do_commit(self):
+    match self.__stage:
+      case CutterStage.STAGE_A:
+        self.__stage = CutterStage.STAGE_B
+        self.__rerender_preview()
+      case CutterStage.STAGE_B:
+        self.accept()
+
+  @Slot()
+  def __do_move_cursor_left(self):
+    match self.__stage:
+      case CutterStage.STAGE_A:
+        if self.__sel_a == 0:
+          print('invalid move')
+          return
+        self.__sel_a -= 1
+      case CutterStage.STAGE_B:
+        if self.__sel_b == self.__sel_a + 1:
+          print('must select at least one char')
+          return
+        self.__sel_b -= 1
+
+    self.__rerender_preview()
+
+  @Slot()
+  def __do_move_cursor_right(self):
+    match self.__stage:
+      case CutterStage.STAGE_A:
+        if self.__sel_a == self.__sel_b - 1:
+          print('must select at least one char')
+          return
+        self.__sel_a += 1
+      case CutterStage.STAGE_B:
+        if self.__sel_b == len(self.__text):
+          print('invalid move')
+          return
+        self.__sel_b += 1
+
+    self.__rerender_preview()
+
+  def __rerender_preview(self):
+    chunks = []
+
+    match self.__stage:
+      case CutterStage.STAGE_A:
+        indicator = '<font color="blue">▶　</font>'
+      case CutterStage.STAGE_B:
+        indicator = '<font color="blue">◀　</font>'
+      case _:
+        raise AssertionError()
+
+    chunks.append(indicator)
+
+    if self.__sel_a != 0:
+      chunks.append(f'<span>{html.escape(self.__text[:self.__sel_a])}</span>')
+
+    chunks.append(f'<font color="red">{html.escape(self.__text[self.__sel_a:self.__sel_b])}</font>')
+
+    if self.__sel_b != len(self.__text):
+      chunks.append(f'<span>{html.escape(self.__text[self.__sel_b:])}</span>')
+
+    self.__lbl_preview.setText(''.join(chunks))
+
+  def getSelectionRange(self) -> tuple[int, int]:
+    return self.__sel_a, self.__sel_b
+
 class AnnotationEdit(QMainWindow):
   def __init__(self, af: AnnotationFile, annotation_path: str, nwls: list[UserNormalDictionary], lwls: list[UserLoanDictionary]):
     QMainWindow.__init__(self)
@@ -299,6 +401,11 @@ class AnnotationEdit(QMainWindow):
     sstd = SelectSegmentTypeDialog(self)
     if sstd.exec() == QDialog.DialogCode.Rejected:
       print('user canceled')
+      return
+
+    cutter = CutterDialog(self, annotation.inner.text)
+    if cutter.exec() == QDialog.DialogCode.Rejected:
+      print('user canecled')
       return
 
 def main():
