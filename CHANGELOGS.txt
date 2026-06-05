@@ -1,0 +1,26 @@
+-- 0.1a2 --
+
+new features:
+- line numbers in editor and annotation files
+- basic editor features: go-to line
+- [editor] an option to go to next unfinished line
+
+bugfixes:
+- [editor] fix window resizing
+
+
+-- 0.1a --
+
+first working version
+
+included programs:
+- dictionary editor
+- annotation editor
+- html renderer
+- SSA/SRT importer
+
+included libraries:
+- minimal SSA/SRT parser
+- annotation file parser/writer
+- word db parser/writer
+
