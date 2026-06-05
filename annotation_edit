@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (
   QStyle,
   QListWidget,
   QListWidgetItem,
+  QInputDialog,
 )
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebChannel import QWebChannel
@@ -392,9 +393,14 @@ class AnnotationEdit(QMainWindow):
 
     self.__menu_edit = QMenu(title='Edit')
 
+    self.__action_go_to_line = QAction(text='Go to...',
+                                       shortcut=Qt.KeyboardModifier.ControlModifier | Qt.Key.Key_G)
+    self.__action_go_to_line.triggered.connect(self.__go_to_line)
+
     self.__action_next_unfinished = QAction(text='Go to next unfinished line')
     self.__action_next_unfinished.triggered.connect(self.__jump_next_unfinished)
 
+    self.__menu_edit.addAction(self.__action_go_to_line)
     self.__menu_edit.addAction(self.__action_next_unfinished)
 
     self.__menubar.addMenu(self.__menu_file)
@@ -546,6 +552,17 @@ class AnnotationEdit(QMainWindow):
   @Slot(int)
   def __handle_web_context_menu(self, lidx: int):
     print(f'context menu: {self.__af.lines[lidx].get_normalized()!r}')
+
+  @Slot()
+  def __go_to_line(self):
+    i, ok = QInputDialog.getInt(self, None, 'Enter line number:', value=1, minValue=1, maxValue=len(self.__af.lines))
+    if not ok:
+      print('canceled goto')
+      self.__status_bar.showMessage('Canceled Go-To.', timeout=2000)
+      return
+    self.__web.nativeGoToLine.emit(i - 1)
+    print(f'goto line: {self.__af.lines[i - 1].get_normalized()!r}')
+    self.__status_bar.showMessage(f'Jumped to line #{i}.', timeout=2000)
 
   @Slot()
   def __jump_next_unfinished(self):
