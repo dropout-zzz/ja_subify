@@ -32,7 +32,7 @@ l.js\x22></script>\x0a\
 /animecho.js\x22></\
 script>\x0a  </body\
 >\x0a</html>\x0a\
-\x00\x00\x04P\
+\x00\x00\x04\xec\
 c\
 onst KEY_ANIMECH\
 O_SCROLL = 'anim\
@@ -61,48 +61,58 @@ croll, 10));\x0a  }\
  document.docume\
 ntElement.style.\
 opacity = '1';\x0a}\
-\x0a\x0avar animechoNa\
-tiveCb = null;\x0a\x0a\
-const animechoWe\
-bChan = new QWeb\
-Channel(qt.webCh\
-annelTransport, \
-function(channel\
-) {\x0a  const anim\
-echo = channel.o\
-bjects.animecho;\
-\x0a\x0a  // calls fro\
-m native into we\
-b\x0a  animecho.nat\
-iveUpdateContent\
+\x0a\x0afunction anime\
+choGoToLine(lidx\
+) {\x0a  document.g\
+etElementById(`a\
+nimecho-l${lidx}\
+`).scrollIntoVie\
+w();\x0a}\x0a\x0avar anim\
+echoNativeCb = n\
+ull;\x0a\x0aconst anim\
+echoWebChan = ne\
+w QWebChannel(qt\
+.webChannelTrans\
+port, function(c\
+hannel) {\x0a  cons\
+t animecho = cha\
+nnel.objects.ani\
+mecho;\x0a\x0a  // cal\
+ls from native i\
+nto web\x0a  animec\
+ho.nativeUpdateC\
+ontent.connect(a\
+nimechoUpdateCon\
+tent);\x0a  animech\
+o.nativeGoToLine\
 .connect(animech\
-oUpdateContent)\x0a\
-\x0a  // calls from\
- web into native\
-\x0a  animechoNativ\
-eCb = animecho.n\
-otifyNativeCalle\
-dback;\x0a\x0a  animec\
-ho.notifyNativeL\
-oadFinished();\x0a}\
-);\x0a\x0aaddEventList\
-ener('beforeunlo\
-ad', function(ev\
-ent) {\x0a  localSt\
-orage.setItem(KE\
-Y_ANIMECHO_SCROL\
-L, scrollY.toStr\
-ing());\x0a});\x0a\x0afun\
-ction animechoCb\
-(lidx, aidx) {\x0a \
- if (animechoNat\
-iveCb === null) \
-{\x0a    console.er\
-ror(\x22native is n\
-ot ready\x22);\x0a    \
-return;\x0a  }\x0a\x0a  a\
-nimechoNativeCb(\
-lidx, aidx);\x0a}\x0a\
+oGoToLine);\x0a\x0a  /\
+/ calls from web\
+ into native\x0a  a\
+nimechoNativeCb \
+= animecho.notif\
+yNativeCalledbac\
+k;\x0a\x0a  animecho.n\
+otifyNativeLoadF\
+inished();\x0a});\x0a\x0a\
+addEventListener\
+('beforeunload',\
+ function(event)\
+ {\x0a  localStorag\
+e.setItem(KEY_AN\
+IMECHO_SCROLL, s\
+crollY.toString(\
+));\x0a});\x0a\x0afunctio\
+n animechoCb(lid\
+x, aidx) {\x0a  if \
+(animechoNativeC\
+b === null) {\x0a  \
+  console.error(\
+\x22native is not r\
+eady\x22);\x0a    retu\
+rn;\x0a  }\x0a\x0a  anime\
+choNativeCb(lidx\
+, aidx);\x0a}\x0a\
 \x00\x00\x01\x17\
 b\
 ody {\x0a  font-siz\
@@ -149,10 +159,10 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00\x02\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00R\x00\x00\x00\x00\x00\x01\x00\x00\x05\xd3\
+\x00\x00\x00R\x00\x00\x00\x00\x00\x01\x00\x00\x06o\
 \x00\x00\x01\x9e\x92\xfc\x15X\
 \x00\x00\x006\x00\x00\x00\x00\x00\x01\x00\x00\x01\x7f\
-\x00\x00\x01\x9e\x8e\xa3{\xc9\
+\x00\x00\x01\x9e\x95\x94\xf0S\
 \x00\x00\x00\x16\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
 \x00\x00\x01\x9e\x8dv<k\
 "

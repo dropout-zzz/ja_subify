@@ -79,6 +79,7 @@ class AnimechoWebBridge(QObject):
 
   # -- called from native into web --
   nativeUpdateContent = Signal(str, bool)
+  nativeGoToLine = Signal(int)
 
   # -- glues for web-native calls --
 
@@ -384,7 +385,15 @@ class AnnotationEdit(QMainWindow):
     self.__menu_file.addSeparator()
     self.__menu_file.addAction(self.__action_quit)
 
+    self.__menu_edit = QMenu(title='Edit')
+
+    self.__action_next_unfinished = QAction(text='Go to next unfinished line')
+    self.__action_next_unfinished.triggered.connect(self.__jump_next_unfinished)
+
+    self.__menu_edit.addAction(self.__action_next_unfinished)
+
     self.__menubar.addMenu(self.__menu_file)
+    self.__menubar.addMenu(self.__menu_edit)
 
     self.setMenuBar(self.__menubar)
 
@@ -429,7 +438,7 @@ class AnnotationEdit(QMainWindow):
     tags = []
 
     for lidx, line in enumerate(self.__af.lines):
-      tags.append('<p>')
+      tags.append(f'<p id="animecho-l{lidx}">')
 
       for aidx, annotation in enumerate(line.fragments):
         if isinstance(annotation.inner, PlainAnnotation):
@@ -525,6 +534,19 @@ class AnnotationEdit(QMainWindow):
       print('user canceled quit')
       self.__status_bar.showMessage('Canceled quit', timeout=2000)
       event.ignore()
+
+  @Slot()
+  def __jump_next_unfinished(self):
+    for lidx, dialogue in enumerate(self.__af.lines):
+      for annotation in dialogue.fragments:
+        if annotation.unfinished:
+          self.__web.nativeGoToLine.emit(lidx)
+          print('go to next unfinished line')
+          self.__status_bar.showMessage('Jumped to next unfinished dialogue.', timeout=2000)
+          return
+
+    print('can\'t find unfinished line.')
+    self.__status_bar.showMessage('Can\'t find unfinished dialogue', timeout=2000)
 
   @Slot(int, int)
   def __handle_web_calledback(self, lidx: int, aidx: int):
