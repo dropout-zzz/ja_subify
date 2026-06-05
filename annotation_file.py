@@ -156,8 +156,11 @@ class DialogueLine:
   def get_normalized(self) -> str:
     return ''.join(x.get_normalized() for x in self.fragments)
 
-  def serialize(self) -> dict:
-    return {'fragments': [x.serialize() for x in self.fragments]}
+  def serialize(self, lineno: int = -1) -> dict:
+    return {
+      'fragments': [x.serialize() for x in self.fragments],
+      'lineno': lineno,
+    }
 
   @classmethod
   def deserialize(cls, d: dict):
@@ -181,7 +184,7 @@ class AnnotationFile:
   def serialize(self) -> dict:
     return {
       'version': self.version,
-      'lines': [x.serialize() for x in self.lines],
+      'lines': [x.serialize(i) for i, x in enumerate(self.lines, start=1)],
     }
 
   @classmethod
