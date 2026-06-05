@@ -1,3 +1,11 @@
+# WordDB is a relax format in JSON
+# unknown keys are ignored
+# run validate() for stricter checks
+#
+# this library currently doesnt provide an interface to
+# save an existing word list object to disk. use the
+# append_into_normal_words() function instead.
+
 from dataclasses import dataclass
 import dataclasses
 from enum import IntEnum
@@ -5,6 +13,7 @@ import json
 
 @dataclass
 class FragmentIgnore:
+  """indicates that this segment do not have ruby."""
   text: str
 
   def serialize(self) -> dict:
@@ -20,6 +29,7 @@ class FragmentIgnore:
 
 @dataclass
 class FragmentKanjiCharacters:
+  """ruby."""
   base: str
   reading: str
 
@@ -42,10 +52,12 @@ class FragmentType(IntEnum):
 
 @dataclass
 class NormalTemplate:
+  """a word entry inside the dictionary."""
   base: str
   fragments: list[FragmentIgnore | FragmentKanjiCharacters] = dataclasses.field(default_factory=list)
 
   def get_normalized(self) -> str:
+    """return the word in hiragana only."""
     buff = []
 
     for fragment in self.fragments:
@@ -101,6 +113,21 @@ class NormalTemplate:
 
 @dataclass
 class NormalWordList:
+  """dictionary.
+
+     `inner' holds a mapping from kanji-hiragana mixed script to the word entry.
+
+     to get total list of words in the list, use inner.values().
+
+     `known' holds known set of reading for given kanji_chars.
+     this field is only populated when `count_known' is True.
+
+     the flag should be specified when creating the object or
+     when using the load_normal_words() function.
+
+     use append_into_normal_words(),
+     instead of directly modifying the internal dict."""
+
   inner: dict[str, NormalTemplate] = dataclasses.field(default_factory=dict)
   known: set[tuple[str, str]] = dataclasses.field(default_factory=set)
   off: int = 0
@@ -117,9 +144,15 @@ def _register_known_normal_words(nwl: NormalWordList, word: NormalTemplate):
     nwl.known.add((fragment.base, fragment.reading))
 
 class NormalWordAlreadyExist(Exception):
+  """thrown when trying to append a word that already exist"""
   pass
 
 def append_into_normal_words(nwl: NormalWordList, path: str, word: NormalTemplate):
+  """add a word into the word list object.
+     on success,
+     this operation also writes the change immediately into disk.
+
+     may throw NormalWordAlreadyExist"""
   if word.base in nwl.inner:
     raise NormalWordAlreadyExist
   with open(path, 'ab') as f:
@@ -140,6 +173,7 @@ def _load_into_normal_words(nwl: NormalWordList, s: str):
       _register_known_normal_words(nwl, word)
 
 def load_normal_words(path: str, count_known: bool = False) -> NormalWordList:
+  """open and parse a WordDB file from disk."""
   with open(path, 'rb') as f:
     nwl = NormalWordList(count_known=count_known)
 
@@ -149,6 +183,13 @@ def load_normal_words(path: str, count_known: bool = False) -> NormalWordList:
     return nwl
 
 def reload_into_normal_words(nwl: NormalWordList, path: str):
+  """partially read and update the word list object from disk.
+
+     this function only works when new contents were appended at file end.
+     behavior is not defined in other cases.
+
+     if the file was fully overwritten, load from scratch again instead."""
+
   with open(path, 'rb') as f:
     f.seek(nwl.off)
     _load_into_normal_words(nwl, (new := f.read()).decode())

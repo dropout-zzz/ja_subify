@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+
+# takes an Annotation File and render as HTML document that
+# can be opened on any device with no external dependencies.
+#
+# users can render the output HTML as an PDF in a
+# modern web browser for easier time viewing or for printing.
+
 import argparse
 from argparse import ArgumentParser
 from annotation_file import (

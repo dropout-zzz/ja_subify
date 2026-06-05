@@ -1,3 +1,11 @@
+# AF is a relax format in JSON
+# unknown keys are ignored
+# run validate() for stricter checks
+#
+# line numbers are ignored when reading.
+# and will be regenerated when writing.
+# line numbers are not managed in loaded AF object.
+
 import dataclasses
 from dataclasses import dataclass
 from enum import IntEnum
@@ -5,6 +13,8 @@ import json
 
 @dataclass
 class PlainAnnotation:
+  """a plain text chunk without ruby."""
+
   text: str
 
   def get_normalized(self) -> str:
@@ -23,6 +33,8 @@ class PlainAnnotation:
 
 @dataclass
 class KanjiCharacters:
+  """smallest part in a kanji word that has an inseparable reading."""
+
   base: str
   reading: str = ''
 
@@ -44,6 +56,8 @@ class KanjiCharacters:
 
 @dataclass
 class KanjiAnnotation:
+  """a series of kanji_chars that belong to the same word"""
+
   fragments: list[KanjiCharacters] = dataclasses.field(default_factory=list)
 
   def get_normalized(self) -> str:
@@ -66,6 +80,8 @@ class KanjiAnnotation:
 
 @dataclass
 class LoanAnnotation:
+  """a loan word."""
+
   base: str
   romanized: str = ''
 
@@ -92,6 +108,9 @@ class AnnotationType(IntEnum):
 
 @dataclass
 class Annotation:
+  """wrapper. for metadata.
+     please access the real annotation object via `inner'."""
+
   inner: PlainAnnotation | KanjiAnnotation | LoanAnnotation
   unfinished: bool = False
   ignore: bool = False
@@ -151,9 +170,12 @@ class Annotation:
 
 @dataclass
 class DialogueLine:
+  """total content displayed as a subtitle line."""
+
   fragments: list[Annotation] = dataclasses.field(default_factory=list)
 
   def get_normalized(self) -> str:
+    """converts this line back into plaintext again"""
     return ''.join(x.get_normalized() for x in self.fragments)
 
   def serialize(self, lineno: int = -1) -> dict:
@@ -205,7 +227,10 @@ class AnnotationFile:
       x.validate()
 
 def annotation_parse(s: str) -> AnnotationFile:
+  """parse the input string as
+     Annotation File that were previously saved."""
   return AnnotationFile.deserialize(json.loads(s))
 
 def annotation_save(af: AnnotationFile) -> str:
+  """format AF object as string that can be stored on disk."""
   return json.dumps(af.serialize(), sort_keys=True, indent=2, ensure_ascii=False)

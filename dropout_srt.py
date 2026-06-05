@@ -11,6 +11,12 @@ def _next_line(it) -> tuple[str, bool]:
     return '', True
 
 def dropout_parse_srt(s: str):
+  """take the input string and parse as SRT.
+
+     returns a generator that emits subtitle lines.
+
+     ASS tags are ignored."""
+
   lines = iter(s.splitlines())
 
   while True:

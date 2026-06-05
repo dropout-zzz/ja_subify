@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# regenerates the qt resource files.
+
 set -e
 
 # this script assume you're on archlinux.

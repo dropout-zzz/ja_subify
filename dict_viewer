@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+# graphical frontend for adding words into dictionary files.
+
 from argparse import ArgumentParser
 from PySide6.QtWidgets import (
   QApplication,

@@ -1,5 +1,16 @@
 #!/usr/bin/env python
 
+# graphical editor frontend for Annotation File format
+#
+# QWebEngineView is currently used for text rendering.
+# user interactions with the webview is signaled back to python side,
+# using the async webchannel IPC.
+#
+# the web components are referred by the codename "animecho",
+# but so far it's not designed to be reusable by other programs.
+#
+# the web assets are accessed via compiled qt resources.
+
 # FIXME: sometimes this program segfaults on start up
 #        i have no idea why it happens
 

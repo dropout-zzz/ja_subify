@@ -11,6 +11,12 @@ def remove_line_type(s1: str, s2: str) -> str:
   return s1.removeprefix(s2).lstrip()
 
 def dropout_parse_ass(s: str):
+  """parse the input string as ASS.
+
+     returns a generator that emits subtitle lines.
+
+     ASS tags are dropped, \\N is replaced with newline."""
+
   lines = iter(s.splitlines())
   for line in lines:
     if line == '[Events]':

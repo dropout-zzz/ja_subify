@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+
+# take an existing ASS subtitle file and
+# convert it into Annotation File format
+
 import argparse
 from dropout_ass import dropout_parse_ass
 from annotation_file import (

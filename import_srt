@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+
+# take an existing SRT subtitle file and
+# convert it into Annotation File format
+
 import argparse
 from dropout_srt import dropout_parse_srt
 from annotation_file import (
