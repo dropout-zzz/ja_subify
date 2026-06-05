@@ -32,7 +32,7 @@ rc:///animecho/a\
 nimecho.js\x22></sc\
 ript>\x0a  </body>\x0a\
 </html>\x0a\
-\x00\x00\x06E\
+\x00\x00\x06\xcf\
 c\
 onst KEY_ANIMECH\
 O_SCROLL = 'anim\
@@ -67,74 +67,82 @@ documentElement.\
 style.opacity = \
 '1';\x0a}\x0a\x0afunction\
  animechoGoToLin\
-e(lidx) {\x0a  docu\
-ment.getElementB\
-yId(`animecho-l$\
-{lidx}`).scrollI\
-ntoView();\x0a}\x0a\x0ava\
-r animechoNative\
-Cb = null;\x0avar a\
-nimechoNativeCb2\
- = null;\x0a\x0aconst \
-animechoWebChan \
-= new QWebChanne\
-l(qt.webChannelT\
-ransport, functi\
-on(channel) {\x0a  \
-const animecho =\
- channel.objects\
-.animecho;\x0a\x0a  //\
- calls from nati\
-ve into web\x0a  an\
-imecho.nativeUpd\
-ateContent.conne\
-ct(animechoUpdat\
-eContent);\x0a  ani\
-mecho.nativeGoTo\
-Line.connect(ani\
-mechoGoToLine);\x0a\
-\x0a  // calls from\
- web into native\
+e(lidx) {\x0a  cons\
+t dialogueLine =\
+ document.getEle\
+mentById(`animec\
+ho-l${lidx}`);\x0a\x0a\
+  if (dialogueLi\
+ne === null) {\x0a \
+   console.error\
+(\x22cannot get dia\
+logue line elem\x22\
+);\x0a    return;\x0a \
+ }\x0a\x0a  dialogueLi\
+ne.scrollIntoVie\
+w();\x0a}\x0a\x0avar anim\
+echoNativeCb = n\
+ull;\x0avar animech\
+oNativeCb2 = nul\
+l;\x0a\x0aconst animec\
+hoWebChan = new \
+QWebChannel(qt.w\
+ebChannelTranspo\
+rt, function(cha\
+nnel) {\x0a  const \
+animecho = chann\
+el.objects.anime\
+cho;\x0a\x0a  // calls\
+ from native int\
+o web\x0a  animecho\
+.nativeUpdateCon\
+tent.connect(ani\
+mechoUpdateConte\
+nt);\x0a  animecho.\
+nativeGoToLine.c\
+onnect(animechoG\
+oToLine);\x0a\x0a  // \
+calls from web i\
+nto native\x0a  ani\
+mechoNativeCb = \
+animecho.notifyN\
+ativeCalledback;\
 \x0a  animechoNativ\
-eCb = animecho.n\
-otifyNativeCalle\
-dback;\x0a  animech\
-oNativeCb2 = ani\
-mecho.notifyNati\
-veContextMenu;\x0a\x0a\
-  animecho.notif\
-yNativeLoadFinis\
-hed();\x0a});\x0a\x0aaddE\
-ventListener('be\
-foreunload', fun\
-ction(event) {\x0a \
- localStorage.se\
-tItem(KEY_ANIMEC\
-HO_SCROLL, scrol\
-lY.toString());\x0a\
-});\x0a\x0afunction an\
-imechoCb(lidx, a\
-idx) {\x0a  if (ani\
-mechoNativeCb ==\
-= null) {\x0a    co\
-nsole.error(\x22nat\
-ive is not ready\
-\x22);\x0a    return;\x0a\
-  }\x0a\x0a  animechoN\
-ativeCb(lidx, ai\
-dx);\x0a}\x0a\x0afunction\
- animechoCb2(eve\
-nt, lidx) {\x0a  ev\
-ent.preventDefau\
-lt();\x0a\x0a  if (ani\
-mechoNativeCb2 =\
-== null) {\x0a    c\
-onsole.error(\x22na\
-tive is not read\
-y.\x22);\x0a    return\
-;\x0a  }\x0a\x0a  animech\
-oNativeCb2(lidx)\
-;\x0a}\x0a\
+eCb2 = animecho.\
+notifyNativeCont\
+extMenu;\x0a\x0a  anim\
+echo.notifyNativ\
+eLoadFinished();\
+\x0a});\x0a\x0aaddEventLi\
+stener('beforeun\
+load', function(\
+event) {\x0a  local\
+Storage.setItem(\
+KEY_ANIMECHO_SCR\
+OLL, scrollY.toS\
+tring());\x0a});\x0a\x0af\
+unction animecho\
+Cb(lidx, aidx) {\
+\x0a  if (animechoN\
+ativeCb === null\
+) {\x0a    console.\
+error(\x22native is\
+ not ready\x22);\x0a  \
+  return;\x0a  }\x0a\x0a \
+ animechoNativeC\
+b(lidx, aidx);\x0a}\
+\x0a\x0afunction anime\
+choCb2(event, li\
+dx) {\x0a  event.pr\
+eventDefault();\x0a\
+\x0a  if (animechoN\
+ativeCb2 === nul\
+l) {\x0a    console\
+.error(\x22native i\
+s not ready.\x22);\x0a\
+    return;\x0a  }\x0a\
+\x0a  animechoNativ\
+eCb2(lidx);\x0a}\x0a\
 \x00\x00\x01\x7f\
 b\
 ody {\x0a  font-siz\
@@ -187,10 +195,10 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00\x02\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00R\x00\x00\x00\x00\x00\x01\x00\x00\x07\xc6\
+\x00\x00\x00R\x00\x00\x00\x00\x00\x01\x00\x00\x08P\
 \x00\x00\x01\x9e\x95\xbf\x18\x09\
 \x00\x00\x006\x00\x00\x00\x00\x00\x01\x00\x00\x01}\
-\x00\x00\x01\x9e\x96\xae\x04\x84\
+\x00\x00\x01\x9e\x97\xf8\xf9\xd7\
 \x00\x00\x00\x16\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
 \x00\x00\x01\x9e\x95\xb2\x84\xa3\
 "

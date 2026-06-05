@@ -19,7 +19,14 @@ function animechoUpdateContent(s, restore_scroll) {
 }
 
 function animechoGoToLine(lidx) {
-  document.getElementById(`animecho-l${lidx}`).scrollIntoView();
+  const dialogueLine = document.getElementById(`animecho-l${lidx}`);
+
+  if (dialogueLine === null) {
+    console.error("cannot get dialogue line elem");
+    return;
+  }
+
+  dialogueLine.scrollIntoView();
 }
 
 var animechoNativeCb = null;
