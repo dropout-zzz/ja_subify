@@ -18,3 +18,9 @@ Note that for kanji words, if part of the word with same pronunciation exists in
 ## Support
 
 Contact via https://t.me/+Ar9L2FU3kF1lNzY0
+
+## License
+
+ja_subify is free software.
+
+A copy of GLWTPL is included.
