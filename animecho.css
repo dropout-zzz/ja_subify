@@ -1,6 +1,7 @@
 body {
   font-size: 125%;
   user-select: none;
+  margin: 1rem;
 }
 
 html {
@@ -23,4 +24,12 @@ html {
 
 .animecho-kanji {
   color: red;
+}
+
+.animecho-line::marker {
+  color: purple;
+}
+
+.animecho-line {
+  margin-bottom: 1rem;
 }

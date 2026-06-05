@@ -438,7 +438,7 @@ class AnnotationEdit(QMainWindow):
     tags = []
 
     for lidx, line in enumerate(self.__af.lines):
-      tags.append(f'<p id="animecho-l{lidx}">')
+      tags.append(f'<li id="animecho-l{lidx}" class="animecho-line">')
 
       for aidx, annotation in enumerate(line.fragments):
         if isinstance(annotation.inner, PlainAnnotation):
@@ -459,7 +459,7 @@ class AnnotationEdit(QMainWindow):
         else:
           raise AssertionError('unhandled annotation type')
 
-      tags.append('</p>')
+      tags.append('</li>')
 
     self.__web.nativeUpdateContent.emit(''.join(tags), restore_scroll)
 
