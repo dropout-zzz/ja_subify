@@ -31,6 +31,7 @@ from PySide6.QtCore import (
   Qt,
   QTimer,
   QEvent,
+  QSize,
 )
 from PySide6.QtGui import (
   QCloseEvent,
@@ -397,16 +398,15 @@ class AnnotationEdit(QMainWindow):
     self.__webchan = QWebChannel()
     self.__webchan.registerObject('animecho', self.__web)
 
-    self.__central_widget = QWidget()
-    self.__webview = QWebEngineView(self.__central_widget)
+    self.__webview = QWebEngineView()
 
     # hack to prevent flicker
-    self.__webview.setGeometry(0, 0, 1, 1)
+    self.__webview.setFixedSize(1, 1)
 
     self.__webview.setUrl(QUrl('qrc:/animecho/animecho.html'))
     self.__webview.page().setWebChannel(self.__webchan)
 
-    self.setCentralWidget(self.__central_widget)
+    self.setCentralWidget(self.__webview)
 
   @override
   @Slot()
@@ -456,10 +456,10 @@ class AnnotationEdit(QMainWindow):
 
   @Slot()
   def __startup_debounce_finished(self):
-    # since we set size to 1x1 on startup to prevent flickers
-    # we have to update it to current window size
-    size = self.size()
-    self.__webview.setGeometry(0, 0, size.width(), size.height())
+    # we had set size to 1x1 on startup to prevent flickers
+    # now restore default values
+    self.__webview.setMinimumSize(QSize(0, 0))
+    self.__webview.setMaximumSize(QSize(16777215, 16777215))  # QWIDGETSIZE_MAX
 
     self.__loading_dlg.tryCloseNormally()
 
