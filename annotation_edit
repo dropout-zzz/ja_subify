@@ -76,6 +76,7 @@ class AnimechoWebBridge(QObject):
   # -- called from web into native --
   webLoadFinished = Signal()
   webCalledback = Signal(int, int)
+  webContextMenu = Signal(int)
 
   # -- called from native into web --
   nativeUpdateContent = Signal(str, bool)
@@ -90,6 +91,10 @@ class AnimechoWebBridge(QObject):
   @Slot(int, int)
   def notifyNativeCalledback(self, lidx: int, aidx: int):
     self.webCalledback.emit(lidx, aidx)
+
+  @Slot(int)
+  def notifyNativeContextMenu(self, lidx: int):
+    self.webContextMenu.emit(lidx)
 
 class WaitingWebDialog(QDialog):
   # XXX: is this really useful? does it work?
@@ -403,6 +408,7 @@ class AnnotationEdit(QMainWindow):
 
     self.__web.webLoadFinished.connect(self.__handle_web_load_finished)
     self.__web.webCalledback.connect(self.__handle_web_calledback)
+    self.__web.webContextMenu.connect(self.__handle_web_context_menu)
 
     self.__webchan = QWebChannel()
     self.__webchan.registerObject('animecho', self.__web)
@@ -439,6 +445,7 @@ class AnnotationEdit(QMainWindow):
 
     for lidx, line in enumerate(self.__af.lines):
       tags.append(f'<li id="animecho-l{lidx}" class="animecho-line">')
+      tags.append(f'<span oncontextmenu="animechoCb2(event,{lidx})">')
 
       for aidx, annotation in enumerate(line.fragments):
         if isinstance(annotation.inner, PlainAnnotation):
@@ -459,6 +466,7 @@ class AnnotationEdit(QMainWindow):
         else:
           raise AssertionError('unhandled annotation type')
 
+      tags.append('</span>')
       tags.append('</li>')
 
     self.__web.nativeUpdateContent.emit(''.join(tags), restore_scroll)
@@ -534,6 +542,10 @@ class AnnotationEdit(QMainWindow):
       print('user canceled quit')
       self.__status_bar.showMessage('Canceled quit', timeout=2000)
       event.ignore()
+
+  @Slot(int)
+  def __handle_web_context_menu(self, lidx: int):
+    print(f'context menu: {self.__af.lines[lidx].get_normalized()!r}')
 
   @Slot()
   def __jump_next_unfinished(self):

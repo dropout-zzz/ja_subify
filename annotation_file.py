@@ -7,6 +7,9 @@ import json
 class PlainAnnotation:
   text: str
 
+  def get_normalized(self) -> str:
+    return self.text
+
   def serialize(self) -> dict:
     return {'text': self.text}
 
@@ -22,6 +25,9 @@ class PlainAnnotation:
 class KanjiCharacters:
   base: str
   reading: str = ''
+
+  def get_normalized(self) -> str:
+    return self.base
 
   def serialize(self) -> dict:
     return {'base': self.base, 'reading': self.reading}
@@ -39,6 +45,9 @@ class KanjiCharacters:
 @dataclass
 class KanjiAnnotation:
   fragments: list[KanjiCharacters] = dataclasses.field(default_factory=list)
+
+  def get_normalized(self) -> str:
+    return ''.join(x.get_normalized() for x in self.fragments)
 
   def serialize(self) -> dict:
     return {'fragments': [x.serialize() for x in self.fragments]}
@@ -59,6 +68,9 @@ class KanjiAnnotation:
 class LoanAnnotation:
   base: str
   romanized: str = ''
+
+  def get_normalized(self) -> str:
+    return self.base
 
   def serialize(self) -> dict:
     return {'base': self.base, 'romanized': self.romanized}
@@ -84,6 +96,9 @@ class Annotation:
   unfinished: bool = False
   ignore: bool = False
   checked: bool = False
+
+  def get_normalized(self) -> str:
+    return self.inner.get_normalized()
 
   def serialize(self) -> dict:
     if isinstance(self.inner, PlainAnnotation):
@@ -137,6 +152,9 @@ class Annotation:
 @dataclass
 class DialogueLine:
   fragments: list[Annotation] = dataclasses.field(default_factory=list)
+
+  def get_normalized(self) -> str:
+    return ''.join(x.get_normalized() for x in self.fragments)
 
   def serialize(self) -> dict:
     return {'fragments': [x.serialize() for x in self.fragments]}

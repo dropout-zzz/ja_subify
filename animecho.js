@@ -8,7 +8,9 @@ function animechoUpdateContent(s, restore_scroll) {
   if (restore_scroll) {
     const saved_scroll = localStorage.getItem(KEY_ANIMECHO_SCROLL);
 
-    if (saved_scroll !== null)
+    if (saved_scroll === null)
+      console.error("scroll progress is not already saved");
+    else
       scrollTo(0, parseInt(saved_scroll, 10));
   }
 
@@ -21,6 +23,7 @@ function animechoGoToLine(lidx) {
 }
 
 var animechoNativeCb = null;
+var animechoNativeCb2 = null;
 
 const animechoWebChan = new QWebChannel(qt.webChannelTransport, function(channel) {
   const animecho = channel.objects.animecho;
@@ -31,6 +34,7 @@ const animechoWebChan = new QWebChannel(qt.webChannelTransport, function(channel
 
   // calls from web into native
   animechoNativeCb = animecho.notifyNativeCalledback;
+  animechoNativeCb2 = animecho.notifyNativeContextMenu;
 
   animecho.notifyNativeLoadFinished();
 });
@@ -46,4 +50,15 @@ function animechoCb(lidx, aidx) {
   }
 
   animechoNativeCb(lidx, aidx);
+}
+
+function animechoCb2(event, lidx) {
+  event.preventDefault();
+
+  if (animechoNativeCb2 === null) {
+    console.error("native is not ready.");
+    return;
+  }
+
+  animechoNativeCb2(lidx);
 }
