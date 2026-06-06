@@ -231,7 +231,7 @@ class CutterDialog(QDialog):
   def __init__(self, parent: QWidget, text: str):
     QDialog.__init__(self, parent)
 
-    self.__text = text
+    self.__text = text.replace('　', '␣').replace(' ', '␣')
 
     self.__sel_a = 0
     self.__sel_b = len(text)
