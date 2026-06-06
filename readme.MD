@@ -21,6 +21,6 @@ Contact via https://t.me/+Ar9L2FU3kF1lNzY0
 
 ## License
 
-ja_subify is free software.
+ja_subify is *free software*.
 
 A copy of GLWTPL is included.
