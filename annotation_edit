@@ -354,6 +354,48 @@ class SelectWordCandidateDialog(QDialog):
     assert self.__result is not None
     return self.__result
 
+class ContextMenuActionType(Enum):
+  CONTEXT_MENU_ACTION_RESET_LINE = enum.auto()
+
+class ContextMenuActionDialog(QDialog):
+  def __init__(self, parent: QWidget, preview: str):
+    QDialog.__init__(self, parent)
+
+    self.__result = None
+
+    self.__layout = QVBoxLayout()
+
+    self.__font = QFont()
+    self.__font.setPointSize(15)
+
+    self.__preview = QLabel(preview)
+    self.__preview.setFont(self.__font)
+
+    self.__btn_reset_line = QPushButton('Return to unfinished')
+    self.__btn_reset_line.clicked.connect(self.__do_reset_line)
+
+    self.__btn_cancel = QPushButton('Cancel', default=True)
+    self.__btn_cancel.clicked.connect(self.__do_cancel)
+
+    self.__layout.addWidget(self.__preview)
+    self.__layout.addWidget(self.__btn_reset_line)
+    self.__layout.addWidget(self.__btn_cancel)
+
+    self.setLayout(self.__layout)
+
+  @Slot()
+  def __do_reset_line(self):
+    self.__result = ContextMenuActionType.CONTEXT_MENU_ACTION_RESET_LINE
+    self.accept()
+
+  @Slot()
+  def __do_cancel(self):
+    self.reject()
+
+  def getContextMenuActionType(self) -> ContextMenuActionType:
+    assert self.__result is not None
+    return self.__result
+
 class AnnotationEdit(QMainWindow):
   def __init__(self, af: AnnotationFile, annotation_path: str, nwls: list[UserNormalDictionary], lwls: list[UserLoanDictionary]):
     QMainWindow.__init__(self)
@@ -563,7 +605,30 @@ class AnnotationEdit(QMainWindow):
 
   @Slot(int)
   def __handle_web_context_menu(self, lidx: int):
-    print(f'context menu: {self.__af.lines[lidx].get_normalized()!r}')
+    normalized_line = self.__af.lines[lidx].get_normalized()
+
+    print(f'context menu: {normalized_line!r}')
+
+    cmad = ContextMenuActionDialog(self, normalized_line)
+    if cmad.exec() == QDialog.DialogCode.Rejected:
+      print('user canceled')
+      self.__status_bar.showMessage('Dismissed context menu.', timeout=2000)
+      return
+
+    match cmad.getContextMenuActionType():
+      case ContextMenuActionType.CONTEXT_MENU_ACTION_RESET_LINE:
+        new_line = DialogueLine([Annotation(PlainAnnotation(normalized_line), unfinished=True)])
+        new_line.validate()
+        self.__af.lines.pop(lidx)
+        self.__af.lines.insert(lidx, new_line)
+
+        self.__rerender_animecho()
+        self.__update_ux_dirty(True)
+
+        print('clear labels')
+        self.__status_bar.showMessage(f'Cleared labels on line #{lidx + 1}.', timeout=2000)
+      case _:
+        raise AssertionError
 
   @Slot()
   def __go_to_line(self):

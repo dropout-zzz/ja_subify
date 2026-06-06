@@ -4,6 +4,7 @@ new features:
 - line numbers in editor and annotation files
 - basic editor features: go-to line
 - [editor] an option to go to next unfinished line
+- [editor] an option to return a line back to unfinished, clearing any current labels
 
 bugfixes:
 - [editor] fix window resizing
