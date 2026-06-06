@@ -1,5 +1,8 @@
 -- 0.1a2 --
 
+new program:
+- `check_tool`: interactive interface to verify annotations
+
 new features:
 - line numbers in editor and annotation files
 - basic editor features: go-to line

@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+
+# interactive CLI for annotation verification
+
+from argparse import ArgumentParser
+
+def main():
+  ap = ArgumentParser()
+
+  args = ap.parse_args()
+
+main()
