@@ -53,6 +53,7 @@ from PySide6.QtGui import (
   QKeySequence,
   QIcon,
   QFont,
+  QPalette,
 )
 from annotation_file import (
   annotation_parse,
@@ -357,6 +358,15 @@ class SelectWordCandidateDialog(QDialog):
 class ContextMenuActionType(Enum):
   CONTEXT_MENU_ACTION_RESET_LINE = enum.auto()
 
+def _stylish_destructive_button(btn: QPushButton):
+  font = btn.font()
+  font.setBold(True)
+  btn.setFont(font)
+
+  palette = btn.palette()
+  palette.setColor(QPalette.ColorRole.ButtonText, Qt.GlobalColor.darkRed)
+  btn.setPalette(palette)
+
 class ContextMenuActionDialog(QDialog):
   def __init__(self, parent: QWidget, preview: str):
     QDialog.__init__(self, parent)
@@ -372,6 +382,7 @@ class ContextMenuActionDialog(QDialog):
     self.__preview.setFont(self.__font)
 
     self.__btn_reset_line = QPushButton('Return to unfinished')
+    _stylish_destructive_button(self.__btn_reset_line)
     self.__btn_reset_line.clicked.connect(self.__do_reset_line)
 
     self.__btn_cancel = QPushButton('Cancel', default=True)
