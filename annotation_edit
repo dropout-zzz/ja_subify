@@ -121,7 +121,7 @@ class WaitingWebDialog(QDialog):
 
     self.__lbl_indicator = QLabel(text='Waiting for internal Web view to boot...')
     self.__spinner = QProgressBar(maximum=0)
-    self.__btn_quit = QPushButton('Quit App Now')
+    self.__btn_quit = QPushButton(QIcon.fromTheme(QIcon.ThemeIcon.ApplicationExit), 'Quit App Now')
 
     self.__btn_quit.clicked.connect(self.__do_quit_app)
 
@@ -184,6 +184,7 @@ class SelectSegmentTypeDialog(QDialog):
                             '[3]. Ignore segment...')
 
     self.__btn_cancel = QPushButton('Cancel')
+    self.__btn_cancel.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogCancelButton))
     self.__btn_cancel.clicked.connect(self.__do_cancel)
 
     self.__layout.addWidget(self.__lbl_preview)
@@ -382,10 +383,12 @@ class ContextMenuActionDialog(QDialog):
     self.__preview.setFont(self.__font)
 
     self.__btn_reset_line = QPushButton('Return to unfinished')
+    self.__btn_reset_line.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogResetButton))
     _stylish_destructive_button(self.__btn_reset_line)
     self.__btn_reset_line.clicked.connect(self.__do_reset_line)
 
     self.__btn_cancel = QPushButton('Cancel', default=True)
+    self.__btn_cancel.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_DialogCancelButton))
     self.__btn_cancel.clicked.connect(self.__do_cancel)
 
     self.__layout.addWidget(self.__preview)
