@@ -3,10 +3,16 @@
 # interactive CLI for annotation verification
 
 from argparse import ArgumentParser
+from annotation_file import annotation_parse
 
 def main():
   ap = ArgumentParser()
 
+  ap.add_argument('annotation_file')
+
   args = ap.parse_args()
+
+  with open(args.annotation_file, 'r') as f:
+    af = annotation_parse(f.read())
 
 main()
