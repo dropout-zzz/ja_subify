@@ -4,6 +4,13 @@
 
 from argparse import ArgumentParser
 from annotation_file import annotation_parse
+from dataclasses import dataclass
+import sys
+
+@dataclass
+class UncheckedLocation:
+  line: int
+  idx: int
 
 def main():
   ap = ArgumentParser()
@@ -14,5 +21,17 @@ def main():
 
   with open(args.annotation_file, 'r') as f:
     af = annotation_parse(f.read())
+
+  todo = []
+
+  for lidx, dialogue in enumerate(af.lines):
+    for aidx, annotation in enumerate(dialogue.fragments):
+      if annotation.checked or annotation.unfinished:
+        continue
+      todo.append(UncheckedLocation(line=lidx, idx=aidx))
+
+  if len(todo) == 0:
+    print('Nothing to do.')
+    sys.exit(0)
 
 main()
