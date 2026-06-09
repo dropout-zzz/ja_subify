@@ -1,10 +1,6 @@
 # AF is a relax format in JSON
 # unknown keys are ignored
 # run validate() for stricter checks
-#
-# line numbers are ignored when reading.
-# and will be regenerated when writing.
-# line numbers are not managed in loaded AF object.
 
 import dataclasses
 from dataclasses import dataclass
@@ -181,7 +177,10 @@ class DialogueLine:
   def serialize(self, lineno: int = -1) -> dict:
     return {
       'fragments': [x.serialize() for x in self.fragments],
+
+      # these fields are intentionally ignored when reading
       'lineno': lineno,
+      'orig_line': self.get_normalized(),
     }
 
   @classmethod
