@@ -8,6 +8,7 @@ new features:
 - basic editor features: go-to line
 - [editor] an option to go to next unfinished line
 - [editor] an option to return a line back to unfinished, clearing any current labels
+- [editor] added a cursor controlled by keyboard as an alterative to mouse
 
 bugfixes:
 - [editor] fix window resizing

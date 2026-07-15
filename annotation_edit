@@ -414,6 +414,9 @@ class AnnotationEdit(QMainWindow):
   def __init__(self, af: AnnotationFile, annotation_path: str, nwls: list[UserNormalDictionary], lwls: list[UserLoanDictionary]):
     QMainWindow.__init__(self)
 
+    self.__cursor_lidx = 0
+    self.__cursor_aidx = 0
+
     self.resize(600, 700)
     self.setWindowTitle(f'[*] {annotation_path}')
 
@@ -497,6 +500,24 @@ class AnnotationEdit(QMainWindow):
 
     self.setCentralWidget(self.__webview)
 
+    self.__key_cursor_up = QShortcut(Qt.Key.Key_W, self)
+    self.__key_cursor_up.activated.connect(self.__do_cursor_up)
+
+    self.__key_cursor_down = QShortcut(Qt.Key.Key_S, self)
+    self.__key_cursor_down.activated.connect(self.__do_cursor_down)
+
+    self.__key_cursor_left = QShortcut(Qt.Key.Key_A, self)
+    self.__key_cursor_left.activated.connect(self.__do_cursor_left)
+
+    self.__key_cursor_right = QShortcut(Qt.Key.Key_D, self)
+    self.__key_cursor_right.activated.connect(self.__do_cursor_right)
+
+    self.__key_cursor_action = QShortcut(Qt.Key.Key_Return, self)
+    self.__key_cursor_action.activated.connect(self.__do_cursor_action)
+
+    self.__key_cursor_context = QShortcut(Qt.KeyboardModifier.AltModifier | Qt.Key.Key_Return, self)
+    self.__key_cursor_context.activated.connect(self.__do_cursor_context)
+
   @override
   @Slot()
   def show(self):
@@ -521,17 +542,24 @@ class AnnotationEdit(QMainWindow):
       tags.append(f'<li id="animecho-l{lidx}" class="animecho-line">')
       tags.append(f'<span oncontextmenu="animechoCb2(event,{lidx})">')
 
+      cursor_on_line = lidx == self.__cursor_lidx
+
       for aidx, annotation in enumerate(line.fragments):
+        if cursor_on_line and aidx == self.__cursor_aidx:
+          extras = ' style="background-color: yellow;"'
+        else:
+          extras = ''
+
         if isinstance(annotation.inner, PlainAnnotation):
           if annotation.unfinished:
-            tags.append(f'<span class="animecho-unfinished" onclick="animechoCb({lidx},{aidx})">{html.escape(annotation.inner.text).replace('\n', '↵<br/>').replace(' ', '␣').replace('　', '␣')}</span>')
+            tags.append(f'<span class="animecho-unfinished"{extras} onclick="animechoCb({lidx},{aidx})">{html.escape(annotation.inner.text).replace('\n', '↵<br/>').replace(' ', '␣').replace('　', '␣')}</span>')
           else:
             assert annotation.ignore
-            tags.append(f'<span class="animecho-ignore">{html.escape(annotation.inner.text).replace('\n', '↵<br/>').replace(' ', '␣').replace('　', '␣')}</span>')
+            tags.append(f'<span class="animecho-ignore"{extras}>{html.escape(annotation.inner.text).replace('\n', '↵<br/>').replace(' ', '␣').replace('　', '␣')}</span>')
         elif isinstance(annotation.inner, LoanAnnotation):
-          tags.append(f'<span class="animecho-loan">{html.escape(annotation.inner.base)}</span>')
+          tags.append(f'<span class="animecho-loan"{extras}>{html.escape(annotation.inner.base)}</span>')
         elif isinstance(annotation.inner, KanjiAnnotation):
-          tags.append('<span class="animecho-kanji">')
+          tags.append(f'<span class="animecho-kanji"{extras}>')
 
           for chars in annotation.inner.fragments:
             tags.append(f'<span>{html.escape(chars.base)}</span>')
@@ -617,8 +645,7 @@ class AnnotationEdit(QMainWindow):
       self.__status_bar.showMessage('Canceled quit', timeout=2000)
       event.ignore()
 
-  @Slot(int)
-  def __handle_web_context_menu(self, lidx: int):
+  def __open_context_menu(self, lidx: int):
     normalized_line = self.__af.lines[lidx].get_normalized()
 
     print(f'context menu: {normalized_line!r}')
@@ -644,6 +671,70 @@ class AnnotationEdit(QMainWindow):
       case _:
         raise AssertionError
 
+  @Slot(int)
+  def __handle_web_context_menu(self, lidx: int):
+    self.__open_context_menu(lidx)
+
+  @Slot()
+  def __do_cursor_context(self):
+    self.__open_context_menu(self.__cursor_lidx)
+
+  @Slot()
+  def __do_cursor_up(self):
+    if self.__cursor_lidx == 0:
+      print('invalid cursor move')
+      return
+
+    self.__cursor_lidx -= 1
+    self.__cursor_aidx = 0
+
+    self.__rerender_animecho()
+    self.__web.nativeGoToLine.emit(self.__cursor_lidx)
+
+  @Slot()
+  def __do_cursor_down(self):
+    if self.__cursor_lidx == len(self.__af.lines) - 1:
+      print('invalid cursor move')
+      return
+
+    self.__cursor_lidx += 1
+    self.__cursor_aidx = 0
+
+    self.__rerender_animecho()
+    self.__web.nativeGoToLine.emit(self.__cursor_lidx)
+
+  @Slot()
+  def __do_cursor_left(self):
+    if self.__cursor_aidx == 0:
+      if self.__cursor_lidx == 0:
+        print('invalid cursor move')
+        return
+
+      self.__cursor_lidx -= 1
+      self.__cursor_aidx = len(self.__af.lines[self.__cursor_lidx].fragments) - 1
+
+      self.__rerender_animecho()
+      self.__web.nativeGoToLine.emit(self.__cursor_lidx)
+    else:
+      self.__cursor_aidx -= 1
+      self.__rerender_animecho()
+
+  @Slot()
+  def __do_cursor_right(self):
+    if self.__cursor_aidx == len(self.__af.lines[self.__cursor_lidx].fragments) - 1:
+      if self.__cursor_lidx == len(self.__af.lines) - 1:
+        print('invalid cursor move')
+        return
+
+      self.__cursor_lidx += 1
+      self.__cursor_aidx = 0
+
+      self.__rerender_animecho()
+      self.__web.nativeGoToLine.emit(self.__cursor_lidx)
+    else:
+      self.__cursor_aidx += 1
+      self.__rerender_animecho()
+
   @Slot()
   def __go_to_line(self):
     i, ok = QInputDialog.getInt(self, None, 'Enter line number:', value=1, minValue=1, maxValue=len(self.__af.lines))
@@ -651,6 +742,11 @@ class AnnotationEdit(QMainWindow):
       print('canceled goto')
       self.__status_bar.showMessage('Canceled Go-To.', timeout=2000)
       return
+
+    self.__cursor_lidx = i - 1
+    self.__cursor_aidx = 0
+    self.__rerender_animecho()
+
     self.__web.nativeGoToLine.emit(i - 1)
     print(f'goto line: {self.__af.lines[i - 1].get_normalized()!r}')
     self.__status_bar.showMessage(f'Jumped to line #{i}.', timeout=2000)
@@ -660,6 +756,10 @@ class AnnotationEdit(QMainWindow):
     for lidx, dialogue in enumerate(self.__af.lines):
       for annotation in dialogue.fragments:
         if annotation.unfinished:
+          self.__cursor_lidx = lidx
+          self.__cursor_aidx = 0
+          self.__rerender_animecho()
+
           self.__web.nativeGoToLine.emit(lidx)
           print('go to next unfinished line')
           self.__status_bar.showMessage('Jumped to next unfinished dialogue.', timeout=2000)
@@ -668,8 +768,7 @@ class AnnotationEdit(QMainWindow):
     print('can\'t find unfinished line.')
     self.__status_bar.showMessage('Can\'t find unfinished dialogue', timeout=2000)
 
-  @Slot(int, int)
-  def __handle_web_calledback(self, lidx: int, aidx: int):
+  def __open_annotation_menu(self, lidx: int, aidx: int):
     dialogue = self.__af.lines[lidx]
 
     annotation = dialogue.fragments[aidx]
@@ -680,6 +779,11 @@ class AnnotationEdit(QMainWindow):
     old_text = annotation.inner.text
 
     print(f'selected fragment: {old_text!r}')
+
+    if self.__cursor_lidx != lidx or self.__cursor_aidx != aidx:
+      self.__cursor_lidx = lidx
+      self.__cursor_aidx = aidx
+      self.__rerender_animecho()
 
     sstd = SelectSegmentTypeDialog(self, old_text)
     if sstd.exec() == QDialog.DialogCode.Rejected:
@@ -810,6 +914,18 @@ class AnnotationEdit(QMainWindow):
 
     self.__rerender_animecho()
     self.__update_ux_dirty(True)
+
+  @Slot(int, int)
+  def __handle_web_calledback(self, lidx: int, aidx: int):
+    self.__open_annotation_menu(lidx, aidx)
+
+  @Slot()
+  def __do_cursor_action(self):
+    annotation = self.__af.lines[self.__cursor_lidx].fragments[self.__cursor_aidx]
+    if isinstance(annotation.inner, PlainAnnotation) and annotation.unfinished:
+      self.__open_annotation_menu(self.__cursor_lidx, self.__cursor_aidx)
+    else:
+      print('cursor location is already annotated')
 
 def main():
   ap = ArgumentParser()
