@@ -459,7 +459,7 @@ class AnnotationEdit(QMainWindow):
     self.__menu_file.addSeparator()
     self.__menu_file.addAction(self.__action_quit)
 
-    self.__menu_edit = QMenu(title='Edit')
+    self.__menu_edit = QMenu(title='&Edit')
 
     self.__action_go_to_line = QAction(text='Go to...',
                                        shortcut=Qt.KeyboardModifier.ControlModifier | Qt.Key.Key_G)
