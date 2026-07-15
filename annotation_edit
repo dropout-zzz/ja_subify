@@ -663,6 +663,9 @@ class AnnotationEdit(QMainWindow):
         self.__af.lines.pop(lidx)
         self.__af.lines.insert(lidx, new_line)
 
+        if self.__cursor_lidx == lidx:
+          self.__cursor_aidx = 0
+
         self.__rerender_animecho()
         self.__update_ux_dirty(True)
 
@@ -911,6 +914,12 @@ class AnnotationEdit(QMainWindow):
     line_new.validate()
     self.__af.lines.pop(lidx)
     self.__af.lines.insert(lidx, line_new)
+
+    if lidx == self.__cursor_lidx:
+      max_cursor_aidx = len(line_new.fragments) - 1
+      if self.__cursor_aidx > max_cursor_aidx:
+        # out of range due to merges, clamp
+        self.__cursor_aidx = max_cursor_aidx
 
     self.__rerender_animecho()
     self.__update_ux_dirty(True)
