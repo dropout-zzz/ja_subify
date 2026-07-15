@@ -176,7 +176,7 @@ class SelectSegmentTypeDialog(QDialog):
     self.__font = QFont()
     self.__font.setPointSize(15)
 
-    self.__lbl_preview = QLabel(text=preview.replace(' ', '␣').replace('　', '␣'))
+    self.__lbl_preview = QLabel(text=preview.replace(' ', '␣').replace('　', '␣').replace('\n', '↵\n'))
     self.__lbl_preview.setFont(self.__font)
 
     self.__lbl_tip = QLabel('[1]. Label Kanji word...\n'
