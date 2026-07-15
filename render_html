@@ -56,7 +56,7 @@ def main():
 
     for annotation in line.fragments:
       if isinstance(annotation.inner, PlainAnnotation):
-        args.html_file.write(f'<span>{html.escape(annotation.inner.text)}</span>')
+        args.html_file.write(f'<span>{html.escape(annotation.inner.text).replace("\n", "<br/>")}</span>')
       elif isinstance(annotation.inner, LoanAnnotation):
         if args.no_labeling or args.no_loans or annotation.inner.base in lwl.inner:
           args.html_file.write(f'<span>{html.escape(annotation.inner.base)}</span>')
