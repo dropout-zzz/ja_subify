@@ -26,7 +26,7 @@ function animechoGoToLine(lidx) {
     return;
   }
 
-  dialogueLine.scrollIntoView();
+  dialogueLine.scrollIntoView({ block: "center" });
 }
 
 var animechoNativeCb = null;
