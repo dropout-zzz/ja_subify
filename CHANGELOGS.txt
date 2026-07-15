@@ -12,6 +12,7 @@ new features:
 bugfixes:
 - [editor] fix window resizing
 - [editor] whitespace is now visible in text selection dialog
+- multi-line subtitles now display correctly in HTML output
 
 
 -- 0.1a --
