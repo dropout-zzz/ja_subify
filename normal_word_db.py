@@ -163,7 +163,7 @@ def append_into_normal_words(nwl: NormalWordList, path: str, word: NormalTemplat
     f.write(b'\n')
     nwl.off += n + 1
 
-  if word.base is in nwl.inner:
+  if word.base in nwl.inner:
     nwl.inner[word.base].append(word)
   else:
     nwl.inner[word.base] = [word]
@@ -179,7 +179,7 @@ def _load_into_normal_words(nwl: NormalWordList, s: str):
       if existing_word.get_normalized() == word.get_normalized():
         raise ValueError(f'duplicate word {word.base!r}')
 
-    if word.base is in nwl.inner:
+    if word.base in nwl.inner:
       nwl.inner[word.base].append(word)
     else:
       nwl.inner[word.base] = [word]
