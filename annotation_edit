@@ -842,7 +842,7 @@ class AnnotationEdit(QMainWindow):
           reload_into_normal_words(loaded_dict.inner, loaded_dict.path)
 
           if sel_text in loaded_dict.inner.inner:
-            matches.append(loaded_dict.inner.inner[sel_text])
+            matches.extend(loaded_dict.inner.inner[sel_text])
 
         if len(matches) == 0:
           print('no match in dictionary')

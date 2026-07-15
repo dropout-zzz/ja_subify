@@ -128,14 +128,15 @@ class NormalWordList:
      use append_into_normal_words(),
      instead of directly modifying the internal dict."""
 
-  inner: dict[str, NormalTemplate] = dataclasses.field(default_factory=dict)
+  inner: dict[str, list[NormalTemplate]] = dataclasses.field(default_factory=dict)
   known: set[tuple[str, str]] = dataclasses.field(default_factory=set)
   off: int = 0
   count_known: bool = False
 
   def check(self):
     for x in self.inner.values():
-      x.validate()
+      for y in x:
+        y.validate()
 
 def _register_known_normal_words(nwl: NormalWordList, word: NormalTemplate):
   for fragment in word.fragments:
@@ -153,22 +154,36 @@ def append_into_normal_words(nwl: NormalWordList, path: str, word: NormalTemplat
      this operation also writes the change immediately into disk.
 
      may throw NormalWordAlreadyExist"""
-  if word.base in nwl.inner:
-    raise NormalWordAlreadyExist
+  for existing_word in nwl.inner.get(word.base, []):
+    if existing_word.get_normalized() == word.get_normalized():
+      raise NormalWordAlreadyExist
+
   with open(path, 'ab') as f:
     n = f.write(json.dumps(word.serialize(), sort_keys=True, ensure_ascii=False).encode())
     f.write(b'\n')
     nwl.off += n + 1
-  nwl.inner[word.base] = word
+
+  if word.base is in nwl.inner:
+    nwl.inner[word.base].append(word)
+  else:
+    nwl.inner[word.base] = [word]
+
   if nwl.count_known:
     _register_known_normal_words(nwl, word)
 
 def _load_into_normal_words(nwl: NormalWordList, s: str):
   for line in s.splitlines():
     word = NormalTemplate.deserialize(json.loads(line))
-    if word.base in nwl.inner:
-      raise ValueError(f'duplicate word {word.base!r}')
-    nwl.inner[word.base] = word
+
+    for existing_word in nwl.inner.get(word.base, []):
+      if existing_word.get_normalized() == word.get_normalized():
+        raise ValueError(f'duplicate word {word.base!r}')
+
+    if word.base is in nwl.inner:
+      nwl.inner[word.base].append(word)
+    else:
+      nwl.inner[word.base] = [word]
+
     if nwl.count_known:
       _register_known_normal_words(nwl, word)
 
