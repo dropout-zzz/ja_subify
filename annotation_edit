@@ -176,7 +176,7 @@ class SelectSegmentTypeDialog(QDialog):
     self.__font = QFont()
     self.__font.setPointSize(15)
 
-    self.__lbl_preview = QLabel(text=preview)
+    self.__lbl_preview = QLabel(text=preview.replace(' ', '␣').replace('　', '␣'))
     self.__lbl_preview.setFont(self.__font)
 
     self.__lbl_tip = QLabel('[1]. Label Kanji word...\n'
@@ -524,10 +524,10 @@ class AnnotationEdit(QMainWindow):
       for aidx, annotation in enumerate(line.fragments):
         if isinstance(annotation.inner, PlainAnnotation):
           if annotation.unfinished:
-            tags.append(f'<span class="animecho-unfinished" onclick="animechoCb({lidx},{aidx})">{html.escape(annotation.inner.text).replace('\n', '<br/>')}</span>')
+            tags.append(f'<span class="animecho-unfinished" onclick="animechoCb({lidx},{aidx})">{html.escape(annotation.inner.text).replace('\n', '↵<br/>').replace(' ', '␣').replace('　', '␣')}</span>')
           else:
             assert annotation.ignore
-            tags.append(f'<span class="animecho-ignore">{html.escape(annotation.inner.text).replace('\n', '<br/>')}</span>')
+            tags.append(f'<span class="animecho-ignore">{html.escape(annotation.inner.text).replace('\n', '↵<br/>').replace(' ', '␣').replace('　', '␣')}</span>')
         elif isinstance(annotation.inner, LoanAnnotation):
           tags.append(f'<span class="animecho-loan">{html.escape(annotation.inner.base)}</span>')
         elif isinstance(annotation.inner, KanjiAnnotation):
