@@ -87,3 +87,4 @@
 {"base": "気がしない", "fragments": [{"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"text": "がしない"}, "type": 0}]}
 {"base": "元気", "fragments": [{"inner": {"base": "元", "reading": "げん"}, "type": 1}, {"inner": {"base": "気", "reading": "き"}, "type": 1}]}
 {"base": "出してください", "fragments": [{"inner": {"base": "出", "reading": "だ"}, "type": 1}, {"inner": {"text": "してください"}, "type": 0}]}
+{"base": "秘密", "fragments": [{"inner": {"base": "秘", "reading": "ひ"}, "type": 1}, {"inner": {"base": "密", "reading": "みつ"}, "type": 1}]}
