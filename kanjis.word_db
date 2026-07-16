@@ -9,7 +9,6 @@
 {"base": "寝て", "fragments": [{"inner": {"base": "寝", "reading": "ね"}, "type": 1}, {"inner": {"text": "て"}, "type": 0}]}
 {"base": "昨日", "fragments": [{"inner": {"base": "昨日", "reading": "きのう"}, "type": 1}]}
 {"base": "夜", "fragments": [{"inner": {"base": "夜", "reading": "よる"}, "type": 1}]}
-{"base": "漬け込んでおいた", "fragments": [{"inner": {"base": "漬", "reading": "つ"}, "type": 1}, {"inner": {"text": "け"}, "type": 0}, {"inner": {"base": "込", "reading": "こ"}, "type": 1}, {"inner": {"text": "んでおいた"}, "type": 0}]}
 {"base": "母", "fragments": [{"inner": {"base": "母", "reading": "はは"}, "type": 1}]}
 {"base": "嗅ぐ", "fragments": [{"inner": {"base": "嗅", "reading": "か"}, "type": 1}, {"inner": {"text": "ぐ"}, "type": 0}]}
 {"base": "甘", "fragments": [{"inner": {"base": "甘", "reading": "あま"}, "type": 1}]}
@@ -86,7 +85,6 @@
 {"base": "哀れまない", "fragments": [{"inner": {"base": "哀", "reading": "あわ"}, "type": 1}, {"inner": {"text": "れまない"}, "type": 0}]}
 {"base": "意味", "fragments": [{"inner": {"base": "意", "reading": "い"}, "type": 1}, {"inner": {"base": "味", "reading": "み"}, "type": 1}]}
 {"base": "変な", "fragments": [{"inner": {"base": "変", "reading": "へん"}, "type": 1}, {"inner": {"text": "な"}, "type": 0}]}
-{"base": "採寸させて", "fragments": [{"inner": {"base": "採", "reading": "さい"}, "type": 1}, {"inner": {"base": "寸", "reading": "すん"}, "type": 1}, {"inner": {"text": "させて"}, "type": 0}]}
 {"base": "近づかない", "fragments": [{"inner": {"base": "近", "reading": "ちか"}, "type": 1}, {"inner": {"text": "づかない"}, "type": 0}]}
 {"base": "終わらせる", "fragments": [{"inner": {"base": "終", "reading": "お"}, "type": 1}, {"inner": {"text": "わらせる"}, "type": 0}]}
 {"base": "近づいた", "fragments": [{"inner": {"base": "近", "reading": "ちか"}, "type": 1}, {"inner": {"text": "づいた"}, "type": 0}]}
@@ -170,3 +168,5 @@
 {"base": "待ってて", "fragments": [{"inner": {"base": "待", "reading": "ま"}, "type": 1}, {"inner": {"text": "ってて"}, "type": 0}]}
 {"base": "持って", "fragments": [{"inner": {"base": "持", "reading": "も"}, "type": 1}, {"inner": {"text": "って"}, "type": 0}]}
 {"base": "仲よくして", "fragments": [{"inner": {"base": "仲", "reading": "なか"}, "type": 1}, {"inner": {"text": "よくして"}, "type": 0}]}
+{"base": "漬け込んで", "fragments": [{"inner": {"base": "漬", "reading": "つ"}, "type": 1}, {"inner": {"text": "け"}, "type": 0}, {"inner": {"base": "込", "reading": "こ"}, "type": 1}, {"inner": {"text": "んで"}, "type": 0}]}
+{"base": "採寸", "fragments": [{"inner": {"base": "採", "reading": "さい"}, "type": 1}, {"inner": {"base": "寸", "reading": "すん"}, "type": 1}]}
