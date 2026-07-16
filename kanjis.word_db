@@ -106,7 +106,6 @@
 {"base": "簡単", "fragments": [{"inner": {"base": "簡", "reading": "かん"}, "type": 1}, {"inner": {"base": "単", "reading": "たん"}, "type": 1}]}
 {"base": "食べ物", "fragments": [{"inner": {"base": "食", "reading": "た"}, "type": 1}, {"inner": {"text": "べ"}, "type": 0}, {"inner": {"base": "物", "reading": "もの"}, "type": 1}]}
 {"base": "動かない", "fragments": [{"inner": {"base": "動", "reading": "うご"}, "type": 1}, {"inner": {"text": "かない"}, "type": 0}]}
-{"base": "食べ終わる", "fragments": [{"inner": {"base": "食", "reading": "た"}, "type": 1}, {"inner": {"text": "べ"}, "type": 0}, {"inner": {"base": "終", "reading": "お"}, "type": 1}, {"inner": {"text": "わる"}, "type": 0}]}
 {"base": "状況", "fragments": [{"inner": {"base": "状", "reading": "じょう"}, "type": 1}, {"inner": {"base": "況", "reading": "きょう"}, "type": 1}]}
 {"base": "前", "fragments": [{"inner": {"base": "前", "reading": "まえ"}, "type": 1}]}
 {"base": "日", "fragments": [{"inner": {"base": "日", "reading": "ひ"}, "type": 1}]}
@@ -116,3 +115,5 @@
 {"base": "生", "fragments": [{"inner": {"base": "生", "reading": "せい"}, "type": 1}]}
 {"base": "昼寝する", "fragments": [{"inner": {"base": "昼", "reading": "ひる"}, "type": 1}, {"inner": {"base": "寝", "reading": "ね"}, "type": 1}, {"inner": {"text": "する"}, "type": 0}]}
 {"base": "一緒", "fragments": [{"inner": {"base": "一", "reading": "いっ"}, "type": 1}, {"inner": {"base": "緒", "reading": "しょ"}, "type": 1}]}
+{"base": "食", "fragments": [{"inner": {"base": "食", "reading": "た"}, "type": 1}]}
+{"base": "終わる", "fragments": [{"inner": {"base": "終", "reading": "お"}, "type": 1}, {"inner": {"text": "わる"}, "type": 0}]}
