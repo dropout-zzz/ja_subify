@@ -546,7 +546,10 @@ class AnnotationEdit(QMainWindow):
 
       for aidx, annotation in enumerate(line.fragments):
         if cursor_on_line and aidx == self.__cursor_aidx:
-          extras = ' style="background-color: yellow;"'
+          if QApplication.styleHints().colorScheme() == Qt.ColorScheme.Dark and isinstance(annotation.inner, PlainAnnotation) and annotation.unfinished:
+            extras = ' style="background-color: yellow; color: black;"'
+          else:
+            extras = ' style="background-color: yellow;"'
         else:
           extras = ''
 
