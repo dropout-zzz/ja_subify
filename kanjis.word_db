@@ -38,7 +38,6 @@
 {"base": "風邪", "fragments": [{"inner": {"base": "風邪", "reading": "かぜ"}, "type": 1}]}
 {"base": "今日", "fragments": [{"inner": {"base": "今日", "reading": "きょう"}, "type": 1}]}
 {"base": "友だち", "fragments": [{"inner": {"base": "友", "reading": "とも"}, "type": 1}, {"inner": {"text": "だち"}, "type": 0}]}
-{"base": "連れてきた", "fragments": [{"inner": {"base": "連", "reading": "つ"}, "type": 1}, {"inner": {"text": "れてきた"}, "type": 0}]}
 {"base": "お姉ちゃん", "fragments": [{"inner": {"text": "お"}, "type": 0}, {"inner": {"base": "姉", "reading": "ねえ"}, "type": 1}, {"inner": {"text": "ちゃん"}, "type": 0}]}
 {"base": "人見知り", "fragments": [{"inner": {"base": "人", "reading": "ひと"}, "type": 1}, {"inner": {"base": "見", "reading": "み"}, "type": 1}, {"inner": {"base": "知", "reading": "し"}, "type": 1}, {"inner": {"text": "り"}, "type": 0}]}
 {"base": "初めて", "fragments": [{"inner": {"base": "初", "reading": "はじ"}, "type": 1}, {"inner": {"text": "めて"}, "type": 0}]}
@@ -55,7 +54,6 @@
 {"base": "落ち着こう", "fragments": [{"inner": {"base": "落", "reading": "お"}, "type": 1}, {"inner": {"text": "ち"}, "type": 0}, {"inner": {"base": "着", "reading": "つ"}, "type": 1}, {"inner": {"text": "こう"}, "type": 0}]}
 {"base": "落ち着け", "fragments": [{"inner": {"base": "落", "reading": "お"}, "type": 1}, {"inner": {"text": "ち"}, "type": 0}, {"inner": {"base": "着", "reading": "つ"}, "type": 1}, {"inner": {"text": "け"}, "type": 0}]}
 {"base": "深呼吸", "fragments": [{"inner": {"base": "深", "reading": "しん"}, "type": 1}, {"inner": {"base": "呼", "reading": "こ"}, "type": 1}, {"inner": {"base": "吸", "reading": "きゅう"}, "type": 1}]}
-{"base": "落ち着いてきた", "fragments": [{"inner": {"base": "落", "reading": "お"}, "type": 1}, {"inner": {"text": "ち"}, "type": 0}, {"inner": {"base": "着", "reading": "つ"}, "type": 1}, {"inner": {"text": "いてきた"}, "type": 0}]}
 {"base": "何で", "fragments": [{"inner": {"base": "何", "reading": "なん"}, "type": 1}, {"inner": {"text": "で"}, "type": 0}]}
 {"base": "冷静", "fragments": [{"inner": {"base": "冷", "reading": "れい"}, "type": 1}, {"inner": {"base": "静", "reading": "せい"}, "type": 1}]}
 {"base": "見る", "fragments": [{"inner": {"base": "見", "reading": "み"}, "type": 1}, {"inner": {"text": "る"}, "type": 0}]}
@@ -81,7 +79,6 @@
 {"base": "手", "fragments": [{"inner": {"base": "手", "reading": "て"}, "type": 1}]}
 {"base": "気持ちいい", "fragments": [{"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"base": "持", "reading": "も"}, "type": 1}, {"inner": {"text": "ちいい"}, "type": 0}]}
 {"base": "気持ち悪", "fragments": [{"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"base": "持", "reading": "も"}, "type": 1}, {"inner": {"text": "ち"}, "type": 0}, {"inner": {"base": "悪", "reading": "わる"}, "type": 1}]}
-{"base": "仲よくしておきたい", "fragments": [{"inner": {"base": "仲", "reading": "なか"}, "type": 1}, {"inner": {"text": "よくしておきたい"}, "type": 0}]}
 {"base": "気がしない", "fragments": [{"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"text": "がしない"}, "type": 0}]}
 {"base": "元気", "fragments": [{"inner": {"base": "元", "reading": "げん"}, "type": 1}, {"inner": {"base": "気", "reading": "き"}, "type": 1}]}
 {"base": "秘密", "fragments": [{"inner": {"base": "秘", "reading": "ひ"}, "type": 1}, {"inner": {"base": "密", "reading": "みつ"}, "type": 1}]}
@@ -117,3 +114,59 @@
 {"base": "一緒", "fragments": [{"inner": {"base": "一", "reading": "いっ"}, "type": 1}, {"inner": {"base": "緒", "reading": "しょ"}, "type": 1}]}
 {"base": "食", "fragments": [{"inner": {"base": "食", "reading": "た"}, "type": 1}]}
 {"base": "終わる", "fragments": [{"inner": {"base": "終", "reading": "お"}, "type": 1}, {"inner": {"text": "わる"}, "type": 0}]}
+{"base": "遊び", "fragments": [{"inner": {"base": "遊", "reading": "あそ"}, "type": 1}, {"inner": {"text": "び"}, "type": 0}]}
+{"base": "来ない", "fragments": [{"inner": {"base": "来", "reading": "こ"}, "type": 1}, {"inner": {"text": "ない"}, "type": 0}]}
+{"base": "誘った", "fragments": [{"inner": {"base": "誘", "reading": "さそ"}, "type": 1}, {"inner": {"text": "った"}, "type": 0}]}
+{"base": "行く", "fragments": [{"inner": {"base": "行", "reading": "い"}, "type": 1}, {"inner": {"text": "く"}, "type": 0}]}
+{"base": "言われた", "fragments": [{"inner": {"base": "言", "reading": "い"}, "type": 1}, {"inner": {"text": "われた"}, "type": 0}]}
+{"base": "一度", "fragments": [{"inner": {"base": "一", "reading": "いち"}, "type": 1}, {"inner": {"base": "度", "reading": "ど"}, "type": 1}]}
+{"base": "来て", "fragments": [{"inner": {"base": "来", "reading": "き"}, "type": 1}, {"inner": {"text": "て"}, "type": 0}]}
+{"base": "今度", "fragments": [{"inner": {"base": "今", "reading": "こん"}, "type": 1}, {"inner": {"base": "度", "reading": "ど"}, "type": 1}]}
+{"base": "仲よく", "fragments": [{"inner": {"base": "仲", "reading": "なか"}, "type": 1}, {"inner": {"text": "よく"}, "type": 0}]}
+{"base": "伝えて", "fragments": [{"inner": {"base": "伝", "reading": "つた"}, "type": 1}, {"inner": {"text": "えて"}, "type": 0}]}
+{"base": "菓子", "fragments": [{"inner": {"base": "菓", "reading": "か"}, "type": 1}, {"inner": {"base": "子", "reading": "し"}, "type": 1}]}
+{"base": "休み", "fragments": [{"inner": {"base": "休", "reading": "やす"}, "type": 1}, {"inner": {"text": "み"}, "type": 0}]}
+{"base": "変質者", "fragments": [{"inner": {"base": "変", "reading": "へん"}, "type": 1}, {"inner": {"base": "質", "reading": "しつ"}, "type": 1}, {"inner": {"base": "者", "reading": "しゃ"}, "type": 1}]}
+{"base": "誘い", "fragments": [{"inner": {"base": "誘", "reading": "さそ"}, "type": 1}, {"inner": {"text": "い"}, "type": 0}]}
+{"base": "方", "fragments": [{"inner": {"base": "方", "reading": "かた"}, "type": 1}]}
+{"base": "湯船", "fragments": [{"inner": {"base": "湯", "reading": "ゆ"}, "type": 1}, {"inner": {"base": "船", "reading": "ぶね"}, "type": 1}]}
+{"base": "来る", "fragments": [{"inner": {"base": "来", "reading": "く"}, "type": 1}, {"inner": {"text": "る"}, "type": 0}]}
+{"base": "泊まり", "fragments": [{"inner": {"base": "泊", "reading": "と"}, "type": 1}, {"inner": {"text": "まり"}, "type": 0}]}
+{"base": "遊べる", "fragments": [{"inner": {"base": "遊", "reading": "あそ"}, "type": 1}, {"inner": {"text": "べる"}, "type": 0}]}
+{"base": "お母さん", "fragments": [{"inner": {"text": "お"}, "type": 0}, {"inner": {"base": "母", "reading": "かあ"}, "type": 1}, {"inner": {"text": "さん"}, "type": 0}]}
+{"base": "言ってる", "fragments": [{"inner": {"base": "言", "reading": "い"}, "type": 1}, {"inner": {"text": "ってる"}, "type": 0}]}
+{"base": "泊めた", "fragments": [{"inner": {"base": "泊", "reading": "と"}, "type": 1}, {"inner": {"text": "めた"}, "type": 0}]}
+{"base": "仲よくしておきた", "fragments": [{"inner": {"base": "仲", "reading": "なか"}, "type": 1}, {"inner": {"text": "よくしておきた"}, "type": 0}]}
+{"base": "家族", "fragments": [{"inner": {"base": "家", "reading": "か"}, "type": 1}, {"inner": {"base": "族", "reading": "ぞく"}, "type": 1}]}
+{"base": "以外", "fragments": [{"inner": {"base": "以", "reading": "い"}, "type": 1}, {"inner": {"base": "外", "reading": "がい"}, "type": 1}]}
+{"base": "嫌がる", "fragments": [{"inner": {"base": "嫌", "reading": "いや"}, "type": 1}, {"inner": {"text": "がる"}, "type": 0}]}
+{"base": "思った", "fragments": [{"inner": {"base": "思", "reading": "おも"}, "type": 1}, {"inner": {"text": "った"}, "type": 0}]}
+{"base": "気持ち", "fragments": [{"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"base": "持", "reading": "も"}, "type": 1}, {"inner": {"text": "ち"}, "type": 0}]}
+{"base": "気になる", "fragments": [{"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"text": "になる"}, "type": 0}]}
+{"base": "着て", "fragments": [{"inner": {"base": "着", "reading": "き"}, "type": 1}, {"inner": {"text": "て"}, "type": 0}]}
+{"base": "無理", "fragments": [{"inner": {"base": "無", "reading": "む"}, "type": 1}, {"inner": {"base": "理", "reading": "り"}, "type": 1}]}
+{"base": "服", "fragments": [{"inner": {"base": "服", "reading": "ふく"}, "type": 1}]}
+{"base": "今", "fragments": [{"inner": {"base": "今", "reading": "いま"}, "type": 1}]}
+{"base": "少し", "fragments": [{"inner": {"base": "少", "reading": "すこ"}, "type": 1}, {"inner": {"text": "し"}, "type": 0}]}
+{"base": "出てる", "fragments": [{"inner": {"base": "出", "reading": "で"}, "type": 1}, {"inner": {"text": "てる"}, "type": 0}]}
+{"base": "落ち着いて", "fragments": [{"inner": {"base": "落", "reading": "お"}, "type": 1}, {"inner": {"text": "ち"}, "type": 0}, {"inner": {"base": "着", "reading": "つ"}, "type": 1}, {"inner": {"text": "いて"}, "type": 0}]}
+{"base": "連れて", "fragments": [{"inner": {"base": "連", "reading": "つ"}, "type": 1}, {"inner": {"text": "れて"}, "type": 0}]}
+{"base": "帰って", "fragments": [{"inner": {"base": "帰", "reading": "かえ"}, "type": 1}, {"inner": {"text": "って"}, "type": 0}]}
+{"base": "せき込み", "fragments": [{"inner": {"text": "せき"}, "type": 0}, {"inner": {"base": "込", "reading": "こ"}, "type": 1}, {"inner": {"text": "み"}, "type": 0}]}
+{"base": "気に入り", "fragments": [{"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"text": "に"}, "type": 0}, {"inner": {"base": "入", "reading": "い"}, "type": 1}, {"inner": {"text": "り"}, "type": 0}]}
+{"base": "本当", "fragments": [{"inner": {"base": "本", "reading": "ほん"}, "type": 1}, {"inner": {"base": "当", "reading": "とう"}, "type": 1}]}
+{"base": "危険", "fragments": [{"inner": {"base": "危", "reading": "き"}, "type": 1}, {"inner": {"base": "険", "reading": "けん"}, "type": 1}]}
+{"base": "知らない", "fragments": [{"inner": {"base": "知", "reading": "し"}, "type": 1}, {"inner": {"text": "らない"}, "type": 0}]}
+{"base": "言います", "fragments": [{"inner": {"base": "言", "reading": "い"}, "type": 1}, {"inner": {"text": "います"}, "type": 0}]}
+{"base": "大丈夫", "fragments": [{"inner": {"base": "大", "reading": "だい"}, "type": 1}, {"inner": {"base": "丈", "reading": "じょう"}, "type": 1}, {"inner": {"base": "夫", "reading": "ぶ"}, "type": 1}]}
+{"base": "気に入って", "fragments": [{"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"text": "に"}, "type": 0}, {"inner": {"base": "入", "reading": "い"}, "type": 1}, {"inner": {"text": "って"}, "type": 0}]}
+{"base": "駆けて", "fragments": [{"inner": {"base": "駆", "reading": "か"}, "type": 1}, {"inner": {"text": "けて"}, "type": 0}]}
+{"base": "足音", "fragments": [{"inner": {"base": "足", "reading": "あし"}, "type": 1}, {"inner": {"base": "音", "reading": "おと"}, "type": 1}]}
+{"base": "来てる", "fragments": [{"inner": {"base": "来", "reading": "き"}, "type": 1}, {"inner": {"text": "てる"}, "type": 0}]}
+{"base": "分かる", "fragments": [{"inner": {"base": "分", "reading": "わ"}, "type": 1}, {"inner": {"text": "かる"}, "type": 0}]}
+{"base": "作る", "fragments": [{"inner": {"base": "作", "reading": "つく"}, "type": 1}, {"inner": {"text": "る"}, "type": 0}]}
+{"base": "得意", "fragments": [{"inner": {"base": "得", "reading": "とく"}, "type": 1}, {"inner": {"base": "意", "reading": "い"}, "type": 1}]}
+{"base": "作った", "fragments": [{"inner": {"base": "作", "reading": "つく"}, "type": 1}, {"inner": {"text": "った"}, "type": 0}]}
+{"base": "言った", "fragments": [{"inner": {"base": "言", "reading": "い"}, "type": 1}, {"inner": {"text": "った"}, "type": 0}]}
+{"base": "待ってて", "fragments": [{"inner": {"base": "待", "reading": "ま"}, "type": 1}, {"inner": {"text": "ってて"}, "type": 0}]}
+{"base": "持って", "fragments": [{"inner": {"base": "持", "reading": "も"}, "type": 1}, {"inner": {"text": "って"}, "type": 0}]}
