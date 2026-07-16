@@ -4,7 +4,6 @@
 {"base": "盛り込みます", "fragments": [{"inner": {"base": "盛", "reading": "も"}, "type": 1}, {"inner": {"text": "り"}, "type": 0}, {"inner": {"base": "込", "reading": "こ"}, "type": 1}, {"inner": {"text": "みます"}, "type": 0}]}
 {"base": "前提", "fragments": [{"inner": {"base": "前", "reading": "ぜん"}, "type": 1}, {"inner": {"base": "提", "reading": "てい"}, "type": 1}]}
 {"base": "具", "fragments": [{"inner": {"base": "具", "reading": "ぐ"}, "type": 1}]}
-{"base": "食べたかった", "fragments": [{"inner": {"base": "食", "reading": "た"}, "type": 1}, {"inner": {"text": "べたかった"}, "type": 0}]}
 {"base": "荒い息", "fragments": [{"inner": {"base": "荒", "reading": "あら"}, "type": 1}, {"inner": {"text": "い"}, "type": 0}, {"inner": {"base": "息", "reading": "いき"}, "type": 1}]}
 {"base": "起きた", "fragments": [{"inner": {"base": "起", "reading": "お"}, "type": 1}, {"inner": {"text": "きた"}, "type": 0}]}
 {"base": "寝て", "fragments": [{"inner": {"base": "寝", "reading": "ね"}, "type": 1}, {"inner": {"text": "て"}, "type": 0}]}
@@ -59,7 +58,6 @@
 {"base": "落ち着いてきた", "fragments": [{"inner": {"base": "落", "reading": "お"}, "type": 1}, {"inner": {"text": "ち"}, "type": 0}, {"inner": {"base": "着", "reading": "つ"}, "type": 1}, {"inner": {"text": "いてきた"}, "type": 0}]}
 {"base": "何で", "fragments": [{"inner": {"base": "何", "reading": "なん"}, "type": 1}, {"inner": {"text": "で"}, "type": 0}]}
 {"base": "冷静", "fragments": [{"inner": {"base": "冷", "reading": "れい"}, "type": 1}, {"inner": {"base": "静", "reading": "せい"}, "type": 1}]}
-{"base": "考えてみよう", "fragments": [{"inner": {"base": "考", "reading": "かんが"}, "type": 1}, {"inner": {"text": "えてみよう"}, "type": 0}]}
 {"base": "見る", "fragments": [{"inner": {"base": "見", "reading": "み"}, "type": 1}, {"inner": {"text": "る"}, "type": 0}]}
 {"base": "相手", "fragments": [{"inner": {"base": "相", "reading": "あい"}, "type": 1}, {"inner": {"base": "手", "reading": "て"}, "type": 1}]}
 {"base": "何でか", "fragments": [{"inner": {"base": "何", "reading": "なん"}, "type": 1}, {"inner": {"text": "でか"}, "type": 0}]}
@@ -86,5 +84,17 @@
 {"base": "仲よくしておきたい", "fragments": [{"inner": {"base": "仲", "reading": "なか"}, "type": 1}, {"inner": {"text": "よくしておきたい"}, "type": 0}]}
 {"base": "気がしない", "fragments": [{"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"text": "がしない"}, "type": 0}]}
 {"base": "元気", "fragments": [{"inner": {"base": "元", "reading": "げん"}, "type": 1}, {"inner": {"base": "気", "reading": "き"}, "type": 1}]}
-{"base": "出してください", "fragments": [{"inner": {"base": "出", "reading": "だ"}, "type": 1}, {"inner": {"text": "してください"}, "type": 0}]}
 {"base": "秘密", "fragments": [{"inner": {"base": "秘", "reading": "ひ"}, "type": 1}, {"inner": {"base": "密", "reading": "みつ"}, "type": 1}]}
+{"base": "嫌", "fragments": [{"inner": {"base": "嫌", "reading": "いや"}, "type": 1}]}
+{"base": "哀れまない", "fragments": [{"inner": {"base": "哀", "reading": "あわ"}, "type": 1}, {"inner": {"text": "れまない"}, "type": 0}]}
+{"base": "意味", "fragments": [{"inner": {"base": "意", "reading": "い"}, "type": 1}, {"inner": {"base": "味", "reading": "み"}, "type": 1}]}
+{"base": "変な", "fragments": [{"inner": {"base": "変", "reading": "へん"}, "type": 1}, {"inner": {"text": "な"}, "type": 0}]}
+{"base": "採寸させて", "fragments": [{"inner": {"base": "採", "reading": "さい"}, "type": 1}, {"inner": {"base": "寸", "reading": "すん"}, "type": 1}, {"inner": {"text": "させて"}, "type": 0}]}
+{"base": "近づかない", "fragments": [{"inner": {"base": "近", "reading": "ちか"}, "type": 1}, {"inner": {"text": "づかない"}, "type": 0}]}
+{"base": "終わらせる", "fragments": [{"inner": {"base": "終", "reading": "お"}, "type": 1}, {"inner": {"text": "わらせる"}, "type": 0}]}
+{"base": "近づいた", "fragments": [{"inner": {"base": "近", "reading": "ちか"}, "type": 1}, {"inner": {"text": "づいた"}, "type": 0}]}
+{"base": "通報する", "fragments": [{"inner": {"base": "通", "reading": "つう"}, "type": 1}, {"inner": {"base": "報", "reading": "ほう"}, "type": 1}, {"inner": {"text": "する"}, "type": 0}]}
+{"base": "以上", "fragments": [{"inner": {"base": "以", "reading": "い"}, "type": 1}, {"inner": {"base": "上", "reading": "じょう"}, "type": 1}]}
+{"base": "食べた", "fragments": [{"inner": {"base": "食", "reading": "た"}, "type": 1}, {"inner": {"text": "べた"}, "type": 0}]}
+{"base": "考えて", "fragments": [{"inner": {"base": "考", "reading": "かんが"}, "type": 1}, {"inner": {"text": "えて"}, "type": 0}]}
+{"base": "出して", "fragments": [{"inner": {"base": "出", "reading": "だ"}, "type": 1}, {"inner": {"text": "して"}, "type": 0}]}
