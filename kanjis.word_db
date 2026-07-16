@@ -136,7 +136,6 @@
 {"base": "お母さん", "fragments": [{"inner": {"text": "お"}, "type": 0}, {"inner": {"base": "母", "reading": "かあ"}, "type": 1}, {"inner": {"text": "さん"}, "type": 0}]}
 {"base": "言ってる", "fragments": [{"inner": {"base": "言", "reading": "い"}, "type": 1}, {"inner": {"text": "ってる"}, "type": 0}]}
 {"base": "泊めた", "fragments": [{"inner": {"base": "泊", "reading": "と"}, "type": 1}, {"inner": {"text": "めた"}, "type": 0}]}
-{"base": "仲よくしておきた", "fragments": [{"inner": {"base": "仲", "reading": "なか"}, "type": 1}, {"inner": {"text": "よくしておきた"}, "type": 0}]}
 {"base": "家族", "fragments": [{"inner": {"base": "家", "reading": "か"}, "type": 1}, {"inner": {"base": "族", "reading": "ぞく"}, "type": 1}]}
 {"base": "以外", "fragments": [{"inner": {"base": "以", "reading": "い"}, "type": 1}, {"inner": {"base": "外", "reading": "がい"}, "type": 1}]}
 {"base": "嫌がる", "fragments": [{"inner": {"base": "嫌", "reading": "いや"}, "type": 1}, {"inner": {"text": "がる"}, "type": 0}]}
@@ -170,3 +169,4 @@
 {"base": "言った", "fragments": [{"inner": {"base": "言", "reading": "い"}, "type": 1}, {"inner": {"text": "った"}, "type": 0}]}
 {"base": "待ってて", "fragments": [{"inner": {"base": "待", "reading": "ま"}, "type": 1}, {"inner": {"text": "ってて"}, "type": 0}]}
 {"base": "持って", "fragments": [{"inner": {"base": "持", "reading": "も"}, "type": 1}, {"inner": {"text": "って"}, "type": 0}]}
+{"base": "仲よくして", "fragments": [{"inner": {"base": "仲", "reading": "なか"}, "type": 1}, {"inner": {"text": "よくして"}, "type": 0}]}
