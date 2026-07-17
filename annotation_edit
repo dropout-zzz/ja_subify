@@ -712,6 +712,17 @@ class AnnotationEdit(QMainWindow):
   @Slot()
   def __do_cursor_left(self):
     if self.__cursor_aidx == 0:
+      move_to_prev_line = True
+    else:
+      for i, annotation in enumerate(reversed(self.__af.lines[self.__cursor_lidx].fragments[:self.__cursor_aidx]), start=1):
+        if isinstance(annotation.inner, PlainAnnotation) and annotation.unfinished:
+          delta = i
+          move_to_prev_line = False
+          break
+      else:
+        move_to_prev_line = True
+
+    if move_to_prev_line:
       if self.__cursor_lidx == 0:
         print('invalid cursor move')
         return
@@ -722,12 +733,23 @@ class AnnotationEdit(QMainWindow):
       self.__rerender_animecho()
       self.__web.nativeGoToLine.emit(self.__cursor_lidx)
     else:
-      self.__cursor_aidx -= 1
+      self.__cursor_aidx -= delta
       self.__rerender_animecho()
 
   @Slot()
   def __do_cursor_right(self):
     if self.__cursor_aidx == len(self.__af.lines[self.__cursor_lidx].fragments) - 1:
+      move_to_next_line = True
+    else:
+      for i, annotation in enumerate(self.__af.lines[self.__cursor_lidx].fragments[self.__cursor_aidx + 1:], start=1):
+        if isinstance(annotation.inner, PlainAnnotation) and annotation.unfinished:
+          delta = i
+          move_to_next_line = False
+          break
+      else:
+        move_to_next_line = True
+
+    if move_to_next_line:
       if self.__cursor_lidx == len(self.__af.lines) - 1:
         print('invalid cursor move')
         return
@@ -738,7 +760,7 @@ class AnnotationEdit(QMainWindow):
       self.__rerender_animecho()
       self.__web.nativeGoToLine.emit(self.__cursor_lidx)
     else:
-      self.__cursor_aidx += 1
+      self.__cursor_aidx += delta
       self.__rerender_animecho()
 
   @Slot()
