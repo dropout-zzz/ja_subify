@@ -258,6 +258,12 @@ class CutterDialog(QDialog):
     self.__key_cursor_right = QShortcut(Qt.Key.Key_Right, self)
     self.__key_cursor_right.activated.connect(self.__do_move_cursor_right)
 
+    self.__key_cursor_down = QShortcut(Qt.Key.Key_Down, self)
+    self.__key_cursor_down.activated.connect(self.__do_move_cursor_down)
+
+    self.__key_cursor_up = QShortcut(Qt.Key.Key_Up, self)
+    self.__key_cursor_up.activated.connect(self.__do_move_cursor_up)
+
     self.__key_commit = QShortcut(Qt.Key.Key_Return, self)
     self.__key_commit.activated.connect(self.__do_commit)
 
@@ -300,6 +306,64 @@ class CutterDialog(QDialog):
           print('invalid move')
           return
         self.__sel_b += 1
+
+    self.__rerender_preview()
+
+  @Slot()
+  def __do_move_cursor_down(self):
+    match self.__stage:
+      case CutterStage.STAGE_A:
+        for i, c in enumerate(self.__text[self.__sel_a:-1], start=1):
+          if c == '↵':
+            self.__sel_a += i
+            break
+        else:
+          print('invalid cursor move')
+          return
+      case CutterStage.STAGE_B:
+        for i, c in enumerate(self.__text[self.__sel_b:-1], start=1):
+          if c == '↵':
+            self.__sel_b += i + 1
+            break
+        else:
+          print('invalid cursor move')
+          return
+
+    self.__rerender_preview()
+
+  @Slot()
+  def __do_move_cursor_up(self):
+    match self.__stage:
+      case CutterStage.STAGE_A:
+        for i, c in enumerate(reversed(self.__text[:self.__sel_a]), start=1):
+          if c == '↵':
+            for j, c in enumerate(reversed(self.__text[:self.__sel_a - i])):
+              if c == '↵':
+                self.__sel_a -= i + j
+                break
+            else:
+              self.__sel_a = 0
+            break
+        else:
+          print('invalid cursor move')
+          return
+      case CutterStage.STAGE_B:
+        if self.__sel_b - self.__sel_a < 2:
+          print('invalid cursor move')
+          return
+
+        for i, c in enumerate(reversed(self.__text[self.__sel_a:self.__sel_b - 1]), start=1):
+          if c == '↵':
+            for j, c in enumerate(reversed(self.__text[self.__sel_a:self.__sel_b - 1 - i])):
+              if c == '↵':
+                self.__sel_b -= i + j
+                break
+            else:
+              self.__sel_b = self.__sel_a + 1
+            break
+        else:
+          print('invalid cursor move')
+          return
 
     self.__rerender_preview()
 
