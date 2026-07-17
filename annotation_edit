@@ -266,6 +266,7 @@ class CutterDialog(QDialog):
     match self.__stage:
       case CutterStage.STAGE_A:
         self.__stage = CutterStage.STAGE_B
+        self.__sel_b = self.__sel_a + 1
         self.__rerender_preview()
       case CutterStage.STAGE_B:
         self.accept()
