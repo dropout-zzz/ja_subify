@@ -2,6 +2,8 @@
 
 # interactive CLI for annotation verification
 
+# this program is not usable yet
+
 from argparse import ArgumentParser
 from annotation_file import annotation_parse
 from dataclasses import dataclass
