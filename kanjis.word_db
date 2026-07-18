@@ -243,3 +243,64 @@
 {"base": "楽しんでる", "fragments": [{"inner": {"base": "楽", "reading": "たの"}, "type": 1}, {"inner": {"text": "しんでる"}, "type": 0}]}
 {"base": "来なくて", "fragments": [{"inner": {"base": "来", "reading": "こ"}, "type": 1}, {"inner": {"text": "なくて"}, "type": 0}]}
 {"base": "心配しなくて", "fragments": [{"inner": {"base": "心", "reading": "しん"}, "type": 1}, {"inner": {"base": "配", "reading": "ぱい"}, "type": 1}, {"inner": {"text": "しなくて"}, "type": 0}]}
+{"base": "お風呂", "fragments": [{"inner": {"text": "お"}, "type": 0}, {"inner": {"base": "風", "reading": "ふ"}, "type": 1}, {"inner": {"base": "呂", "reading": "ろ"}, "type": 1}]}
+{"base": "座り", "fragments": [{"inner": {"base": "座", "reading": "すわ"}, "type": 1}, {"inner": {"text": "り"}, "type": 0}]}
+{"base": "入", "fragments": [{"inner": {"base": "入", "reading": "はい"}, "type": 1}]}
+{"base": "行こう", "fragments": [{"inner": {"base": "行", "reading": "い"}, "type": 1}, {"inner": {"text": "こう"}, "type": 0}]}
+{"base": "毎日", "fragments": [{"inner": {"base": "毎", "reading": "まい"}, "type": 1}, {"inner": {"base": "日", "reading": "にち"}, "type": 1}]}
+{"base": "食べられて", "fragments": [{"inner": {"base": "食", "reading": "た"}, "type": 1}, {"inner": {"text": "べられて"}, "type": 0}]}
+{"base": "来", "fragments": [{"inner": {"base": "来", "reading": "く"}, "type": 1}]}
+{"base": "過ぎた", "fragments": [{"inner": {"base": "過", "reading": "す"}, "type": 1}, {"inner": {"text": "ぎた"}, "type": 0}]}
+{"base": "食べてた", "fragments": [{"inner": {"base": "食", "reading": "た"}, "type": 1}, {"inner": {"text": "べてた"}, "type": 0}]}
+{"base": "太る", "fragments": [{"inner": {"base": "太", "reading": "ふと"}, "type": 1}, {"inner": {"text": "る"}, "type": 0}]}
+{"base": "分", "fragments": [{"inner": {"base": "分", "reading": "ぶん"}, "type": 1}]}
+{"base": "運動する", "fragments": [{"inner": {"base": "運", "reading": "うん"}, "type": 1}, {"inner": {"base": "動", "reading": "どう"}, "type": 1}, {"inner": {"text": "する"}, "type": 0}]}
+{"base": "運動してた", "fragments": [{"inner": {"base": "運", "reading": "うん"}, "type": 1}, {"inner": {"base": "動", "reading": "どう"}, "type": 1}, {"inner": {"text": "してた"}, "type": 0}]}
+{"base": "大人", "fragments": [{"inner": {"base": "大人", "reading": "おとな"}, "type": 1}]}
+{"base": "時", "fragments": [{"inner": {"base": "時", "reading": "とき"}, "type": 1}]}
+{"base": "楽しみ", "fragments": [{"inner": {"base": "楽", "reading": "たの"}, "type": 1}, {"inner": {"text": "しみ"}, "type": 0}]}
+{"base": "何て", "fragments": [{"inner": {"base": "何", "reading": "なん"}, "type": 1}, {"inner": {"text": "て"}, "type": 0}]}
+{"base": "ご飯", "fragments": [{"inner": {"text": "ご"}, "type": 0}, {"inner": {"base": "飯", "reading": "はん"}, "type": 1}]}
+{"base": "誰", "fragments": [{"inner": {"base": "誰", "reading": "だれ"}, "type": 1}]}
+{"base": "敵", "fragments": [{"inner": {"base": "敵", "reading": "てき"}, "type": 1}]}
+{"base": "夕飯", "fragments": [{"inner": {"base": "夕", "reading": "ゆう"}, "type": 1}, {"inner": {"base": "飯", "reading": "はん"}, "type": 1}]}
+{"base": "食わせて", "fragments": [{"inner": {"base": "食", "reading": "く"}, "type": 1}, {"inner": {"text": "わせて"}, "type": 0}]}
+{"base": "目", "fragments": [{"inner": {"base": "目", "reading": "め"}, "type": 1}]}
+{"base": "遭った", "fragments": [{"inner": {"base": "遭", "reading": "あ"}, "type": 1}, {"inner": {"text": "った"}, "type": 0}]}
+{"base": "放置される", "fragments": [{"inner": {"base": "放", "reading": "ほう"}, "type": 1}, {"inner": {"base": "置", "reading": "ち"}, "type": 1}, {"inner": {"text": "される"}, "type": 0}]}
+{"base": "寝", "fragments": [{"inner": {"base": "寝", "reading": "ね"}, "type": 1}]}
+{"base": "唾", "fragments": [{"inner": {"base": "唾", "reading": "つば"}, "type": 1}]}
+{"base": "飲み込む", "fragments": [{"inner": {"base": "飲", "reading": "の"}, "type": 1}, {"inner": {"text": "み"}, "type": 0}, {"inner": {"base": "込", "reading": "こ"}, "type": 1}, {"inner": {"text": "む"}, "type": 0}]}
+{"base": "寝息", "fragments": [{"inner": {"base": "寝", "reading": "ね"}, "type": 1}, {"inner": {"base": "息", "reading": "いき"}, "type": 1}]}
+{"base": "怒られた", "fragments": [{"inner": {"base": "怒", "reading": "おこ"}, "type": 1}, {"inner": {"text": "られた"}, "type": 0}]}
+{"base": "勝手", "fragments": [{"inner": {"base": "勝", "reading": "かっ"}, "type": 1}, {"inner": {"base": "手", "reading": "て"}, "type": 1}]}
+{"base": "気にしない", "fragments": [{"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"text": "にしない"}, "type": 0}]}
+{"base": "着せて", "fragments": [{"inner": {"base": "着", "reading": "き"}, "type": 1}, {"inner": {"text": "せて"}, "type": 0}]}
+{"base": "見た目", "fragments": [{"inner": {"base": "見", "reading": "み"}, "type": 1}, {"inner": {"text": "た"}, "type": 0}, {"inner": {"base": "目", "reading": "め"}, "type": 1}]}
+{"base": "不意打ち", "fragments": [{"inner": {"base": "不", "reading": "ふ"}, "type": 1}, {"inner": {"base": "意", "reading": "い"}, "type": 1}, {"inner": {"base": "打", "reading": "う"}, "type": 1}, {"inner": {"text": "ち"}, "type": 0}]}
+{"base": "嫌な", "fragments": [{"inner": {"base": "嫌", "reading": "いや"}, "type": 1}, {"inner": {"text": "な"}, "type": 0}]}
+{"base": "受け入れて", "fragments": [{"inner": {"base": "受", "reading": "う"}, "type": 1}, {"inner": {"text": "け"}, "type": 0}, {"inner": {"base": "入", "reading": "い"}, "type": 1}, {"inner": {"text": "れて"}, "type": 0}]}
+{"base": "寝相", "fragments": [{"inner": {"base": "寝", "reading": "ね"}, "type": 1}, {"inner": {"base": "相", "reading": "ぞう"}, "type": 1}]}
+{"base": "悪", "fragments": [{"inner": {"base": "悪", "reading": "わる"}, "type": 1}]}
+{"base": "鳴き声", "fragments": [{"inner": {"base": "鳴", "reading": "な"}, "type": 1}, {"inner": {"text": "き"}, "type": 0}, {"inner": {"base": "声", "reading": "ごえ"}, "type": 1}]}
+{"base": "鳥", "fragments": [{"inner": {"base": "鳥", "reading": "とり"}, "type": 1}]}
+{"base": "悪い", "fragments": [{"inner": {"base": "悪", "reading": "わる"}, "type": 1}, {"inner": {"text": "い"}, "type": 0}]}
+{"base": "寝てる", "fragments": [{"inner": {"base": "寝", "reading": "ね"}, "type": 1}, {"inner": {"text": "てる"}, "type": 0}]}
+{"base": "大変", "fragments": [{"inner": {"base": "大", "reading": "たい"}, "type": 1}, {"inner": {"base": "変", "reading": "へん"}, "type": 1}]}
+{"base": "１人", "fragments": [{"inner": {"base": "１人", "reading": "ひとり"}, "type": 1}]}
+{"base": "家", "fragments": [{"inner": {"base": "家", "reading": "いえ"}, "type": 1}]}
+{"base": "白く", "fragments": [{"inner": {"base": "白", "reading": "しろ"}, "type": 1}, {"inner": {"text": "く"}, "type": 0}]}
+{"base": "輝く", "fragments": [{"inner": {"base": "輝", "reading": "かがや"}, "type": 1}, {"inner": {"text": "く"}, "type": 0}]}
+{"base": "奇跡", "fragments": [{"inner": {"base": "奇", "reading": "き"}, "type": 1}, {"inner": {"base": "跡", "reading": "せき"}, "type": 1}]}
+{"base": "着る", "fragments": [{"inner": {"base": "着", "reading": "き"}, "type": 1}, {"inner": {"text": "る"}, "type": 0}]}
+{"base": "恥ずかしい", "fragments": [{"inner": {"base": "恥", "reading": "は"}, "type": 1}, {"inner": {"text": "ずかしい"}, "type": 0}]}
+{"base": "姿", "fragments": [{"inner": {"base": "姿", "reading": "すがた"}, "type": 1}]}
+{"base": "誰か", "fragments": [{"inner": {"base": "誰", "reading": "だれ"}, "type": 1}, {"inner": {"text": "か"}, "type": 0}]}
+{"base": "見られた", "fragments": [{"inner": {"base": "見", "reading": "み"}, "type": 1}, {"inner": {"text": "られた"}, "type": 0}]}
+{"base": "生きて", "fragments": [{"inner": {"base": "生", "reading": "い"}, "type": 1}, {"inner": {"text": "きて"}, "type": 0}]}
+{"base": "隣", "fragments": [{"inner": {"base": "隣", "reading": "となり"}, "type": 1}]}
+{"base": "空き家", "fragments": [{"inner": {"base": "空", "reading": "あ"}, "type": 1}, {"inner": {"text": "き"}, "type": 0}, {"inner": {"base": "家", "reading": "や"}, "type": 1}]}
+{"base": "決めゼリフ", "fragments": [{"inner": {"base": "決", "reading": "き"}, "type": 1}, {"inner": {"text": "めゼリフ"}, "type": 0}]}
+{"base": "見られてた", "fragments": [{"inner": {"base": "見", "reading": "み"}, "type": 1}, {"inner": {"text": "られてた"}, "type": 0}]}
+{"base": "次回", "fragments": [{"inner": {"base": "次", "reading": "じ"}, "type": 1}, {"inner": {"base": "回", "reading": "かい"}, "type": 1}]}
+{"base": "お楽しみに", "fragments": [{"inner": {"text": "お"}, "type": 0}, {"inner": {"base": "楽", "reading": "たの"}, "type": 1}, {"inner": {"text": "しみに"}, "type": 0}]}
