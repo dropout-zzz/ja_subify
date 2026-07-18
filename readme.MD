@@ -3,6 +3,8 @@ ja_subify
 
 Tools to convert untranslated Japanese anime subtitles into text documents, quickly add Furigana to them and render as HTML.
 
+In future, rendering as ASS subtitle may be supported.
+
 ## Quick start
 
 1. Ensure Python and PySide6 (optional, for GUIs) is installed on system.
