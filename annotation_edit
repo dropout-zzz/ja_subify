@@ -318,6 +318,9 @@ class CutterDialog(QDialog):
             self.__sel_a -= i
             break
           last_script = script
+        else:
+          print('cant find prev word')
+          return
       case CutterStage.STAGE_B:
         for i, c in enumerate(reversed(self.__text[self.__sel_a:self.__sel_b])):
           script = _get_char_script(c)
@@ -325,6 +328,9 @@ class CutterDialog(QDialog):
             self.__sel_b -= i
             break
           last_script = script
+        else:
+          print('cant find prev word')
+          return
 
     self.__rerender_preview()
 
@@ -339,6 +345,9 @@ class CutterDialog(QDialog):
             self.__sel_a += i
             break
           last_script = script
+        else:
+          print('cant find next word')
+          return
       case CutterStage.STAGE_B:
         for i, c in enumerate(self.__text[self.__sel_b:]):
           script = _get_char_script(c)
@@ -346,6 +355,9 @@ class CutterDialog(QDialog):
             self.__sel_b += i
             break
           last_script = script
+        else:
+          print('cant find next word')
+          return
 
     self.__rerender_preview()
 
