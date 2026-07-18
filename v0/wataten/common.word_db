@@ -1,2 +1,3 @@
 {"base": "みゃー姉", "fragments": [{"inner": {"text": "みゃー"}, "type": 0}, {"inner": {"base": "姉", "reading": "ねえ"}, "type": 1}]}
 {"base": "花ちゃん", "fragments": [{"inner": {"base": "花", "reading": "はな"}, "type": 1}, {"inner": {"text": "ちゃん"}, "type": 0}]}
+{"base": "千鶴", "fragments": [{"inner": {"base": "千", "reading": "ち"}, "type": 1}, {"inner": {"base": "鶴", "reading": "づる"}, "type": 1}]}
