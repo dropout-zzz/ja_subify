@@ -229,6 +229,24 @@ class CutterStage(Enum):
   STAGE_A = enum.auto()
   STAGE_B = enum.auto()
 
+class WritingScript(Enum):
+  OTHER = enum.auto()
+  KATAKANA = enum.auto()
+  KANJI = enum.auto()
+
+def _get_char_script(c: str) -> WritingScript:
+  cp = ord(c)
+
+  # https://ja.wikipedia.org/wiki/片仮名_(Unicodeのブロック)#収録文字
+  if cp >= 0x30A1 and cp <= 0x30FA:
+    return WritingScript.KATAKANA
+
+  # https://ja.wikipedia.org/wiki/CJK統合漢字_(Unicodeのブロック)
+  if cp >= 0x4E00 and cp <= 0x9FFF:
+    return WritingScript.KANJI
+
+  return WritingScript.OTHER
+
 class CutterDialog(QDialog):
   def __init__(self, parent: QWidget, text: str):
     QDialog.__init__(self, parent)
@@ -270,6 +288,12 @@ class CutterDialog(QDialog):
     self.__key_cursor_end = QShortcut(Qt.Key.Key_End, self)
     self.__key_cursor_end.activated.connect(self.__do_move_cursor_end)
 
+    self.__key_cursor_prev_word = QShortcut(Qt.KeyboardModifier.ControlModifier | Qt.Key.Key_Left, self)
+    self.__key_cursor_prev_word.activated.connect(self.__do_move_cursor_prev_word)
+
+    self.__key_cursor_next_word = QShortcut(Qt.KeyboardModifier.ControlModifier | Qt.Key.Key_Right, self)
+    self.__key_cursor_next_word.activated.connect(self.__do_move_cursor_next_word)
+
     self.__key_commit = QShortcut(Qt.Key.Key_Return, self)
     self.__key_commit.activated.connect(self.__do_commit)
 
@@ -282,6 +306,48 @@ class CutterDialog(QDialog):
         self.__rerender_preview()
       case CutterStage.STAGE_B:
         self.accept()
+
+  @Slot()
+  def __do_move_cursor_prev_word(self):
+    last_script = None
+    match self.__stage:
+      case CutterStage.STAGE_A:
+        for i, c in enumerate(reversed(self.__text[:self.__sel_a])):
+          script = _get_char_script(c)
+          if last_script is not None and script != last_script:
+            self.__sel_a -= i
+            break
+          last_script = script
+      case CutterStage.STAGE_B:
+        for i, c in enumerate(reversed(self.__text[self.__sel_a:self.__sel_b])):
+          script = _get_char_script(c)
+          if last_script is not None and script != last_script:
+            self.__sel_b -= i
+            break
+          last_script = script
+
+    self.__rerender_preview()
+
+  @Slot()
+  def __do_move_cursor_next_word(self):
+    last_script = None
+    match self.__stage:
+      case CutterStage.STAGE_A:
+        for i, c in enumerate(self.__text[self.__sel_a:]):
+          script = _get_char_script(c)
+          if last_script is not None and script != last_script:
+            self.__sel_a += i
+            break
+          last_script = script
+      case CutterStage.STAGE_B:
+        for i, c in enumerate(self.__text[self.__sel_b:]):
+          script = _get_char_script(c)
+          if last_script is not None and script != last_script:
+            self.__sel_b += i
+            break
+          last_script = script
+
+    self.__rerender_preview()
 
   @Slot()
   def __do_move_cursor_home(self):
