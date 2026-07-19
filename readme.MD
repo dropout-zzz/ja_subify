@@ -1,6 +1,8 @@
 ja_subify
 =========
 
+![](https://img.shields.io/github/repo-size/dropout-zzz/ja_subify?style=for-the-badge)
+
 Tools to convert untranslated Japanese anime subtitles into text documents, quickly add Furigana to them and render as HTML.
 
 In future, rendering as ASS subtitle may be supported.
