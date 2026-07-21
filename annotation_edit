@@ -94,6 +94,7 @@ class AnimechoWebBridge(QObject):
   # -- called from native into web --
   nativeUpdateContent = Signal(str, bool)
   nativeGoToLine = Signal(int)
+  nativeUpdatePartialContent = Signal(int, str)
 
   # -- glues for web-native calls --
 
@@ -611,6 +612,8 @@ class AnnotationEdit(QMainWindow):
     self.__cursor_lidx = 0
     self.__cursor_aidx = 0
 
+    self.__old_cursor_lidx = -1
+
     self.resize(600, 700)
     self.setWindowTitle(f'[*] {annotation_path}')
 
@@ -729,46 +732,67 @@ class AnnotationEdit(QMainWindow):
 
     QMainWindow.changeEvent(self, event)
 
+  def __render_line(self, lidx: int) -> list[str]:
+    tags = []
+    line = self.__af.lines[lidx]
+
+    tags.append(f'<span oncontextmenu="animechoCb2(event,{lidx})">')
+
+    cursor_on_line = lidx == self.__cursor_lidx
+
+    for aidx, annotation in enumerate(line.fragments):
+      if cursor_on_line and aidx == self.__cursor_aidx:
+        if QApplication.styleHints().colorScheme() == Qt.ColorScheme.Dark and isinstance(annotation.inner, PlainAnnotation) and annotation.unfinished:
+          extras = ' style="background-color: yellow; color: black;"'
+        else:
+          extras = ' style="background-color: yellow;"'
+      else:
+        extras = ''
+
+      if isinstance(annotation.inner, PlainAnnotation):
+        if annotation.unfinished:
+          tags.append(f'<span class="animecho-unfinished"{extras} onclick="animechoCb({lidx},{aidx})">{html.escape(annotation.inner.text).replace('\n', '↵<br/>').replace(' ', '␣').replace('　', '␣')}</span>')
+        else:
+          assert annotation.ignore
+          tags.append(f'<span class="animecho-ignore"{extras}>{html.escape(annotation.inner.text).replace('\n', '↵<br/>').replace(' ', '␣').replace('　', '␣')}</span>')
+      elif isinstance(annotation.inner, LoanAnnotation):
+        tags.append(f'<span class="animecho-loan"{extras}>{html.escape(annotation.inner.base)}</span>')
+      elif isinstance(annotation.inner, KanjiAnnotation):
+        tags.append(f'<span class="animecho-kanji"{extras}>')
+
+        for chars in annotation.inner.fragments:
+          tags.append(f'<span>{html.escape(chars.base)}</span>')
+
+        tags.append('</span>')
+      else:
+        raise AssertionError('unhandled annotation type')
+
+    tags.append('</span>')
+
+    return tags
+
   def __rerender_animecho(self, restore_scroll: bool = False):
     tags = []
 
-    for lidx, line in enumerate(self.__af.lines):
+    for lidx in range(len(self.__af.lines)):
       tags.append(f'<li id="animecho-l{lidx}" class="animecho-line">')
-      tags.append(f'<span oncontextmenu="animechoCb2(event,{lidx})">')
-
-      cursor_on_line = lidx == self.__cursor_lidx
-
-      for aidx, annotation in enumerate(line.fragments):
-        if cursor_on_line and aidx == self.__cursor_aidx:
-          if QApplication.styleHints().colorScheme() == Qt.ColorScheme.Dark and isinstance(annotation.inner, PlainAnnotation) and annotation.unfinished:
-            extras = ' style="background-color: yellow; color: black;"'
-          else:
-            extras = ' style="background-color: yellow;"'
-        else:
-          extras = ''
-
-        if isinstance(annotation.inner, PlainAnnotation):
-          if annotation.unfinished:
-            tags.append(f'<span class="animecho-unfinished"{extras} onclick="animechoCb({lidx},{aidx})">{html.escape(annotation.inner.text).replace('\n', '↵<br/>').replace(' ', '␣').replace('　', '␣')}</span>')
-          else:
-            assert annotation.ignore
-            tags.append(f'<span class="animecho-ignore"{extras}>{html.escape(annotation.inner.text).replace('\n', '↵<br/>').replace(' ', '␣').replace('　', '␣')}</span>')
-        elif isinstance(annotation.inner, LoanAnnotation):
-          tags.append(f'<span class="animecho-loan"{extras}>{html.escape(annotation.inner.base)}</span>')
-        elif isinstance(annotation.inner, KanjiAnnotation):
-          tags.append(f'<span class="animecho-kanji"{extras}>')
-
-          for chars in annotation.inner.fragments:
-            tags.append(f'<span>{html.escape(chars.base)}</span>')
-
-          tags.append('</span>')
-        else:
-          raise AssertionError('unhandled annotation type')
-
-      tags.append('</span>')
+      tags.extend(self.__render_line(lidx))
       tags.append('</li>')
 
     self.__web.nativeUpdateContent.emit(''.join(tags), restore_scroll)
+
+    self.__old_cursor_lidx = self.__cursor_lidx
+
+  def __redraw_line(self, lidx: int):
+    self.__web.nativeUpdatePartialContent.emit(lidx, ''.join(self.__render_line(lidx)))
+
+  def __redraw_cursor(self):
+    if self.__old_cursor_lidx != self.__cursor_lidx and self.__old_cursor_lidx != -1:
+      self.__redraw_line(self.__old_cursor_lidx)
+
+    self.__redraw_line(self.__cursor_lidx)
+
+    self.__old_cursor_lidx = self.__cursor_lidx
 
   @Slot()
   def __startup_debounce_finished(self):
@@ -863,7 +887,7 @@ class AnnotationEdit(QMainWindow):
         if self.__cursor_lidx == lidx:
           self.__cursor_aidx = 0
 
-        self.__rerender_animecho()
+        self.__redraw_line(lidx)
         self.__update_ux_dirty(True)
 
         print('clear labels')
@@ -888,7 +912,7 @@ class AnnotationEdit(QMainWindow):
     self.__cursor_lidx -= 1
     self.__cursor_aidx = 0
 
-    self.__rerender_animecho()
+    self.__redraw_cursor()
     self.__web.nativeGoToLine.emit(self.__cursor_lidx)
 
   @Slot()
@@ -900,7 +924,7 @@ class AnnotationEdit(QMainWindow):
     self.__cursor_lidx += 1
     self.__cursor_aidx = 0
 
-    self.__rerender_animecho()
+    self.__redraw_cursor()
     self.__web.nativeGoToLine.emit(self.__cursor_lidx)
 
   @Slot()
@@ -924,11 +948,11 @@ class AnnotationEdit(QMainWindow):
       self.__cursor_lidx -= 1
       self.__cursor_aidx = len(self.__af.lines[self.__cursor_lidx].fragments) - 1
 
-      self.__rerender_animecho()
+      self.__redraw_cursor()
       self.__web.nativeGoToLine.emit(self.__cursor_lidx)
     else:
       self.__cursor_aidx -= delta
-      self.__rerender_animecho()
+      self.__redraw_cursor()
 
   @Slot()
   def __do_cursor_right(self):
@@ -951,11 +975,11 @@ class AnnotationEdit(QMainWindow):
       self.__cursor_lidx += 1
       self.__cursor_aidx = 0
 
-      self.__rerender_animecho()
+      self.__redraw_cursor()
       self.__web.nativeGoToLine.emit(self.__cursor_lidx)
     else:
       self.__cursor_aidx += delta
-      self.__rerender_animecho()
+      self.__redraw_cursor()
 
   @Slot()
   def __go_to_line(self):
@@ -967,7 +991,7 @@ class AnnotationEdit(QMainWindow):
 
     self.__cursor_lidx = i - 1
     self.__cursor_aidx = 0
-    self.__rerender_animecho()
+    self.__redraw_cursor()
 
     self.__web.nativeGoToLine.emit(i - 1)
     print(f'goto line: {self.__af.lines[i - 1].get_normalized()!r}')
@@ -980,7 +1004,7 @@ class AnnotationEdit(QMainWindow):
         if annotation.unfinished:
           self.__cursor_lidx = lidx
           self.__cursor_aidx = 0
-          self.__rerender_animecho()
+          self.__redraw_cursor()
 
           self.__web.nativeGoToLine.emit(lidx)
           print('go to next unfinished line')
@@ -1005,7 +1029,7 @@ class AnnotationEdit(QMainWindow):
     if self.__cursor_lidx != lidx or self.__cursor_aidx != aidx:
       self.__cursor_lidx = lidx
       self.__cursor_aidx = aidx
-      self.__rerender_animecho()
+      self.__redraw_cursor()
 
     sstd = SelectSegmentTypeDialog(self, old_text)
     if sstd.exec() == QDialog.DialogCode.Rejected:
@@ -1146,7 +1170,7 @@ class AnnotationEdit(QMainWindow):
         # out of range due to merges, clamp
         self.__cursor_aidx = max_cursor_aidx
 
-    self.__rerender_animecho()
+    self.__redraw_line(lidx)
     self.__update_ux_dirty(True)
 
   @Slot(int, int)

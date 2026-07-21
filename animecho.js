@@ -29,6 +29,17 @@ function animechoGoToLine(lidx) {
   dialogueLine.scrollIntoView({ block: "center" });
 }
 
+function animechoUpdatePartialContent(lidx, s) {
+  const dialogueLine = document.getElementById(`animecho-l${lidx}`);
+
+  if (dialogueLine === null) {
+    console.error("cannot get dialogue line elem");
+    return;
+  }
+
+  dialogueLine.innerHTML = s;
+}
+
 var animechoNativeCb = null;
 var animechoNativeCb2 = null;
 
@@ -38,6 +49,7 @@ const animechoWebChan = new QWebChannel(qt.webChannelTransport, function(channel
   // calls from native into web
   animecho.nativeUpdateContent.connect(animechoUpdateContent);
   animecho.nativeGoToLine.connect(animechoGoToLine);
+  animecho.nativeUpdatePartialContent.connect(animechoUpdatePartialContent);
 
   // calls from web into native
   animechoNativeCb = animecho.notifyNativeCalledback;
