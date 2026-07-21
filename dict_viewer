@@ -22,7 +22,7 @@ from PySide6.QtGui import (
   QFont,
 )
 from normal_word_db import load_normal_words, NormalWordList, NormalTemplate, FragmentIgnore, FragmentKanjiCharacters, append_into_normal_words, NormalWordAlreadyExist, reload_into_normal_words
-from loan_word_db import load_loan_words, LoanWordList, append_into_loan_words, LoanWordAlreadyExist, LoanWord, reload_into_loan_words
+from loan_word_db import load_loan_words, LoanWordList, append_into_loan_words, LoanWordAlreadyExist, LoanWord, reload_into_loan_words, LoanFragment
 import html
 from enum import Enum
 import enum
@@ -122,6 +122,121 @@ class InputFlatReadingDialog(QDialog):
   def getFlatWordResult(self) -> str:
     assert self.__result != ''
     return self.__result
+
+class LoanCutterDialog(QDialog):
+  def __init__(self, parent: QWidget, base: str, romanized: str):
+    QDialog.__init__(self, parent)
+
+    self.__staging = LoanWord(base)
+
+    # uncommited ranges
+    self.__remaining_base = base
+    self.__remaining_romanized = romanized.split(' ')
+
+    # initial values
+    self.__sel_base = 1
+
+    self.__layout = QVBoxLayout(self)
+
+    self.__lbl_tip = QLabel(text='arrow keys to select, enter to commit')
+    self.__lbl_base = QLabel()
+    self.__lbl_romanized = QLabel()
+
+    self.__font = QFont()
+    self.__font.setPointSize(20)
+
+    self.__lbl_base.setFont(self.__font)
+    self.__lbl_romanized.setFont(self.__font)
+
+    self.__layout.addWidget(self.__lbl_tip)
+    self.__layout.addWidget(self.__lbl_base)
+    self.__layout.addWidget(self.__lbl_romanized)
+
+    self.__update_previews()
+
+    self.__key_cursor_left = QShortcut(Qt.Key.Key_Left, self)
+    self.__key_cursor_left.activated.connect(self.__do_move_cursor_left)
+
+    self.__key_cursor_right = QShortcut(Qt.Key.Key_Right, self)
+    self.__key_cursor_right.activated.connect(self.__do_move_cursor_right)
+
+    self.__key_commit = QShortcut(Qt.Key.Key_Return, self)
+    self.__key_commit.activated.connect(self.__do_commit)
+
+  def __update_previews(self):
+    chunks_base = []
+    chunks_romanized = []
+
+    # previously committed ranges
+    for fragment in self.__staging.fragments:
+      chunks_base.append(f'<font color="grey">{html.escape(fragment.base)}</font>')
+      chunks_romanized.append(f'<font color="grey">{html.escape(fragment.romanized)}</font><span> </span>')
+
+    selection_base = self.__remaining_base[:self.__sel_base]
+    remaining_base = self.__remaining_base[self.__sel_base:]
+    chunks_base.append(f'<font color="red">{html.escape(selection_base)}</font>')
+    chunks_base.append(f'<span>{html.escape(remaining_base)}</span>')
+
+    current_romanized = self.__remaining_romanized[0]
+    remaining_romanized = self.__remaining_romanized[1:]
+
+    chunks_romanized.append(f'<font color="red">{html.escape(current_romanized)}</font><span> </span>')
+    for x in remaining_romanized:
+      chunks_romanized.append(f'<span>{html.escape(x)}</span><span> </span>')
+
+    self.__lbl_base.setText(''.join(chunks_base))
+    self.__lbl_romanized.setText(''.join(chunks_romanized).removesuffix('<span> </span>'))
+
+  @Slot()
+  def __do_commit(self):
+    selection_base = self.__remaining_base[:self.__sel_base]
+    remaining_base = self.__remaining_base[self.__sel_base:]
+
+    current_romanized = self.__remaining_romanized[0]
+    remaining_romanized = self.__remaining_romanized[1:]
+
+    print(f'commit fragment: {selection_base}({current_romanized})')
+    self.__staging.fragments.append(LoanFragment(base=selection_base, romanized=current_romanized))
+
+    self.__remaining_base = remaining_base
+    self.__remaining_romanized = remaining_romanized
+
+    drained = (self.__remaining_base == '', len(self.__remaining_romanized) == 0)
+    if any(drained):
+      if not all(drained):
+        print('ran out of chars')
+        self.reject()
+        return
+
+      # we're done
+      self.accept()
+      return
+
+    # reset
+    self.__sel_base = 1
+
+    self.__update_previews()
+
+  @Slot()
+  def __do_move_cursor_left(self):
+    if self.__sel_base == 1:
+      print('invalid move')
+      return
+
+    self.__sel_base -= 1
+    self.__update_previews()
+
+  @Slot()
+  def __do_move_cursor_right(self):
+    if self.__sel_base == len(self.__remaining_base):
+      print('invalid move')
+      return
+
+    self.__sel_base += 1
+    self.__update_previews()
+
+  def getLoanWord(self) -> LoanWord:
+    return self.__staging
 
 class CutterStage(Enum):
   STAGE_BASE = enum.auto()
@@ -382,9 +497,14 @@ class DictViewer(QMainWindow):
     romanized = irwd.getLoanWordResult()
     print(f'romanized: {romanized!r}')
 
+    cutter = LoanCutterDialog(self, base, romanized)
+    if cutter.exec() == QDialog.DialogCode.Rejected:
+      print('user canceled or error occured')
+      return
+
     reload_into_loan_words(self.__lwl, self.__loan_dict_path)
     try:
-      append_into_loan_words(self.__lwl, self.__loan_dict_path, LoanWord(base=base, romanized=romanized))
+      append_into_loan_words(self.__lwl, self.__loan_dict_path, cutter.getLoanWord())
     except LoanWordAlreadyExist:
       print('word already exist in db')
     else:

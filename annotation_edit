@@ -1042,18 +1042,24 @@ class AnnotationEdit(QMainWindow):
           self.__status_bar.showMessage('No dictionary match', timeout=2000)
           return
 
-        swcd = SelectWordCandidateDialog(self, [x.romanized for x in matches])
+        normalized = [x.get_normalized() for x in matches]
+
+        swcd = SelectWordCandidateDialog(self, normalized)
         if swcd.exec() == QDialog.DialogCode.Rejected:
           print('user canceled')
           self.__status_bar.showMessage('Canceled labeling', timeout=2000)
           return
 
-        loan = matches[swcd.getCandidateIndex()]
+        idx = swcd.getCandidateIndex()
+        loan = matches[idx]
 
-        print(f'loan: {loan.base}({loan.romanized})')
-        self.__status_bar.showMessage(f'Loan word: {loan.base} {loan.romanized}', timeout=2000)
+        print(f'loan: {loan.base}({normalized[idx]})')
+        self.__status_bar.showMessage(f'Loan word: {loan.base} {normalized[idx]}', timeout=2000)
 
-        new_annotation = [Annotation(inner=LoanAnnotation(base=loan.base, romanized=loan.romanized))]
+        new_annotation = []
+
+        for template_fragment in loan.fragments:
+          new_annotation.append(Annotation(inner=LoanAnnotation(base=template_fragment.base, romanized=template_fragment.romanized)))
       case CreateSegmentType.CREATE_KANJI_SEGMENT:
         matches = []
 

@@ -33,9 +33,9 @@ def main():
   af = annotation_parse(args.annotation_file.read())
 
   if args.loans_blacklist:
-    lwl = load_loan_words(args.loans_blacklist)
+    lwl = load_loan_words(args.loans_blacklist, count_known=True)
   else:
-    lwl = LoanWordList()
+    lwl = LoanWordList(count_known=True)
 
   if args.word_blacklist:
     nwl = load_normal_words(args.word_blacklist, count_known=True)
@@ -58,7 +58,7 @@ def main():
       if isinstance(annotation.inner, PlainAnnotation):
         args.html_file.write(f'<span>{html.escape(annotation.inner.text).replace("\n", "<br/>")}</span>')
       elif isinstance(annotation.inner, LoanAnnotation):
-        if args.no_labeling or args.no_loans or annotation.inner.base in lwl.inner:
+        if args.no_labeling or args.no_loans or (annotation.inner.base, annotation.inner.romanized) in lwl.known:
           args.html_file.write(f'<span>{html.escape(annotation.inner.base)}</span>')
         else:
           args.html_file.write(f'<ruby>{html.escape(annotation.inner.base)}<rt>{html.escape(annotation.inner.romanized)}</ruby>')
