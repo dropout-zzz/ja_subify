@@ -1,3 +1,9 @@
+-- 0.2a --
+
+new library:
+- fontconfig binding
+
+
 -- 0.1a2 --
 
 new features:
