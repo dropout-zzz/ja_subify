@@ -1,5 +1,9 @@
 -- 0.2a --
 
+new features:
+- ASS and SRT parser now reads timing values
+- a new mode in SRT/ASS importer to update timings only
+
 new program:
 - `export_ass`: subtitle renderer
 
