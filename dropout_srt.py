@@ -1,7 +1,6 @@
 import re
 
-# this is confusing
-# but mpv actually allows mixing ASS syntax in SRT
+# VLC supports some ASS tags inside SRT
 PATTERN_ASS_TAGS = re.compile(r'\{[^}]+\}')
 
 def _next_line(it) -> tuple[str, bool]:
