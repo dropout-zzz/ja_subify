@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+from argparse import ArgumentParser
+
+from dropout_fontconfig import (
+  FcPatternCreate,
+  FcMatchKind,
+  FC_FAMILY,
+  FcPatternAddString,
+  FcConfigSubstitute,
+  FcConfigSetDefaultSubstitute,
+  FcFontMatch,
+)
+
+def main():
+  ap = ArgumentParser()
+
+  ap.add_argument('--font-name', default='Noto Sans CJK JP')
+
+  args = ap.parse_args()
+
+  pattern = FcPatternCreate()
+  FcPatternAddString(pattern, FC_FAMILY, args.font_name)
+
+  FcConfigSubstitute(None, pattern, FcMatchKind.Pattern)
+  FcConfigSetDefaultSubstitute(None, pattern)
+
+  m = FcFontMatch(None, pattern)
+  if m is None:
+    ap.error('cant find font')
+
+main()
