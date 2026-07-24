@@ -11,13 +11,18 @@ from dropout_fontconfig import (
   FcConfigSetDefaultSubstitute,
   FcFontMatch,
 )
+from annotation_file import annotation_parse
 
 def main():
   ap = ArgumentParser()
 
+  ap.add_argument('annotation_file')
   ap.add_argument('--font-name', default='Noto Sans CJK JP')
 
   args = ap.parse_args()
+
+  with open(args.annotation_file, 'r') as f:
+    af = annotation_parse(f.read())
 
   pattern = FcPatternCreate()
   FcPatternAddString(pattern, FC_FAMILY, args.font_name)
