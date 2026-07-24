@@ -1,5 +1,8 @@
 -- 0.2a --
 
+new program:
+- `export_ass`: subtitle renderer
+
 new library:
 - fontconfig binding
 
