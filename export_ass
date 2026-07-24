@@ -20,6 +20,11 @@ def main():
   ap.add_argument('annotation_file')
   ap.add_argument('--ass-file', '-o', type=argparse.FileType('w'), required=True)
   ap.add_argument('--font-name', default='Noto Sans CJK JP')
+  ap.add_argument('--font-size', type=int, default=57)
+  ap.add_argument('--video-x', type=int, default=1920)
+  ap.add_argument('--video-y', type=int, default=1080)
+  ap.add_argument('--margin-y', type=float, default=48.75)
+  ap.add_argument('--outline-size', type=float, default=2.5)
 
   args = ap.parse_args()
 
