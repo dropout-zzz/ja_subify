@@ -11,24 +11,41 @@ from annotation_file import (
   Annotation,
   PlainAnnotation,
   annotation_save,
+  annotation_parse,
 )
 
 def main():
   ap = argparse.ArgumentParser()
 
-  ap.add_argument('sub_file', type=argparse.FileType('r'))
-  ap.add_argument('--annotation-file', '-o', type=argparse.FileType('w'), required=True)
+  ap.add_argument('sub_file')
+  ap.add_argument('--annotation-file', '-o', required=True)
+  ap.add_argument('--retime', action='store_true', help='open an existing annotation file instead, and copy timings from a subtitle file into the annotation file')
 
   args = ap.parse_args()
 
   af = AnnotationFile()
 
-  for subtitle in dropout_parse_srt(args.sub_file.read()):
-    af.lines.append(DialogueLine(fragments=[Annotation(PlainAnnotation(subtitle.text), unfinished=True)], start_time=subtitle.timing[0], end_time=subtitle.timing[1]))
+  with open(args.sub_file, 'r') as f:
+    for subtitle in dropout_parse_srt(f.read()):
+      af.lines.append(DialogueLine(fragments=[Annotation(PlainAnnotation(subtitle.text), unfinished=True)], start_time=subtitle.timing[0], end_time=subtitle.timing[1]))
 
   af.validate()
 
-  args.annotation_file.write(annotation_save(af))
-  args.annotation_file.write('\n')
+  if args.retime:
+    with open(args.annotation_file, 'r') as f:
+      old_af = annotation_parse(f.read())
+
+    assert len(af.lines) == len(old_af.lines), 'line count not identical'
+
+    for new_dialogue, old_dialogue in zip(af.lines, old_af.lines):
+      assert new_dialogue.get_normalized() == old_dialogue.get_normalized(), 'text is not identical'
+      old_dialogue.copy_timing_from(new_dialogue)
+
+    # reuse code path
+    af = old_af
+
+  with open(args.annotation_file, 'w') as f:
+    f.write(annotation_save(af))
+    f.write('\n')
 
 main()
