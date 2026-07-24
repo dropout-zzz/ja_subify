@@ -23,8 +23,8 @@ def main():
 
   af = AnnotationFile()
 
-  for line in dropout_parse_ass(args.sub_file.read()):
-    af.lines.append(DialogueLine([Annotation(PlainAnnotation(line), unfinished=True)]))
+  for subtitle in dropout_parse_ass(args.sub_file.read()):
+    af.lines.append(DialogueLine([Annotation(PlainAnnotation(subtitle.text), unfinished=True)]))
 
   af.validate()
 

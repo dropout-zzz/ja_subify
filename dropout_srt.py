@@ -1,13 +1,36 @@
 import re
+from common_subtitles import Subtitle
 
 # VLC supports some ASS tags inside SRT
 PATTERN_ASS_TAGS = re.compile(r'\{[^}]+\}')
+
+PATTERN_TS = re.compile(r'(\d{2}):(\d{2}):(\d{2}),(\d{3})')
+
+TIMING_SEP = '-->'
 
 def _next_line(it) -> tuple[str, bool]:
   try:
     return next(it), False
   except StopIteration:
     return '', True
+
+def parse_ts(s: str) -> int:
+  m = PATTERN_TS.fullmatch(s)
+  assert m is not None, 'cant parse timestamp'
+
+  try:
+    h, m, s, ms = map(int, m.groups())
+  except ValueError as e:
+    raise ValueError('cant parse time value') from e
+
+  return ms + (s + (m + h * 60) * 60) * 1000
+
+def parse_timing(s: str) -> tuple[int, int]:
+  try:
+    f_start, f_end = s.split(TIMING_SEP)
+  except ValueError as e:
+    raise ValueError('cant parse timing line') from e
+  return parse_ts(f_start.rstrip()), parse_ts(f_end.strip())
 
 def dropout_parse_srt(s: str):
   """take the input string and parse as SRT.
@@ -19,9 +42,10 @@ def dropout_parse_srt(s: str):
   lines = iter(s.splitlines())
 
   while True:
-    # skip craps
+    # skip line number
     _next_line(lines)
-    _next_line(lines)
+
+    timing_line, _ = _next_line(lines)
 
     texts = []
     while True:
@@ -34,4 +58,4 @@ def dropout_parse_srt(s: str):
     if eof and len(texts) == 0:
       break
 
-    yield '\n'.join(texts)
+    yield Subtitle(text='\n'.join(texts), timing=parse_timing(timing_line))
