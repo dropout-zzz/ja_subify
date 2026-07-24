@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# TODO: font fallbacks
+
 import argparse
 from argparse import ArgumentParser
 
