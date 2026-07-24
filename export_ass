@@ -41,4 +41,14 @@ def main():
   if m is None:
     ap.error('cant find font')
 
+  print('[Script Info]', file=args.ass_file)
+  print('ScriptType: v4.00+', file=args.ass_file)
+  print('ScaledBorderAndShadow: yes', file=args.ass_file)
+  print(f'PlayResX: {args.video_x}', file=args.ass_file)
+  print(f'PlayResY: {args.video_y}', file=args.ass_file)
+
+  print('[V4+ Styles]', file=args.ass_file)
+  print('Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BorderStyle, Outline, Shadow, Alignment, Encoding', file=args.ass_file)
+  print(f'Style: Default,{args.font_name},{args.font_size},&H00FFFFFF,&H00000000,1,{args.outline_size},0,7,1', file=args.ass_file)
+
 main()
