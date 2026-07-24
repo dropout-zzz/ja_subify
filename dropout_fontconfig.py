@@ -1,6 +1,7 @@
 from ctypes import CDLL, POINTER, byref, c_void_p, c_int, c_char_p
 from ctypes.util import find_library
 from enum import IntEnum
+from weakref import finalize
 
 def _load_libfontconfig():
   s = find_library('fontconfig')
@@ -98,14 +99,15 @@ _fc_font_match = _libfontconfig.FcFontMatch
 _fc_font_match.argtypes = [FcConfig, FcPattern, POINTER(c_int)]
 _fc_font_match.restype = c_void_p
 
-def FcFini():
-  _fc_fini()
+finalize(_libfontconfig, _fc_fini)
+
+def _pattern_destructor(pattern: FcPattern):
+  finalize(pattern, lambda x: _fc_pattern_destroy(FcPattern(x)), pattern.value)
 
 def FcPatternCreate() -> FcPattern:
-  return FcPattern(_fc_pattern_create())
-
-def FcPatternDestroy(p: FcPattern):
-  _fc_pattern_destroy(p)
+  x = FcPattern(_fc_pattern_create())
+  _pattern_destructor(x)
+  return x
 
 def FcConfigSubstitute(config: FcConfig | None, p: FcPattern, kind: FcMatchKind):
   _fc_config_substitute(config, p, kind)
@@ -134,4 +136,6 @@ def FcFontMatch(config: FcConfig | None, p: FcPattern) -> FcPattern | None:
   except KeyError:
     pass
   if m is not None:
-    return FcPattern(m)
+    x = FcPattern(m)
+    _pattern_destructor(x)
+    return x
