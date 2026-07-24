@@ -6,6 +6,7 @@ import dataclasses
 from dataclasses import dataclass
 from enum import IntEnum
 import json
+import re
 
 @dataclass
 class PlainAnnotation:
@@ -164,11 +165,30 @@ class Annotation:
       inner=inner,
     )
 
+def _serialize_ts(ts: int) -> str:
+  tmp, ms = divmod(ts, 1000)
+  tmp, secs = divmod(tmp, 60)
+  hrs, mins = divmod(tmp, 60)
+  return f'{hrs:02}:{mins:02}:{secs:02},{ms:03}'
+
+_PATTERN_TS = re.compile(r'(\d{2}):(\d{2}):(\d{2}),(\d{3})')
+
+def _deserialize_ts(s: str) -> int:
+  m = _PATTERN_TS.fullmatch(s)
+  hrs, mins, secs, ms = map(int, m.groups())
+  return ms + (secs + (mins + hrs * 60) * 60) * 1000
+
 @dataclass
 class DialogueLine:
   """total content displayed as a subtitle line."""
 
   fragments: list[Annotation] = dataclasses.field(default_factory=list)
+  start_time: int = 0
+  end_time: int = 0
+
+  def copy_timing_from(self, other):
+    self.start_time = other.start_time
+    self.end_time = other.end_time
 
   def get_normalized(self) -> str:
     """converts this line back into plaintext again"""
@@ -177,6 +197,8 @@ class DialogueLine:
   def serialize(self, lineno: int = -1) -> dict:
     return {
       'fragments': [x.serialize() for x in self.fragments],
+      'start_time': _serialize_ts(self.start_time),
+      'end_time': _serialize_ts(self.end_time),
 
       # these fields are intentionally ignored when reading
       'lineno': lineno,
@@ -185,7 +207,11 @@ class DialogueLine:
 
   @classmethod
   def deserialize(cls, d: dict):
-    return cls(fragments=[Annotation.deserialize(x) for x in d['fragments']])
+    return cls(
+      fragments=[Annotation.deserialize(x) for x in d['fragments']],
+      start_time=_deserialize_ts(d.get('start_time', '00:00:00,000')),
+      end_time=_deserialize_ts(d.get('end_time', '00:00:00,000')),
+    )
 
   def validate(self):
     if not isinstance(self.fragments, list):
