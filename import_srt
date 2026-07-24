@@ -24,7 +24,7 @@ def main():
   af = AnnotationFile()
 
   for subtitle in dropout_parse_srt(args.sub_file.read()):
-    af.lines.append(DialogueLine([Annotation(PlainAnnotation(subtitle.text), unfinished=True)]))
+    af.lines.append(DialogueLine(fragments=[Annotation(PlainAnnotation(subtitle.text), unfinished=True)], start_time=subtitle.timing[0], end_time=subtitle.timing[1]))
 
   af.validate()
 

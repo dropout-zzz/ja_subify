@@ -880,6 +880,7 @@ class AnnotationEdit(QMainWindow):
     match cmad.getContextMenuActionType():
       case ContextMenuActionType.CONTEXT_MENU_ACTION_RESET_LINE:
         new_line = DialogueLine([Annotation(PlainAnnotation(normalized_line), unfinished=True)])
+        new_line.copy_timing_from(self.__af.lines[lidx])
         new_line.validate()
         self.__af.lines.pop(lidx)
         self.__af.lines.insert(lidx, new_line)
@@ -1144,6 +1145,7 @@ class AnnotationEdit(QMainWindow):
     dialogue.fragments[aidx:aidx] = new_annotations
 
     line_new = DialogueLine()
+    line_new.copy_timing_from(dialogue)
 
     for i in dialogue.fragments:
       if not isinstance(i.inner, PlainAnnotation):
