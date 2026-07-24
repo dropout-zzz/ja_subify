@@ -17,11 +17,11 @@ def parse_timestamp(s: str) -> int:
   assert m is not None, 'cant parse timestamp'
 
   try:
-    h, m, s, ms = map(int, m.groups())
+    hrs, mins, secs, ms = map(int, m.groups())
   except ValueError as e:
     raise ValueError('cant parse time value') from e
 
-  return ms + (s + (m + h * 60) * 60) * 1000
+  return ms + (secs + (mins + hrs * 60) * 60) * 1000
 
 def dropout_parse_ass(s: str):
   """parse the input string as ASS.

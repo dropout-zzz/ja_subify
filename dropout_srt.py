@@ -19,11 +19,11 @@ def parse_ts(s: str) -> int:
   assert m is not None, 'cant parse timestamp'
 
   try:
-    h, m, s, ms = map(int, m.groups())
+    hrs, mins, secs, ms = map(int, m.groups())
   except ValueError as e:
     raise ValueError('cant parse time value') from e
 
-  return ms + (s + (m + h * 60) * 60) * 1000
+  return ms + (secs + (mins + hrs * 60) * 60) * 1000
 
 def parse_timing(s: str) -> tuple[int, int]:
   try:
