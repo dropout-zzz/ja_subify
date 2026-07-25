@@ -11,8 +11,13 @@ from dropout_fontconfig import (
   FcConfigSubstitute,
   FcConfigSetDefaultSubstitute,
   FcFontMatch,
+  FC_FILE,
+  FcPatternGetString,
+  FC_INDEX,
+  FcPatternGetInteger,
 )
 from annotation_file import annotation_parse
+from dropout_freetype import FT_Init_FreeType, FT_New_Face
 
 def main():
   ap = ArgumentParser()
@@ -40,6 +45,12 @@ def main():
   m = FcFontMatch(None, pattern)
   if m is None:
     ap.error('cant find font')
+
+  font_path = FcPatternGetString(m, FC_FILE, 0)
+  font_idx = FcPatternGetInteger(m, FC_INDEX, 0)
+
+  ft = FT_Init_FreeType()
+  face = FT_New_Face(ft, font_path, font_idx)
 
   print('[Script Info]', file=args.ass_file)
   print('ScriptType: v4.00+', file=args.ass_file)
