@@ -9,6 +9,7 @@ new program:
 
 new library:
 - fontconfig binding
+- freetype binding
 
 
 -- 0.1a2 --
