@@ -1,7 +1,8 @@
 from ctypes.util import find_library
-from ctypes import CDLL, POINTER, byref, c_void_p, c_int
+from ctypes import CDLL, POINTER, byref, Structure, addressof, c_void_p, c_int, c_long, c_char_p, c_ushort, c_short
 from enum import IntEnum
 from weakref import finalize
+from typing import Any
 
 def _load_freetype():
   name = find_library('freetype')
@@ -110,6 +111,71 @@ class FT_Error(IntEnum):
   Bbx_Too_Big = 184
   Corrupted_Font_Header = 185
   Corrupted_Font_Glyphs = 186
+
+class FT_ListRec(Structure):
+  pass
+
+class FT_FaceRec(Structure):
+  pass
+
+FT_Face = POINTER(FT_FaceRec)
+
+class FT_Generic(Structure):
+  pass
+
+FT_Generic._fields_ = [
+  ("data", c_void_p),
+  ("finalizer", c_void_p),  # FIXME
+]
+
+class FT_BBox(Structure):
+  pass
+
+FT_BBox._fields_ = [
+  ("xMin", c_long),
+  ("yMin", c_long),
+  ("xMax", c_long),
+  ("yMax", c_long),
+]
+
+FT_ListRec._fields_ = [
+  ("head", c_void_p),  # FIXME
+  ("tail", c_void_p),  # FIXME
+]
+
+FT_FaceRec._fields_ = [
+  ("num_faces", c_long),
+  ("face_index", c_long),
+  ("face_flags", c_long),
+  ("style_flags", c_long),
+  ("num_glyphs", c_long),
+  ("family_name", c_char_p),
+  ("style_name", c_char_p),
+  ("num_fixed_sizes", c_int),
+  ("available_sizes", c_void_p),  # FIXME
+  ("num_charmaps", c_int),
+  ("charmaps", c_void_p),  # FIXME
+  ("generic", FT_Generic),
+  ("bbox", FT_BBox),
+  ("units_per_EM", c_ushort),
+  ("ascender", c_short),
+  ("descender", c_short),
+  ("height", c_short),
+  ("max_advance_width", c_short),
+  ("max_advance_height", c_short),
+  ("underline_position", c_short),
+  ("underline_thickness", c_short),
+  ("glyph", c_void_p),  # FIXME
+  ("size", c_void_p),  # FIXME
+  ("charmap", c_void_p),  # FIXME
+  ("driver", c_void_p),
+  ("memory", c_void_p),
+  ("stream", c_void_p),  # FIXME
+  ("sizes_list", FT_ListRec),
+  ("autohint", FT_Generic),
+  ("extensions", c_void_p),
+  ("internal", c_void_p),
+]
 
 class FreetypeException(Exception):
   """an error returned from freetype."""
@@ -230,8 +296,36 @@ _ft_done_freetype.argtypes = [FT_Library]
 _ft_done_freetype.restype = c_int
 _ft_done_freetype.errcheck = _chk_err
 
+_ft_new_face = _libfreetype.FT_New_Face
+_ft_new_face.argtypes = [FT_Library, c_char_p, c_long, POINTER(FT_Face)]
+_ft_new_face.restype = c_int
+_ft_new_face.errcheck = _chk_err
+
+_ft_done_face = _libfreetype.FT_Done_Face
+_ft_done_face.argtypes = [FT_Face]
+_ft_done_face.restype = c_int
+_ft_done_face.errcheck = _chk_err
+
 def FT_Init_FreeType() -> FT_Library:
   alibrary = FT_Library()
   _ft_init_freetype(byref(alibrary))
   finalize(alibrary, lambda x: _ft_done_freetype(FT_Library(x)), alibrary.value)
   return alibrary
+
+_DEPS: dict[int, Any] = {}
+
+def _finalize_with_dep(obj: Any, dep: Any, cb, *args):
+  id_ = id(obj)
+  _DEPS[id_] = dep
+
+  def inner():
+    cb(*args)
+    del _DEPS[id_]
+
+  finalize(obj, inner)
+
+def FT_New_Face(library: FT_Library, filepathname: str, face_index: int) -> FT_Face:
+  aface = FT_Face()
+  _ft_new_face(library, filepathname.encode(), face_index, byref(aface))
+  _finalize_with_dep(aface, library, lambda x: _ft_done_face(FT_Face(FT_FaceRec.from_address(x))), addressof(aface.contents))
+  return aface
