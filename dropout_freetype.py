@@ -1,5 +1,5 @@
 from ctypes.util import find_library
-from ctypes import CDLL, POINTER, byref, Structure, addressof, c_void_p, c_int, c_long, c_char_p, c_ushort, c_short
+from ctypes import CDLL, POINTER, byref, Structure, addressof, c_void_p, c_int, c_long, c_char_p, c_ushort, c_short, c_ubyte, c_ulong, c_char
 from enum import IntEnum
 from weakref import finalize
 from typing import Any
@@ -112,6 +112,9 @@ class FT_Error(IntEnum):
   Corrupted_Font_Header = 185
   Corrupted_Font_Glyphs = 186
 
+class FT_Sfnt_Tag(IntEnum):
+  OS2 = 2
+
 class FT_ListRec(Structure):
   pass
 
@@ -136,6 +139,51 @@ FT_BBox._fields_ = [
   ("yMin", c_long),
   ("xMax", c_long),
   ("yMax", c_long),
+]
+
+class TT_OS2(Structure):
+  pass
+
+TT_OS2._fields_ = [
+  ("version", c_ushort),
+  ("xAvgCharWidth", c_short),
+  ("usWeightClass", c_ushort),
+  ("usWidthClass", c_ushort),
+  ("fsType", c_ushort),
+  ("ySubscriptXSize", c_short),
+  ("ySubscriptYSize", c_short),
+  ("ySubscriptXOffset", c_short),
+  ("ySubscriptYOffset", c_short),
+  ("ySuperscriptXSize", c_short),
+  ("ySuperscriptYSize", c_short),
+  ("ySuperscriptXOffset", c_short),
+  ("ySuperscriptYOffset", c_short),
+  ("yStrikeoutSize", c_short),
+  ("yStrikeoutPosition", c_short),
+  ("sFamilyClass", c_short),
+  ("panose", c_ubyte * 10),
+  ("ulUnicodeRange1", c_ulong),
+  ("ulUnicodeRange2", c_ulong),
+  ("ulUnicodeRange3", c_ulong),
+  ("ulUnicodeRange4", c_ulong),
+  ("achVendID", c_char * 4),
+  ("fsSelection", c_ushort),
+  ("usFirstCharIndex", c_ushort),
+  ("usLastCharIndex", c_ushort),
+  ("sTypoAscender", c_short),
+  ("sTypoDescender", c_short),
+  ("sTypoLineGap", c_short),
+  ("usWinAscent", c_ushort),
+  ("usWinDescent", c_ushort),
+  ("ulCodePageRange1", c_ulong),
+  ("ulCodePageRange2", c_ulong),
+  ("sxHeight", c_short),
+  ("sCapHeight", c_short),
+  ("usDefaultChar", c_ushort),
+  ("usBreakChar", c_ushort),
+  ("usMaxContext", c_ushort),
+  ("usLowerOpticalPointSize", c_ushort),
+  ("usUpperOpticalPointSize", c_ushort),
 ]
 
 FT_ListRec._fields_ = [
@@ -306,6 +354,10 @@ _ft_done_face.argtypes = [FT_Face]
 _ft_done_face.restype = c_int
 _ft_done_face.errcheck = _chk_err
 
+_ft_get_sfnt_table = _libfreetype.FT_Get_Sfnt_Table
+_ft_get_sfnt_table.argtypes = [FT_Face, c_int]
+_ft_get_sfnt_table.restype = c_void_p
+
 def FT_Init_FreeType() -> FT_Library:
   alibrary = FT_Library()
   _ft_init_freetype(byref(alibrary))
@@ -324,8 +376,32 @@ def _finalize_with_dep(obj: Any, dep: Any, cb, *args):
 
   finalize(obj, inner)
 
+def _inject_dep(obj: Any, dep: Any):
+  id_ = id(obj)
+  _DEPS[id_] = dep
+
+  def cleanup():
+    del _DEPS[id_]
+
+  finalize(obj, cleanup)
+
 def FT_New_Face(library: FT_Library, filepathname: str, face_index: int) -> FT_Face:
   aface = FT_Face()
   _ft_new_face(library, filepathname.encode(), face_index, byref(aface))
   _finalize_with_dep(aface, library, lambda x: _ft_done_face(FT_Face(FT_FaceRec.from_address(x))), addressof(aface.contents))
   return aface
+
+def FT_Get_Sfnt_Table(face: FT_Face, tag: FT_Sfnt_Tag):
+  ptr = _ft_get_sfnt_table(face, tag)
+  if ptr is None:
+    raise FreetypeException('an error occurred or table not found')
+
+  match tag:
+    case FT_Sfnt_Tag.OS2:
+      tbl = TT_OS2.from_address(ptr)
+    case _:
+      raise AssertionError
+
+  _inject_dep(tbl, face)
+
+  return tbl
