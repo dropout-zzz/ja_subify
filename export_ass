@@ -16,11 +16,419 @@ from dropout_fontconfig import (
   FC_INDEX,
   FcPatternGetInteger,
 )
-from annotation_file import annotation_parse
-from dropout_freetype import FT_Init_FreeType, FT_New_Face, FT_Sfnt_Tag, FT_Get_Sfnt_Table
+from annotation_file import annotation_parse, PlainAnnotation, LoanAnnotation, KanjiAnnotation
+from dropout_freetype import FT_Init_FreeType, FT_New_Face, FT_Sfnt_Tag, FT_Get_Sfnt_Table, TT_OS2
 from PySide6.QtGui import QGuiApplication, QFont, QFontMetrics
 from loan_word_db import load_loan_words, LoanWordList
 from normal_word_db import load_normal_words, NormalWordList
+from dataclasses import dataclass
+from abc import ABC, abstractmethod
+from typing import override
+from enum import Enum
+import enum
+from typing import TextIO
+
+@dataclass
+class AssLine:
+  text: str
+
+  # whether or not should use the Rubi style
+  is_rubi: bool = False
+
+  # coordinates in pixels
+  x: float = 0.0
+  y: float = 0.0
+
+class LayoutObject(ABC):
+  """an object that take a rectangular space."""
+
+  @abstractmethod
+  def to_ass(self) -> list[AssLine]:
+    """return list of ASS lines needed to render contents in this layout object.
+       coordinates are relative to top-left corner of rect of this layout object.
+
+       this function assumes the global position of top-left corner of this layout object is at (0, 0)."""
+
+  def get_advance(self) -> float:
+    """return x offset suitable for placing next layout object.
+       this is width plus extra post spacing."""
+    return self.get_width()
+
+  @abstractmethod
+  def get_width(self) -> float:
+    """return logical width, without extra spacings on each end."""
+
+  @abstractmethod
+  def get_height(self) -> float:
+    pass
+
+  def get_pre_spacing(self) -> float:
+    """extra spacing that should be added before placing this layout object when layouting."""
+    return 0.0
+
+@dataclass
+class LayouterContext:
+  """a wrapper class
+     making it easy to pass all these in one argument."""
+
+  os2: TT_OS2
+  font_size: int
+  rubi_font_size: int
+  fm: QFontMetrics
+
+class SimpleTextObject(LayoutObject):
+  """simplest case containing exactly just one text."""
+
+  def __init__(self, ctx: LayouterContext, text: str, is_rubi: bool = False):
+    assert text != '', '???'
+    self.__ctx = ctx
+    self.__width = (ctx.fm.horizontalAdvance(text) * (ctx.rubi_font_size if is_rubi else ctx.font_size)) / (ctx.os2.usWinAscent + ctx.os2.usWinDescent)
+    assert self.__width > 0, '???'
+    self.__text = text
+    self.__is_rubi = is_rubi
+
+  def get_text(self) -> str:
+    return self.__text
+
+  @override
+  def to_ass(self) -> list[AssLine]:
+    return [AssLine(text=self.__text, is_rubi=self.__is_rubi)]
+
+  @override
+  def get_width(self) -> float:
+    return self.__width
+
+  @override
+  def get_height(self) -> float:
+    if self.__is_rubi:
+      return float(self.__ctx.rubi_font_size)
+
+    return float(self.__ctx.font_size)
+
+def shift_ass_lines(ass_lines: list[AssLine], delta_x: float, delta_y: float) -> list[AssLine]:
+  for ass_line in ass_lines:
+    ass_line.x += delta_x
+    ass_line.y += delta_y
+  return ass_lines
+
+_KATAKANA_MAP: dict[str, str] = {
+  'ァ': 'ｧ', 'ア': 'ｱ',
+  'ィ': 'ｨ', 'イ': 'ｲ',
+  'ゥ': 'ｩ', 'ウ': 'ｳ',
+  'ェ': 'ｪ', 'エ': 'ｴ',
+  'ォ': 'ｫ', 'オ': 'ｵ',
+  'カ': 'ｶ', 'ガ': 'ｶﾞ',
+  'キ': 'ｷ', 'ギ': 'ｷﾞ',
+  'ク': 'ｸ', 'グ': 'ｸﾞ',
+  'ケ': 'ｹ', 'ゲ': 'ｹﾞ',
+  'コ': 'ｺ', 'ゴ': 'ｺﾞ',
+  'サ': 'ｻ', 'ザ': 'ｻﾞ',
+  'シ': 'ｼ', 'ジ': 'ｼﾞ',
+  'ス': 'ｽ', 'ズ': 'ｽﾞ',
+  'セ': 'ｾ', 'ゼ': 'ｾﾞ',
+  'ソ': 'ｿ', 'ゾ': 'ｿﾞ',
+  'タ': 'ﾀ', 'ダ': 'ﾀﾞ',
+  'チ': 'ﾁ', 'ヂ': 'ﾁﾞ',
+  'ッ': 'ｯ', 'ツ': 'ﾂ', 'ヅ': 'ﾂﾞ',
+  'テ': 'ﾃ', 'デ': 'ﾃﾞ',
+  'ト': 'ﾄ', 'ド': 'ﾄﾞ',
+  'ナ': 'ﾅ', 'ニ': 'ﾆ', 'ヌ': 'ﾇ', 'ネ': 'ﾈ', 'ノ': 'ﾉ',
+  'ハ': 'ﾊ', 'バ': 'ﾊﾞ', 'パ': 'ﾊﾟ',
+  'ヒ': 'ﾋ', 'ビ': 'ﾋﾞ', 'ピ': 'ﾋﾟ',
+  'フ': 'ﾌ', 'ブ': 'ﾌﾞ', 'プ': 'ﾌﾟ',
+  'ヘ': 'ﾍ', 'ベ': 'ﾍﾞ', 'ペ': 'ﾍﾟ',
+  'ホ': 'ﾎ', 'ボ': 'ﾎﾞ', 'ポ': 'ﾎﾟ',
+  'マ': 'ﾏ', 'ミ': 'ﾐ', 'ム': 'ﾑ', 'メ': 'ﾒ', 'モ': 'ﾓ',
+  'ャ': 'ｬ', 'ヤ': 'ﾔ',
+  'ュ': 'ｭ', 'ユ': 'ﾕ',
+  'ョ': 'ｮ', 'ヨ': 'ﾖ',
+  'ラ': 'ﾗ', 'リ': 'ﾘ', 'ル': 'ﾙ', 'レ': 'ﾚ', 'ロ': 'ﾛ',
+  'ワ': 'ﾜ', 'ヲ': 'ｦ',
+  'ン': 'ﾝ',
+  'ヴ': 'ｳﾞ', 'ヷ': 'ﾜﾞ', 'ヺ': 'ｦﾞ',
+  'ー': 'ｰ',
+}
+
+def full_to_half(s: str) -> str:
+  return ''.join(map(lambda c: _KATAKANA_MAP[c], s))
+
+class LoanwordTextObject(LayoutObject):
+  """a loanword with a label centered on top of it.
+
+     width of this object is always the same as base text,
+     the label can thus extend outside.
+     spacings is returned when asked if the label is longer."""
+
+  def __init__(self, ctx: LayouterContext, base: str, romanized: str):
+    """this expect passing katakana in full-width as argument.
+       it will be converted into half-width automatically."""
+
+    self.__label_txt_obj = SimpleTextObject(ctx=ctx, text=romanized, is_rubi=True)
+    self.__base_txt_obj = SimpleTextObject(ctx=ctx, text=full_to_half(base))
+
+    if self.__label_txt_obj.get_width() > self.__base_txt_obj.get_width():
+      self.__spacing = (self.__label_txt_obj.get_width() - self.__base_txt_obj.get_width()) / 2
+    else:
+      self.__spacing = 0
+
+  @override
+  def get_pre_spacing(self) -> float:
+    return self.__spacing
+
+  @override
+  def get_advance(self) -> float:
+    return self.__base_txt_obj.get_width() + self.__spacing
+
+  @override
+  def get_width(self) -> float:
+    return self.__base_txt_obj.get_width()
+
+  @override
+  def get_height(self) -> float:
+    return self.__label_txt_obj.get_height() + self.__base_txt_obj.get_height()
+
+  @override
+  def to_ass(self) -> list[AssLine]:
+    label_al = self.__label_txt_obj.to_ass()
+    # center of base is also center of label
+    shift_ass_lines(label_al, self.__base_txt_obj.get_width() / 2, 0.0)
+    shift_ass_lines(label_al, -(self.__label_txt_obj.get_width() / 2), 0.0)
+
+    base_al = shift_ass_lines(self.__base_txt_obj.to_ass(), 0.0, self.__label_txt_obj.get_height())
+
+    return label_al + base_al
+
+class FuriganaMode(Enum):
+  # should render furigana as a single ASS line and center it
+  CENTER = enum.auto()
+
+  # should render each furigana character as separate ASS line and use spacings in between
+  INTERNAL_SPACING = enum.auto()
+
+class TextWithRubiObject(LayoutObject):
+  """One or more kanji characters with furigana on top."""
+
+  def __init__(self, ctx: LayouterContext, base: str, reading: str):
+    self.__ctx = ctx
+    self.__label_txt_obj = SimpleTextObject(ctx=ctx, text=reading, is_rubi=True)
+    self.__base_txt_obj = SimpleTextObject(ctx=ctx, text=base)
+
+    if len(base) > 1 and len(reading) > 1 and self.__label_txt_obj.get_width() < self.__base_txt_obj.get_width():
+      self.__mode = FuriganaMode.INTERNAL_SPACING
+      self.__external_spacing = 0
+    else:
+      self.__mode = FuriganaMode.CENTER
+
+      if self.__label_txt_obj.get_width() > self.__base_txt_obj.get_width():
+        self.__external_spacing = (self.__label_txt_obj.get_width() - self.__base_txt_obj.get_width()) / 2
+      else:
+        self.__external_spacing = 0
+
+  @override
+  def get_height(self) -> float:
+    return self.__label_txt_obj.get_height() + self.__base_txt_obj.get_height()
+
+  @override
+  def get_width(self) -> float:
+    return self.__base_txt_obj.get_width()
+
+  @override
+  def get_advance(self) -> float:
+    return self.__base_txt_obj.get_width() + self.__external_spacing
+
+  @override
+  def get_pre_spacing(self) -> float:
+    return self.__external_spacing
+
+  @override
+  def to_ass(self) -> list[AssLine]:
+    base_al = shift_ass_lines(self.__base_txt_obj.to_ass(), 0.0, self.__label_txt_obj.get_height())
+
+    match self.__mode:
+      case FuriganaMode.CENTER:
+        # same approach as how we center loanword
+        label_al = self.__label_txt_obj.to_ass()
+        shift_ass_lines(label_al, self.__base_txt_obj.get_width() / 2, 0.0)
+        shift_ass_lines(label_al, -(self.__label_txt_obj.get_width() / 2), 0.0)
+      case FuriganaMode.INTERNAL_SPACING:
+        label_al = []
+
+        internal_spacing = (self.__base_txt_obj.get_width() - self.__label_txt_obj.get_width()) / (len(self.__label_txt_obj.get_text()) + 1)
+        pen_x = internal_spacing
+
+        for char in self.__label_txt_obj.get_text():
+          char_txt_obj = SimpleTextObject(ctx=self.__ctx, text=char, is_rubi=True)
+
+          label_al.extend(shift_ass_lines(char_txt_obj.to_ass(), pen_x, 0.0))
+
+          pen_x += char_txt_obj.get_width() + internal_spacing
+      case _:
+        raise AssertionError('unreachable')
+
+    return label_al + base_al
+
+class SubtitleLineObject(LayoutObject):
+  """a horizontal linear layout containing other layout objects.
+     children start from left to right and are aligned at bottom.
+
+     height of this layout object is the tallest child.
+
+     the width of this layout object is
+      total width of all children plus
+      their spacing requirements,
+      excluding pre-spacing of first child and post-spacing of last child.
+
+    pre-spacing of this layout object is inherited from the first child,
+    and post-spacing of this layout object is inherited from the last child."""
+
+  def __init__(self, childs: list[LayoutObject]):
+    self.__childs = childs
+    assert len(childs) > 0, '???'
+
+    self.__width = 0
+    self.__height = -1
+
+    for nth, child in enumerate(childs):
+      if nth != 0:
+        self.__width += child.get_pre_spacing()
+
+      if nth == len(childs) - 1:
+        self.__width += child.get_width()
+      else:
+        self.__width += child.get_advance()
+
+      if child.get_height() > self.__height:
+        self.__height = child.get_height()
+
+  @override
+  def get_pre_spacing(self) -> float:
+    return self.__childs[0].get_pre_spacing()
+
+  @override
+  def get_height(self) -> float:
+    return self.__height
+
+  @override
+  def get_width(self) -> float:
+    return self.__width
+
+  @override
+  def get_advance(self) -> float:
+    return self.__width + (self.__childs[-1].get_advance() - self.__childs[-1].get_width())
+
+  @override
+  def to_ass(self) -> list[AssLine]:
+    pen_x = 0
+    ass_lines = []
+
+    for nth, child in enumerate(self.__childs):
+      if nth != 0:
+        pen_x += child.get_pre_spacing()
+
+      ass_lines.extend(shift_ass_lines(child.to_ass(), pen_x, self.get_height() - child.get_height()))
+
+      pen_x += child.get_advance()
+
+    return ass_lines
+
+@dataclass
+class AbstractSubtitle:
+  """a subtitle line with lane index associated to
+      it that is ready for the final rendering."""
+
+  # a lane is an abstarct row that can show subtitle on the screen.
+  # the height of a lane is determined by maximum height of
+  #  all subtitle lines allocated on that lane.
+  #
+  # this is used to prevent subtitles stacked on top having
+  #  inconsistent Y level positions throughout a show depending on
+  #  what's below it, which may look visually awkward,
+  #  and other undesirable behaviors caused by variable heights.
+  #  (e.g. a line w/o Rubi vs a line with Rubi, when the latter
+  #         tries to reuse room left by the former, would otherwise fail.)
+  lane_idx: int
+
+  start: int
+  end: int
+  inner: SubtitleLineObject
+
+def _format_ass_ts(ts: int) -> str:
+  # ASS stores only first two of three digits in milliseconds field.
+  # also, hours field is not padded with extra zero.
+
+  tmp, ms = divmod(ts, 1000)
+  tmp, secs = divmod(tmp, 60)
+  hrs, mins = divmod(tmp, 60)
+
+  # XXX: doing rounding can cause unintended
+  #       stacking behavior that dont match with source input!
+  return f'{hrs}:{mins:02}:{secs:02}.{ms // 10:02}'
+
+class ASSWriter:
+  """this class is a state machine,
+     it positions subtitle lines on screen and does collision detection.
+     it emits actual ASS events with calculated final pixel positions.
+
+     currently, it only produces bottom-centered subtitle rendering."""
+
+  def __init__(self, video_x: int, video_y: int, margin_y: float, ass_file: TextIO):
+    # note: lane 0 starts from bottom on the screen and grows upwards
+    self.__lane_heights: list[float] = []
+    self.__lane_occupied_until: list[int] = []
+    self.__n_lanes = 0
+
+    self.__current_time = -1
+
+    self.__subtitles: list[AbstractSubtitle] = []
+    self.__ass_file = ass_file
+    self.__video_x = video_x
+    self.__video_y = video_y
+    self.__margin_y = margin_y
+
+  def handle_sub_line(self, start: int, end: int, sub_line: SubtitleLineObject):
+    """if two or more subtitles collide due to showing in same timing window,
+       later-comer will be stacked on top.
+
+       as soon as a subtitle goes out of its timing window,
+       its rooms will be reused by other subtitles.
+
+       timing arguments passed to this function must not go backward."""
+
+    if start < self.__current_time:
+      raise ValueError('time not sorted')
+
+    # try to find a free lane that already exists
+    for lane_idx, lane_occupied_until in enumerate(self.__lane_occupied_until):
+      if start < lane_occupied_until:
+        continue
+
+      # found a room to re-use
+
+      self.__lane_occupied_until[lane_idx] = end
+      self.__subtitles.append(AbstractSubtitle(lane_idx=lane_idx, start=start, end=end, inner=sub_line))
+
+      if self.__lane_heights[lane_idx] < sub_line.get_height():
+        self.__lane_heights[lane_idx] = sub_line.get_height()
+
+      break
+    else:
+      # couldnt find a free lane.
+      # so allocate a new one and use it.
+      self.__lane_occupied_until.append(end)
+      self.__subtitles.append(AbstractSubtitle(lane_idx=self.__n_lanes, start=start, end=end, inner=sub_line))
+      self.__n_lanes += 1
+      self.__lane_heights.append(sub_line.get_height())
+
+    self.__current_time = start
+
+  def finish(self):
+    for subtitle in self.__subtitles:
+      pos_x = (self.__video_x - subtitle.inner.get_width()) / 2
+      # subtitle is aligned to the bottom of the lane it belongs to
+      pos_y = self.__video_y - self.__margin_y - sum(self.__lane_heights[:subtitle.lane_idx]) - subtitle.inner.get_height()
+
+      for ass_line in shift_ass_lines(subtitle.inner.to_ass(), pos_x, pos_y):
+        print(f'Dialogue: {_format_ass_ts(subtitle.start)},{_format_ass_ts(subtitle.end)},{"Rubi" if ass_line.is_rubi else "Default"},{{\\pos({ass_line.x},{ass_line.y})}}{ass_line.text}', file=self.__ass_file)
 
 def main():
   ap = ArgumentParser()
@@ -97,5 +505,54 @@ def main():
 
   print('[Events]', file=args.ass_file)
   print('Format: Start, End, Style, Text', file=args.ass_file)
+
+  ctx = LayouterContext(os2=os2, font_size=args.font_size, rubi_font_size=rubi_font_size, fm=metrics)
+  writer = ASSWriter(video_x=args.video_x, video_y=args.video_y, margin_y=args.margin_y, ass_file=args.ass_file)
+
+  for js_dialogue in af.lines:
+    sls = []
+    los = []
+
+    for js_annotation in js_dialogue.fragments:
+      if isinstance(js_annotation.inner, PlainAnnotation):
+        plain_texts = js_annotation.inner.text.split('\n')
+
+        if len(plain_texts) > 1:
+          for plain_text in plain_texts[:-1]:
+            if plain_text != '':
+              los.append(SimpleTextObject(ctx=ctx, text=plain_text))
+
+            assert len(los) > 0, 'fixme'
+            sls.append(SubtitleLineObject(los))
+            los = []
+
+          if plain_texts[-1] != '':
+            los.append(SimpleTextObject(ctx=ctx, text=plain_texts[-1]))
+        else:
+          los.append(SimpleTextObject(ctx=ctx, text=plain_texts[0]))
+      elif isinstance(js_annotation.inner, LoanAnnotation):
+        if args.no_rubi or args.no_loans or (js_annotation.inner.base, js_annotation.inner.romanized) in lwl.known:
+          los.append(SimpleTextObject(ctx=ctx, text=js_annotation.inner.base))
+        else:
+          los.append(LoanwordTextObject(ctx=ctx, base=js_annotation.inner.base, romanized=js_annotation.inner.romanized))
+      elif isinstance(js_annotation.inner, KanjiAnnotation):
+        for chars in js_annotation.inner.fragments:
+          if args.no_rubi or (chars.base, chars.reading) in nwl.known:
+            los.append(SimpleTextObject(ctx=ctx, text=chars.base))
+          else:
+            los.append(TextWithRubiObject(ctx=ctx, base=chars.base, reading=chars.reading))
+      else:
+        raise AssertionError('unhandled annotation type')
+
+    assert len(los) > 0, 'fixme'
+    sls.append(SubtitleLineObject(los))
+
+    # in multi-line sub the order is from top to bottom.
+    # however, writer use bottom-to-top.
+    # thus the reversed order here.
+    for sub_line in reversed(sls):
+      writer.handle_sub_line(start=js_dialogue.start_time, end=js_dialogue.end_time, sub_line=sub_line)
+
+  writer.finish()
 
 main()
