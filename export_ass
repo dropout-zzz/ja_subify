@@ -19,6 +19,8 @@ from dropout_fontconfig import (
 from annotation_file import annotation_parse
 from dropout_freetype import FT_Init_FreeType, FT_New_Face, FT_Sfnt_Tag, FT_Get_Sfnt_Table
 from PySide6.QtGui import QGuiApplication, QFont, QFontMetrics
+from loan_word_db import load_loan_words, LoanWordList
+from normal_word_db import load_normal_words, NormalWordList
 
 def main():
   ap = ArgumentParser()
@@ -32,6 +34,10 @@ def main():
   ap.add_argument('--margin-y', type=float, default=48.75)
   ap.add_argument('--outline-size', type=float, default=2.5)
   ap.add_argument('--rubi-outline-size', type=float, default=2.0)
+  ap.add_argument('--loans-blacklist', '-l')
+  ap.add_argument('--word-blacklist', '-w')
+  ap.add_argument('--no-rubi', '-n', action='store_true')
+  ap.add_argument('--no-loans', '-L', action='store_true')
 
   args = ap.parse_args()
 
@@ -39,6 +45,16 @@ def main():
 
   with open(args.annotation_file, 'r') as f:
     af = annotation_parse(f.read())
+
+  if args.loans_blacklist is None:
+    lwl = LoanWordList(count_known=True)
+  else:
+    lwl = load_loan_words(args.loans_blacklist, count_known=True)
+
+  if args.word_blacklist is None:
+    nwl = NormalWordList(count_known=True)
+  else:
+    nwl = load_normal_words(args.word_blacklist, count_known=True)
 
   pattern = FcPatternCreate()
   FcPatternAddString(pattern, FC_FAMILY, args.font_name)
