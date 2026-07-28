@@ -31,8 +31,11 @@ def main():
   ap.add_argument('--video-y', type=int, default=1080)
   ap.add_argument('--margin-y', type=float, default=48.75)
   ap.add_argument('--outline-size', type=float, default=2.5)
+  ap.add_argument('--rubi-outline-size', type=float, default=2.0)
 
   args = ap.parse_args()
+
+  rubi_font_size = args.font_size // 2
 
   with open(args.annotation_file, 'r') as f:
     af = annotation_parse(f.read())
@@ -73,6 +76,7 @@ def main():
 
   print('[V4+ Styles]', file=args.ass_file)
   print('Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, Spacing, BorderStyle, Outline, Shadow, Alignment, Encoding', file=args.ass_file)
-  print(f'Style: Default,{args.font_name},{args.font_size},&H00FFFFFF,&H00000000,0,1,{args.outline_size},0,7,1', file=args.ass_file)
+  print(f'Style: Default,{args.font_name},{args.font_size},&H00FFFFFF,&H00000000,0,1,{args.outline_size:.1f},0,7,1', file=args.ass_file)
+  print(f'Style: Rubi,{args.font_name},{rubi_font_size},&H00FFFFFF,&H00000000,0,1,{args.rubi_outline_size:.1f},0,7,1', file=args.ass_file)
 
 main()
