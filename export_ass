@@ -95,4 +95,7 @@ def main():
   print(f'Style: Default,{args.font_name},{args.font_size},&H00FFFFFF,&H00000000,0,1,{args.outline_size:.1f},0,7,1', file=args.ass_file)
   print(f'Style: Rubi,{args.font_name},{rubi_font_size},&H00FFFFFF,&H00000000,0,1,{args.rubi_outline_size:.1f},0,7,1', file=args.ass_file)
 
+  print('[Events]', file=args.ass_file)
+  print('Format: Start, End, Style, Text', file=args.ass_file)
+
 main()
