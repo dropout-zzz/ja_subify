@@ -17,7 +17,7 @@ from dropout_fontconfig import (
   FcPatternGetInteger,
 )
 from annotation_file import annotation_parse
-from dropout_freetype import FT_Init_FreeType, FT_New_Face
+from dropout_freetype import FT_Init_FreeType, FT_New_Face, FT_Sfnt_Tag, FT_Get_Sfnt_Table
 from PySide6.QtGui import QGuiApplication, QFont, QFontMetrics
 
 def main():
@@ -52,6 +52,7 @@ def main():
 
   ft = FT_Init_FreeType()
   face = FT_New_Face(ft, font_path, font_idx)
+  os2 = FT_Get_Sfnt_Table(face, FT_Sfnt_Tag.OS2)
 
   app = QGuiApplication()
 
