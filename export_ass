@@ -18,6 +18,7 @@ from dropout_fontconfig import (
 )
 from annotation_file import annotation_parse
 from dropout_freetype import FT_Init_FreeType, FT_New_Face
+from PySide6.QtGui import QGuiApplication, QFont, QFontMetrics
 
 def main():
   ap = ArgumentParser()
@@ -51,6 +52,16 @@ def main():
 
   ft = FT_Init_FreeType()
   face = FT_New_Face(ft, font_path, font_idx)
+
+  app = QGuiApplication()
+
+  font = QFont()
+
+  font.setFamily(args.font_name)
+  font.setPixelSize(face.contents.units_per_EM)
+  font.setHintingPreference(QFont.HintingPreference.PreferNoHinting)
+
+  metrics = QFontMetrics(font)
 
   print('[Script Info]', file=args.ass_file)
   print('ScriptType: v4.00+', file=args.ass_file)
