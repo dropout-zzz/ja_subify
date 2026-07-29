@@ -76,23 +76,37 @@ class LayouterContext:
   rubi_font_size: int
   fm: QFontMetrics
 
+_ASCII_SPC = ' '
+
 class SimpleTextObject(LayoutObject):
   """simplest case containing exactly just one text."""
 
   def __init__(self, ctx: LayouterContext, text: str, is_rubi: bool = False):
     assert text != '', '???'
     self.__ctx = ctx
-    self.__width = (ctx.fm.horizontalAdvance(text) * (ctx.rubi_font_size if is_rubi else ctx.font_size)) / (ctx.os2.usWinAscent + ctx.os2.usWinDescent)
+    self.__is_rubi = is_rubi
+    self.__width = self.__measure_text(text)
     assert self.__width > 0, '???'
     self.__text = text
-    self.__is_rubi = is_rubi
+
+  def __measure_text(self, s: str) -> float:
+    return (self.__ctx.fm.horizontalAdvance(s) * (self.__ctx.rubi_font_size if self.__is_rubi else self.__ctx.font_size)) / (self.__ctx.os2.usWinAscent + self.__ctx.os2.usWinDescent)
 
   def get_text(self) -> str:
     return self.__text
 
   @override
   def to_ass(self) -> list[AssLine]:
-    return [AssLine(text=self.__text, is_rubi=self.__is_rubi)]
+    ass_lines = [AssLine(text=self.__text, is_rubi=self.__is_rubi)]
+
+    no_leading_spc = self.__text.lstrip(_ASCII_SPC)
+    if no_leading_spc != self.__text:
+      # ASS doesn't like leading/trailing spaces and ignores them completely
+      # for leading spaces we must fixup by shifting text position to the right
+      n_leading_spc = len(self.__text) - len(no_leading_spc)
+      shift_ass_lines(ass_lines, self.__measure_text(_ASCII_SPC * n_leading_spc), 0.0)
+
+    return ass_lines
 
   @override
   def get_width(self) -> float:
