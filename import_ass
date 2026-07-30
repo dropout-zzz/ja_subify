@@ -15,7 +15,7 @@ from annotation_file import (
 )
 
 def main():
-  ap = argparse.ArgumentParser()
+  ap = argparse.ArgumentParser(description='note that this utility doesnt have the `--offset\' retiming option unlike the SRT importer, so use Aegisub if you need adding an offset to subtitles.')
 
   ap.add_argument('sub_file')
   ap.add_argument('--annotation-file', '-o', required=True)

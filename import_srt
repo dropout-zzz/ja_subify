@@ -20,6 +20,7 @@ def main():
   ap.add_argument('sub_file')
   ap.add_argument('--annotation-file', '-o', required=True)
   ap.add_argument('--retime', action='store_true', help='open an existing annotation file instead, and copy timings from a subtitle file into the annotation file')
+  ap.add_argument('--offset', type=int, default=0, help='an integer in milliseconds and can be negative. this is a handy option to retime subtitles when you dont have other tools installed that supports SRT')
 
   args = ap.parse_args()
 
@@ -27,7 +28,7 @@ def main():
 
   with open(args.sub_file, 'r') as f:
     for subtitle in dropout_parse_srt(f.read()):
-      af.lines.append(DialogueLine(fragments=[Annotation(PlainAnnotation(subtitle.text), unfinished=True)], start_time=subtitle.timing[0], end_time=subtitle.timing[1]))
+      af.lines.append(DialogueLine(fragments=[Annotation(PlainAnnotation(subtitle.text), unfinished=True)], start_time=subtitle.timing[0] + args.offset, end_time=subtitle.timing[1] + args.offset))
 
   af.validate()
 
