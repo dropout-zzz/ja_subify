@@ -3,9 +3,7 @@ ja_subify
 
 ![](https://img.shields.io/github/repo-size/dropout-zzz/ja_subify?style=for-the-badge)
 
-Tools to convert untranslated Japanese anime subtitles into text documents, quickly add Furigana to them and render as HTML.
-
-In future, rendering as ASS subtitle may be supported.
+Tools to convert untranslated Japanese anime subtitles into text documents, quickly add Furigana to them and render as HTML or `.ass`.
 
 ## Quick start
 
@@ -19,7 +17,7 @@ In future, rendering as ASS subtitle may be supported.
 
 It is not desirable to always show every furigana or romanized loan words.
 
-The HTML renderer allows you to specify a local user dictionary file. It is recommended to use one.
+The HTML/ASS renderer allows you to specify a local user dictionary file. It is recommended to use one.
 
 The renderer will skip known words and readings that is present in the blacklist files.
 
