@@ -1,5 +1,8 @@
 -- 0.2a --
 
+new subtitles:
+- Wataten Ep.01
+
 new features:
 - ASS and SRT parser now reads timing values
 - a new mode in SRT/ASS importer to update timings only
