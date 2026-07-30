@@ -1,3 +1,9 @@
+-- 0.2a1 --
+
+new subtitles:
+- Wataten NCOP
+
+
 -- 0.2a --
 
 new subtitles:
