@@ -90,6 +90,19 @@ class SimpleTextObject(LayoutObject):
     self.__text = text
 
   def __measure_text(self, s: str) -> float:
+    # font size value in ASS means ascender plus descender in pixels, not the pixel size of EM square.
+    # another catch is it always uses ascender and descender sizes from OS/2 table.
+    #
+    # note that we have previously configured QFontMetrics to return us values in font units instead of in pixels.
+    #
+    # this formula is simple: Qt does shaping and return us advance value in font units,
+    #                          then we find out how many ascender plus descender is in that,
+    #                          since ASS font size means ascender plus descender in pixels,
+    #                          if we then multiply it with the ASS font size value we get the advance value in pixels.
+    #
+    # this is a bit neat because we can use a single QFont but re-use it to measure using as many as different font sizes we want.
+    #
+    # we have been keeping all values in integers until this single division step, so accuracy here should be best-effort.
     return (self.__ctx.fm.horizontalAdvance(s) * (self.__ctx.rubi_font_size if self.__is_rubi else self.__ctx.font_size)) / (self.__ctx.os2.usWinAscent + self.__ctx.os2.usWinDescent)
 
   def get_text(self) -> str:
@@ -437,8 +450,11 @@ class ASSWriter:
 
   def finish(self):
     for subtitle in self.__subtitles:
+      # note that in stock ASS, even multi-line subtitles have each line centered. so we do the same thing.
       pos_x = (self.__video_x - subtitle.inner.get_width()) / 2
       # subtitle is aligned to the bottom of the lane it belongs to
+      #
+      # also note: it seems like stock ASS doesn't add any extra spacing between stacked subtitle lines. so as we.
       pos_y = self.__video_y - self.__margin_y - sum(self.__lane_heights[:subtitle.lane_idx]) - subtitle.inner.get_height()
 
       for ass_line in shift_ass_lines(subtitle.inner.to_ass(), pos_x, pos_y):
@@ -449,13 +465,20 @@ def main():
 
   ap.add_argument('annotation_file')
   ap.add_argument('--ass-file', '-o', type=argparse.FileType('w'), required=True)
+
+  # we chose this as default because our main supported platforms (Linux and Android) should often have them.
   ap.add_argument('--font-name', default='Noto Sans CJK JP')
-  ap.add_argument('--font-size', type=int, default=57)
+
+  # this doesn't matter. libass scales if player resolution doesnt match subtitle's.
   ap.add_argument('--video-x', type=int, default=1920)
   ap.add_argument('--video-y', type=int, default=1080)
+
+  # these are just some defaults that kinda replicate default rendering result when u load an SRT subtitles into MPV.
+  ap.add_argument('--font-size', type=int, default=57)
   ap.add_argument('--margin-y', type=float, default=48.75)
   ap.add_argument('--outline-size', type=float, default=2.5)
   ap.add_argument('--rubi-outline-size', type=float, default=2.0)
+
   ap.add_argument('--loans-blacklist', '-l')
   ap.add_argument('--word-blacklist', '-w')
   ap.add_argument('--no-rubi', '-n', action='store_true')
@@ -477,6 +500,11 @@ def main():
     nwl = NormalWordList(count_known=True)
   else:
     nwl = load_normal_words(args.word_blacklist, count_known=True)
+
+  # user gives us a font family string,
+  #  but because we need to read some parameters of the font using FreeType later,
+  #  we want the underlying font file path and face index within it,
+  #  so we ask fontconfig to deal with it for us.
 
   pattern = FcPatternCreate()
   FcPatternAddString(pattern, FC_FAMILY, args.font_name)
@@ -500,20 +528,54 @@ def main():
   font = QFont()
 
   font.setFamily(args.font_name)
+
+  # note: "point size" is inrelevant because ASS font sizes are in pixels
+  # we can't directly set the pixel size because
+  #  Qt wants size of EM square in pixels but ASS uses OS/2 ascender plus descender in pixels.
+  # it is possible to calculate how big is EM square and set it here
+  # but since we can only feed it an integer it will cause a lot of errors.
+  #
+  # I haven't found a documented way to let Qt return values in font units directly
+  # so I had to use some trick
+  #
+  # scalable fonts (which is the only type of font we support) internally use "font units" instead of pixels
+  # when you set a pixel font size, you're saying how big the EM square is in pixels.
+  # it then uses it to calculate a factor for converting everything font unit into pixels when it needs.
+  # the formula it uses is simple: scale = EM size in pixels / EM size in font units (this part is quoted from FreeType documentation)
+  # so if we set font size to EM size in font units we effectively nullify the scaling.
+  # so that all measurements returned now should be in font units.
+  # XXX: i have no idea what side effects this can give, though.
   font.setPixelSize(face.contents.units_per_EM)
+
+  # hinting seems to be disabled by default in libass. (and its only exposed through API, i.e. not possible to control in subtitle files)
+  # Qt enables hinting on some platforms so it is correct to explicitly disable it.
+  # (but doesn't hinting already do nothing since EM size in font units equals EM size in pixels? font units are indivisible.)
   font.setHintingPreference(QFont.HintingPreference.PreferNoHinting)
+
+  # kerning is enabled by default as per Qt documentation.
+
+  # don't disable ligature, because it's a thing in ASS (as long as Spacing in ASS style is zero).
 
   metrics = QFontMetrics(font)
 
   print('[Script Info]', file=args.ass_file)
   print('ScriptType: v4.00+', file=args.ass_file)
+
+  # the Aegisub documentation says that you should always enable this. (sometimes its not enabled by default with libass.)
   print('ScaledBorderAndShadow: yes', file=args.ass_file)
+
   print(f'PlayResX: {args.video_x}', file=args.ass_file)
   print(f'PlayResY: {args.video_y}', file=args.ass_file)
+  # kerning is a libass extension to ASS and is disabled by default,
+  # but we want to benefit from more compact text for subtitles, so we enable it here.
   print('Kerning: yes', file=args.ass_file)
 
   print('[V4+ Styles]', file=args.ass_file)
+
+  # libass supports custom Format headers and we can omit fields and it still initializes with valid default values.
+  # XXX: it confuses Aegisub and doesn't load in there. however, it doesn't break playback within user's video players because they use libass.
   print('Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, Spacing, BorderStyle, Outline, Shadow, Alignment, Encoding', file=args.ass_file)
+
   print(f'Style: Default,{args.font_name},{args.font_size},&H00FFFFFF,&H00000000,0,1,{args.outline_size:.1f},0,7,1', file=args.ass_file)
   print(f'Style: Rubi,{args.font_name},{rubi_font_size},&H00FFFFFF,&H00000000,0,1,{args.rubi_outline_size:.1f},0,7,1', file=args.ass_file)
 
