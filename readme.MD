@@ -5,6 +5,16 @@ ja_subify
 
 Tools to convert untranslated Japanese anime subtitles into text documents, quickly add Furigana to them and render as HTML or `.ass`.
 
+## Samples
+
+Some anime subtitles are annotated and the rendered HTML/ASS results are provided in this repo for learning purposes. They can be used standalone.
+
+These subtitles are timed to BD and require a player with libass renderer (e.g. MPV, VLC or IINA) to work properly.
+
+Subtitles are also font-dependent, the samples use `Noto Sans CJK JP` (which should be installed on most recent Linux and Android systems). If needed, install the font if it's missing or run the renderer script yourself and change the font family using CLI option.
+
+However, if you can, it's probably more recommended to use `Rounded M+ 1p` as it's closer to idiomatic choice for Japanese anime subtitles.
+
 ## Quick start
 
 1. Ensure Python and PySide6 (optional, for GUIs) is installed on system.
