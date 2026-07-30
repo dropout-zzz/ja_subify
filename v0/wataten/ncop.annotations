@@ -1,0 +1,1105 @@
+{
+  "lines": [
+    {
+      "end_time": "00:00:19,080",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ La la la la la la la　La la la la la la la la la"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 1,
+      "orig_line": "♪ La la la la la la la　La la la la la la la la la",
+      "start_time": "00:00:08,088"
+    },
+    {
+      "end_time": "00:00:23,900",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ さあ"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "今",
+                "reading": "こん"
+              },
+              {
+                "base": "夜",
+                "reading": "や"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "も"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "元",
+                "reading": "げん"
+              },
+              {
+                "base": "気",
+                "reading": "き"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "に　"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "始",
+                "reading": "はじ"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "めましょう！"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 2,
+      "orig_line": "♪ さあ今夜も元気に　始めましょう！",
+      "start_time": "00:00:19,389"
+    },
+    {
+      "end_time": "00:00:27,642",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ "
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "天",
+                "reading": "てん"
+              },
+              {
+                "base": "使",
+                "reading": "し"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "が"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "舞",
+                "reading": "ま"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "い"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "降",
+                "reading": "お"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "りる"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "時",
+                "reading": "じ"
+              },
+              {
+                "base": "間",
+                "reading": "かん"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        }
+      ],
+      "lineno": 3,
+      "orig_line": "♪ 天使が舞い降りる時間",
+      "start_time": "00:00:24,050"
+    },
+    {
+      "end_time": "00:00:31,435",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ "
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "自",
+                "reading": "じ"
+              },
+              {
+                "base": "由",
+                "reading": "ゆう"
+              },
+              {
+                "base": "気",
+                "reading": "き"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "ままに　はしゃいでいたいの"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 4,
+      "orig_line": "♪ 自由気ままに　はしゃいでいたいの",
+      "start_time": "00:00:27,807"
+    },
+    {
+      "end_time": "00:00:34,488",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ "
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "一",
+                "reading": "いっ"
+              },
+              {
+                "base": "緒",
+                "reading": "しょ"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "に"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "遊",
+                "reading": "あそ"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "びましょ！"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 5,
+      "orig_line": "♪ 一緒に遊びましょ！",
+      "start_time": "00:00:31,440"
+    },
+    {
+      "end_time": "00:00:43,056",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ "
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "毎",
+                "reading": "まい"
+              },
+              {
+                "base": "日",
+                "reading": "にち"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "色",
+                "reading": "いろ"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "々とあるけど"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "今日",
+                "reading": "きょう"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "は"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "全",
+                "reading": "ぜん"
+              },
+              {
+                "base": "部",
+                "reading": "ぶ"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "　ぽいぽいぽいぽい！"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 6,
+      "orig_line": "♪ 毎日色々とあるけど今日は全部　ぽいぽいぽいぽい！",
+      "start_time": "00:00:34,927"
+    },
+    {
+      "end_time": "00:00:49,602",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ みんなで"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "踊",
+                "reading": "おど"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "ろう　"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "両",
+                "reading": "りょう"
+              },
+              {
+                "base": "手",
+                "reading": "て"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "を"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "広",
+                "reading": "ひろ"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "げ　"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "今",
+                "reading": "いま"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        }
+      ],
+      "lineno": 7,
+      "orig_line": "♪ みんなで踊ろう　両手を広げ　今",
+      "start_time": "00:00:43,060"
+    },
+    {
+      "end_time": "00:00:54,308",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ あなたのすぐそばにいるよ"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 8,
+      "orig_line": "♪ あなたのすぐそばにいるよ",
+      "start_time": "00:00:50,000"
+    },
+    {
+      "end_time": "00:00:57,385",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ "
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "気",
+                "reading": "き"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "ままな"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "天",
+                "reading": "てん"
+              },
+              {
+                "base": "使",
+                "reading": "し"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "たち"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 9,
+      "orig_line": "♪ 気ままな天使たち",
+      "start_time": "00:00:54,503"
+    },
+    {
+      "end_time": "00:01:01,916",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ "
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "雨",
+                "reading": "あめ"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "ふりさびしい"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "時",
+                "reading": "とき"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "には"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 10,
+      "orig_line": "♪ 雨ふりさびしい時には",
+      "start_time": "00:00:57,604"
+    },
+    {
+      "end_time": "00:01:05,014",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ "
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "笑",
+                "reading": "え"
+              },
+              {
+                "base": "顔",
+                "reading": "がお"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "で"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "手",
+                "reading": "て"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "を"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "叩",
+                "reading": "たた"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "こう！"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 11,
+      "orig_line": "♪ 笑顔で手を叩こう！",
+      "start_time": "00:01:02,142"
+    },
+    {
+      "end_time": "00:01:09,520",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ あなたのすぐそばにいるよ"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 12,
+      "orig_line": "♪ あなたのすぐそばにいるよ",
+      "start_time": "00:01:05,238"
+    },
+    {
+      "end_time": "00:01:12,644",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ つらい"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "時",
+                "reading": "とき"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "、"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "悲",
+                "reading": "かな"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "しい"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "時",
+                "reading": "とき"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        }
+      ],
+      "lineno": 13,
+      "orig_line": "♪ つらい時、悲しい時",
+      "start_time": "00:01:09,733"
+    },
+    {
+      "end_time": "00:01:17,124",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ お"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "星",
+                "reading": "ほし"
+              },
+              {
+                "base": "様",
+                "reading": "さま"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "キラキラ"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "笑",
+                "reading": "え"
+              },
+              {
+                "base": "顔",
+                "reading": "がお"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "で"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 14,
+      "orig_line": "♪ お星様キラキラ笑顔で",
+      "start_time": "00:01:12,850"
+    },
+    {
+      "end_time": "00:01:20,453",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ "
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "明日",
+                "reading": "あした"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "は"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "晴",
+                "reading": "は"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "れ"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "模",
+                "reading": "も"
+              },
+              {
+                "base": "様",
+                "reading": "よう"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        }
+      ],
+      "lineno": 15,
+      "orig_line": "♪ 明日は晴れ模様",
+      "start_time": "00:01:17,380"
+    },
+    {
+      "end_time": "00:01:24,041",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ ドキドキを　"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "base": "プレゼント",
+            "romanized": "present"
+          },
+          "type": 2,
+          "unfinished": false
+        }
+      ],
+      "lineno": 16,
+      "orig_line": "♪ ドキドキを　プレゼント",
+      "start_time": "00:01:20,955"
+    },
+    {
+      "end_time": "00:01:28,032",
+      "fragments": [
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "♪ ここだけの　"
+          },
+          "type": 0,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "fragments": [
+              {
+                "base": "秘",
+                "reading": "ひ"
+              },
+              {
+                "base": "密",
+                "reading": "みつ"
+              }
+            ]
+          },
+          "type": 1,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": true,
+          "inner": {
+            "text": "だよ"
+          },
+          "type": 0,
+          "unfinished": false
+        }
+      ],
+      "lineno": 17,
+      "orig_line": "♪ ここだけの　秘密だよ",
+      "start_time": "00:01:24,748"
+    }
+  ],
+  "version": 0
+}

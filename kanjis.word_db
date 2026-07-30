@@ -304,3 +304,19 @@
 {"base": "次回", "fragments": [{"inner": {"base": "次", "reading": "じ"}, "type": 1}, {"inner": {"base": "回", "reading": "かい"}, "type": 1}]}
 {"base": "お楽しみに", "fragments": [{"inner": {"text": "お"}, "type": 0}, {"inner": {"base": "楽", "reading": "たの"}, "type": 1}, {"inner": {"text": "しみに"}, "type": 0}]}
 {"base": "顔合わせ", "fragments": [{"inner": {"base": "顔", "reading": "かお"}, "type": 1}, {"inner": {"base": "合", "reading": "あ"}, "type": 1}, {"inner": {"text": "わせ"}, "type": 0}]}
+{"base": "今夜", "fragments": [{"inner": {"base": "今", "reading": "こん"}, "type": 1}, {"inner": {"base": "夜", "reading": "や"}, "type": 1}]}
+{"base": "始め", "fragments": [{"inner": {"base": "始", "reading": "はじ"}, "type": 1}, {"inner": {"text": "め"}, "type": 0}]}
+{"base": "舞い降りる", "fragments": [{"inner": {"base": "舞", "reading": "ま"}, "type": 1}, {"inner": {"text": "い"}, "type": 0}, {"inner": {"base": "降", "reading": "お"}, "type": 1}, {"inner": {"text": "りる"}, "type": 0}]}
+{"base": "自由気まま", "fragments": [{"inner": {"base": "自", "reading": "じ"}, "type": 1}, {"inner": {"base": "由", "reading": "ゆう"}, "type": 1}, {"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"text": "まま"}, "type": 0}]}
+{"base": "色々", "fragments": [{"inner": {"base": "色", "reading": "いろ"}, "type": 1}, {"inner": {"text": "々"}, "type": 0}]}
+{"base": "踊", "fragments": [{"inner": {"base": "踊", "reading": "おど"}, "type": 1}]}
+{"base": "両手", "fragments": [{"inner": {"base": "両", "reading": "りょう"}, "type": 1}, {"inner": {"base": "手", "reading": "て"}, "type": 1}]}
+{"base": "広げ", "fragments": [{"inner": {"base": "広", "reading": "ひろ"}, "type": 1}, {"inner": {"text": "げ"}, "type": 0}]}
+{"base": "気ままな", "fragments": [{"inner": {"base": "気", "reading": "き"}, "type": 1}, {"inner": {"text": "ままな"}, "type": 0}]}
+{"base": "雨ふり", "fragments": [{"inner": {"base": "雨", "reading": "あめ"}, "type": 1}, {"inner": {"text": "ふり"}, "type": 0}]}
+{"base": "笑顔", "fragments": [{"inner": {"base": "笑", "reading": "え"}, "type": 1}, {"inner": {"base": "顔", "reading": "がお"}, "type": 1}]}
+{"base": "叩", "fragments": [{"inner": {"base": "叩", "reading": "たた"}, "type": 1}]}
+{"base": "悲しい", "fragments": [{"inner": {"base": "悲", "reading": "かな"}, "type": 1}, {"inner": {"text": "しい"}, "type": 0}]}
+{"base": "お星様", "fragments": [{"inner": {"text": "お"}, "type": 0}, {"inner": {"base": "星", "reading": "ほし"}, "type": 1}, {"inner": {"base": "様", "reading": "さま"}, "type": 1}]}
+{"base": "明日", "fragments": [{"inner": {"base": "明日", "reading": "あした"}, "type": 1}]}
+{"base": "晴れ模様", "fragments": [{"inner": {"base": "晴", "reading": "は"}, "type": 1}, {"inner": {"text": "れ"}, "type": 0}, {"inner": {"base": "模", "reading": "も"}, "type": 1}, {"inner": {"base": "様", "reading": "よう"}, "type": 1}]}
