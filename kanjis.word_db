@@ -64,7 +64,6 @@
 {"base": "話せる", "fragments": [{"inner": {"base": "話", "reading": "はな"}, "type": 1}, {"inner": {"text": "せる"}, "type": 0}]}
 {"base": "目を合わせない", "fragments": [{"inner": {"base": "目", "reading": "め"}, "type": 1}, {"inner": {"text": "を"}, "type": 0}, {"inner": {"base": "合", "reading": "あ"}, "type": 1}, {"inner": {"text": "わせない"}, "type": 0}]}
 {"base": "顔合わせて", "fragments": [{"inner": {"base": "顔", "reading": "かお"}, "type": 1}, {"inner": {"base": "合", "reading": "あ"}, "type": 1}, {"inner": {"text": "わせて"}, "type": 0}]}
-{"base": "顔合わせなきゃ", "fragments": [{"inner": {"base": "顔", "reading": "かお"}, "type": 1}, {"inner": {"base": "合", "reading": "あ"}, "type": 1}, {"inner": {"text": "わせなきゃ"}, "type": 0}]}
 {"base": "呼吸音", "fragments": [{"inner": {"base": "呼", "reading": "こ"}, "type": 1}, {"inner": {"base": "吸", "reading": "きゅう"}, "type": 1}, {"inner": {"base": "音", "reading": "おん"}, "type": 1}]}
 {"base": "助けて", "fragments": [{"inner": {"base": "助", "reading": "たす"}, "type": 1}, {"inner": {"text": "けて"}, "type": 0}]}
 {"base": "倒れてる", "fragments": [{"inner": {"base": "倒", "reading": "たお"}, "type": 1}, {"inner": {"text": "れてる"}, "type": 0}]}
@@ -304,3 +303,4 @@
 {"base": "見られてた", "fragments": [{"inner": {"base": "見", "reading": "み"}, "type": 1}, {"inner": {"text": "られてた"}, "type": 0}]}
 {"base": "次回", "fragments": [{"inner": {"base": "次", "reading": "じ"}, "type": 1}, {"inner": {"base": "回", "reading": "かい"}, "type": 1}]}
 {"base": "お楽しみに", "fragments": [{"inner": {"text": "お"}, "type": 0}, {"inner": {"base": "楽", "reading": "たの"}, "type": 1}, {"inner": {"text": "しみに"}, "type": 0}]}
+{"base": "顔合わせ", "fragments": [{"inner": {"base": "顔", "reading": "かお"}, "type": 1}, {"inner": {"base": "合", "reading": "あ"}, "type": 1}, {"inner": {"text": "わせ"}, "type": 0}]}
