@@ -6,8 +6,8 @@ PlayResY: 1080
 Kerning: yes
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, Spacing, BorderStyle, Outline, Shadow, Alignment, Encoding
-Style: Default,Noto Sans CJK JP,57,&H00FFFFFF,&H00000000,0,1,2.5,0,7,1
-Style: Rubi,Noto Sans CJK JP,28,&H00FFFFFF,&H00000000,0,1,2.0,0,7,1
+Style: Default,Noto Sans CJK JP,57,&H00FFFFFF,&H00000000,0,1,2.5,0.0,7,1
+Style: Rubi,Noto Sans CJK JP,28,&H00FFFFFF,&H00000000,0,1,2.0,0.0,7,1
 [Events]
 Format: Start, End, Style, Text
 Dialogue: 0:00:08.08,0:00:19.08,Default,{\pos(577.5725138121547,974.25)}♪ La la la la la la la　La la la la la la la la la
