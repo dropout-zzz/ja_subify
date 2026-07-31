@@ -3,6 +3,15 @@
 new subtitles:
 - Wataten NCOP
 
+subtitle changes:
+- Wataten Ep.01 now with theme song lyrics.
+
+new features:
+- ASS exporter is now able to read .manifest files
+
+new library:
+- Manifest File loader
+
 
 -- 0.2a --
 
