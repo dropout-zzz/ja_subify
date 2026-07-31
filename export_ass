@@ -1,5 +1,16 @@
 #!/usr/bin/env python
 
+"""a subtitle converter that generates ASS.
+
+   this was bornt because Aegisub's "karaoke templater"
+    (yes, it can be used for things other than lyrics if you set karaoke timing to zero)
+    doesn't work with line breaks and doesn't stack subtitles.
+
+   we want this for ordinary furigana / ruby texts to work in Mpv.
+   so this program has a mini layout engine which should implement the features we need.
+
+   it has a dependency on Qt because it's much more easy to just use shaping engine from it."""
+
 import argparse
 from argparse import ArgumentParser
 
