@@ -497,8 +497,13 @@ def main():
   ap.add_argument('--font-size', type=int, default=57)
   ap.add_argument('--margin-y', type=float, default=48.75)
   ap.add_argument('--outline-size', type=float, default=2.5)
-  ap.add_argument('--rubi-outline-size', type=float, default=2.0)
   ap.add_argument('--shadow-size', type=float, default=0.0)
+
+  # except this, i have no reference to borrow the value from.
+  # it seems setting it to half of outline_size looks ugly.
+  # same if i set it to same value as outline_size.
+  # so i just tweaked a bit, this value seems to look somewhat fine at least.
+  ap.add_argument('--rubi-outline-size', type=float, default=2.0)
 
   ap.add_argument('--loans-blacklist', '-l')
   ap.add_argument('--word-blacklist', '-w')
