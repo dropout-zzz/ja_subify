@@ -28,7 +28,7 @@ from dropout_fontconfig import (
   FC_INDEX,
   FcPatternGetInteger,
 )
-from annotation_file import annotation_parse, PlainAnnotation, LoanAnnotation, KanjiAnnotation
+from annotation_file import annotation_parse, PlainAnnotation, LoanAnnotation, KanjiAnnotation, AnnotationFile
 from dropout_freetype import FT_Init_FreeType, FT_New_Face, FT_Sfnt_Tag, FT_Get_Sfnt_Table, TT_OS2
 from PySide6.QtGui import QGuiApplication, QFont, QFontMetrics
 from loan_word_db import load_loan_words, LoanWordList
@@ -39,6 +39,7 @@ from typing import override
 from enum import Enum
 import enum
 from typing import TextIO
+from manifest_file import manifest_load
 
 @dataclass
 class AssLine:
@@ -411,6 +412,15 @@ def _format_ass_ts(ts: int) -> str:
   #       stacking behavior that dont match with source input!
   return f'{hrs}:{mins:02}:{secs:02}.{ms // 10:02}'
 
+@dataclass
+class WriterContext:
+  """something with similar purpose like LayouterContext."""
+
+  video_x: int
+  video_y: int
+  margin_y: float
+  ass_file: TextIO
+
 class ASSWriter:
   """this class is a state machine,
      it positions subtitle lines on screen and does collision detection.
@@ -418,7 +428,7 @@ class ASSWriter:
 
      currently, it only produces bottom-centered subtitle rendering."""
 
-  def __init__(self, video_x: int, video_y: int, margin_y: float, ass_file: TextIO):
+  def __init__(self, ctx: WriterContext):
     # note: lane 0 starts from bottom on the screen and grows upwards
     self.__lane_heights: list[float] = []
     self.__lane_occupied_until: list[int] = []
@@ -427,10 +437,7 @@ class ASSWriter:
     self.__current_time = -1
 
     self.__subtitles: list[AbstractSubtitle] = []
-    self.__ass_file = ass_file
-    self.__video_x = video_x
-    self.__video_y = video_y
-    self.__margin_y = margin_y
+    self.__ctx = ctx
 
   def handle_sub_line(self, start: int, end: int, sub_line: SubtitleLineObject):
     """if two or more subtitles collide due to showing in same timing window,
@@ -471,19 +478,84 @@ class ASSWriter:
   def finish(self):
     for subtitle in self.__subtitles:
       # note that in stock ASS, even multi-line subtitles have each line centered. so we do the same thing.
-      pos_x = (self.__video_x - subtitle.inner.get_width()) / 2
+      pos_x = (self.__ctx.video_x - subtitle.inner.get_width()) / 2
       # subtitle is aligned to the bottom of the lane it belongs to
       #
       # also note: it seems like stock ASS doesn't add any extra spacing between stacked subtitle lines. so as we.
-      pos_y = self.__video_y - self.__margin_y - sum(self.__lane_heights[:subtitle.lane_idx]) - subtitle.inner.get_height()
+      pos_y = self.__ctx.video_y - self.__ctx.margin_y - sum(self.__lane_heights[:subtitle.lane_idx]) - subtitle.inner.get_height()
 
       for ass_line in shift_ass_lines(subtitle.inner.to_ass(), pos_x, pos_y):
-        print(f'Dialogue: {_format_ass_ts(subtitle.start)},{_format_ass_ts(subtitle.end)},{"Rubi" if ass_line.is_rubi else "Default"},{{\\pos({ass_line.x},{ass_line.y})}}{ass_line.text}', file=self.__ass_file)
+        print(f'Dialogue: {_format_ass_ts(subtitle.start)},{_format_ass_ts(subtitle.end)},{"Rubi" if ass_line.is_rubi else "Default"},{{\\pos({ass_line.x},{ass_line.y})}}{ass_line.text}', file=self.__ctx.ass_file)
+
+@dataclass
+class WriteOptions:
+  no_rubi: bool
+  no_loans: bool
+  lwl: LoanWordList
+  nwl: NormalWordList
+
+def write_af(af: AnnotationFile, layout_ctx: LayouterContext, writer_ctx: WriterContext, opts: WriteOptions):
+  # we need a new writer object for each AF
+  # thats because we didnt sort lines by time
+  #
+  # if we will be writing multiple AFs from a manifest,
+  #  the manifest loader already ensures there is no overlaps.
+  writer = ASSWriter(ctx=writer_ctx)
+
+  for js_dialogue in af.lines:
+    sls = []
+    los = []
+
+    for js_annotation in js_dialogue.fragments:
+      if isinstance(js_annotation.inner, PlainAnnotation):
+        plain_texts = js_annotation.inner.text.split('\n')
+
+        if len(plain_texts) > 1:
+          for plain_text in plain_texts[:-1]:
+            if plain_text != '':
+              los.append(SimpleTextObject(ctx=layout_ctx, text=plain_text))
+
+            assert len(los) > 0, 'fixme'
+            sls.append(SubtitleLineObject(los))
+            los = []
+
+          if plain_texts[-1] != '':
+            los.append(SimpleTextObject(ctx=layout_ctx, text=plain_texts[-1]))
+        else:
+          los.append(SimpleTextObject(ctx=layout_ctx, text=plain_texts[0]))
+      elif isinstance(js_annotation.inner, LoanAnnotation):
+        if opts.no_rubi or opts.no_loans or (js_annotation.inner.base, js_annotation.inner.romanized) in opts.lwl.known:
+          los.append(SimpleTextObject(ctx=layout_ctx, text=js_annotation.inner.base))
+        else:
+          los.append(LoanwordTextObject(ctx=layout_ctx, base=js_annotation.inner.base, romanized=js_annotation.inner.romanized))
+      elif isinstance(js_annotation.inner, KanjiAnnotation):
+        for chars in js_annotation.inner.fragments:
+          if opts.no_rubi or (chars.base, chars.reading) in opts.nwl.known:
+            los.append(SimpleTextObject(ctx=layout_ctx, text=chars.base))
+          else:
+            los.append(TextWithRubiObject(ctx=layout_ctx, base=chars.base, reading=chars.reading))
+      else:
+        raise AssertionError('unhandled annotation type')
+
+    assert len(los) > 0, 'fixme'
+    sls.append(SubtitleLineObject(los))
+
+    # in multi-line sub the order is from top to bottom.
+    # however, writer use bottom-to-top.
+    # thus the reversed order here.
+    for sub_line in reversed(sls):
+      writer.handle_sub_line(start=js_dialogue.start_time, end=js_dialogue.end_time, sub_line=sub_line)
+
+  writer.finish()
+
+class InputType(Enum):
+  AF = enum.auto()
+  MANIFEST = enum.auto()
 
 def main():
   ap = ArgumentParser()
 
-  ap.add_argument('annotation_file')
+  ap.add_argument('input_file', help='this can either be a .annotations or .manifest')
   ap.add_argument('--ass-file', '-o', type=argparse.FileType('w'), required=True)
 
   # we chose this as default because our main supported platforms (Linux and Android) should often have them.
@@ -515,8 +587,15 @@ def main():
 
   rubi_font_size = args.font_size // 2
 
-  with open(args.annotation_file, 'r') as f:
-    af = annotation_parse(f.read())
+  if args.input_file.endswith('.annotations'):
+    input_type = InputType.AF
+    with open(args.input_file, 'r') as f:
+      af = annotation_parse(f.read())
+  elif args.input_file.endswith('.manifest'):
+    input_type = InputType.MANIFEST
+    mf = manifest_load(args.input_file)
+  else:
+    ap.error('i dont understand your input file extension!')
 
   if args.loans_blacklist is None:
     lwl = LoanWordList(count_known=True)
@@ -618,53 +697,17 @@ def main():
   # we don't need "Layer" field, it seems that stacking is already bypassed by saying absolute coordinates
   print('Format: Start, End, Style, Text', file=args.ass_file)
 
-  ctx = LayouterContext(os2=os2, font_size=args.font_size, rubi_font_size=rubi_font_size, fm=metrics)
-  writer = ASSWriter(video_x=args.video_x, video_y=args.video_y, margin_y=args.margin_y, ass_file=args.ass_file)
+  layout_ctx = LayouterContext(os2=os2, font_size=args.font_size, rubi_font_size=rubi_font_size, fm=metrics)
+  writer_ctx = WriterContext(video_x=args.video_x, video_y=args.video_y, margin_y=args.margin_y, ass_file=args.ass_file)
+  opts = WriteOptions(no_rubi=args.no_rubi, no_loans=args.no_loans, lwl=lwl, nwl=nwl)
 
-  for js_dialogue in af.lines:
-    sls = []
-    los = []
-
-    for js_annotation in js_dialogue.fragments:
-      if isinstance(js_annotation.inner, PlainAnnotation):
-        plain_texts = js_annotation.inner.text.split('\n')
-
-        if len(plain_texts) > 1:
-          for plain_text in plain_texts[:-1]:
-            if plain_text != '':
-              los.append(SimpleTextObject(ctx=ctx, text=plain_text))
-
-            assert len(los) > 0, 'fixme'
-            sls.append(SubtitleLineObject(los))
-            los = []
-
-          if plain_texts[-1] != '':
-            los.append(SimpleTextObject(ctx=ctx, text=plain_texts[-1]))
-        else:
-          los.append(SimpleTextObject(ctx=ctx, text=plain_texts[0]))
-      elif isinstance(js_annotation.inner, LoanAnnotation):
-        if args.no_rubi or args.no_loans or (js_annotation.inner.base, js_annotation.inner.romanized) in lwl.known:
-          los.append(SimpleTextObject(ctx=ctx, text=js_annotation.inner.base))
-        else:
-          los.append(LoanwordTextObject(ctx=ctx, base=js_annotation.inner.base, romanized=js_annotation.inner.romanized))
-      elif isinstance(js_annotation.inner, KanjiAnnotation):
-        for chars in js_annotation.inner.fragments:
-          if args.no_rubi or (chars.base, chars.reading) in nwl.known:
-            los.append(SimpleTextObject(ctx=ctx, text=chars.base))
-          else:
-            los.append(TextWithRubiObject(ctx=ctx, base=chars.base, reading=chars.reading))
-      else:
-        raise AssertionError('unhandled annotation type')
-
-    assert len(los) > 0, 'fixme'
-    sls.append(SubtitleLineObject(los))
-
-    # in multi-line sub the order is from top to bottom.
-    # however, writer use bottom-to-top.
-    # thus the reversed order here.
-    for sub_line in reversed(sls):
-      writer.handle_sub_line(start=js_dialogue.start_time, end=js_dialogue.end_time, sub_line=sub_line)
-
-  writer.finish()
+  match input_type:
+    case InputType.AF:
+      write_af(af=af, layout_ctx=layout_ctx, writer_ctx=writer_ctx, opts=opts)
+    case InputType.MANIFEST:
+      for af in mf.afs:
+        write_af(af=af, layout_ctx=layout_ctx, writer_ctx=writer_ctx, opts=opts)
+    case _:
+      raise AssertionError
 
 main()
