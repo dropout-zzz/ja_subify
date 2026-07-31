@@ -115,6 +115,8 @@ class SimpleTextObject(LayoutObject):
     # this is a bit neat because we can use a single QFont but re-use it to measure using as many as different font sizes we want.
     #
     # we have been keeping all values in integers until this single division step, so accuracy here should be best-effort.
+    #
+    # XXX: using Qt to shape seem to return a slightly different result compared to HarfBuzz... (sub-pixel difference)
     return (self.__ctx.fm.horizontalAdvance(s) * (self.__ctx.rubi_font_size if self.__is_rubi else self.__ctx.font_size)) / (self.__ctx.os2.usWinAscent + self.__ctx.os2.usWinDescent)
 
   def get_text(self) -> str:
