@@ -498,6 +498,7 @@ def main():
   ap.add_argument('--margin-y', type=float, default=48.75)
   ap.add_argument('--outline-size', type=float, default=2.5)
   ap.add_argument('--shadow-size', type=float, default=0.0)
+  ap.add_argument('--rubi-shadow-size', type=float, default=0.0)
 
   # except this, i have no reference to borrow the value from.
   # it seems setting it to half of outline_size looks ugly.
@@ -611,7 +612,7 @@ def main():
   # the collision detection (subtitle stacking) and centering is done on our behave in the ASSWriter class.
   # this is because ASS doesn't support Rubi natively, so as a workaround, we have to do this to be able to position Rubi texts manually
   print(f'Style: Default,{args.font_name},{args.font_size},&H00FFFFFF,&H00000000,0,1,{args.outline_size:.1f},{args.shadow_size:.1f},7,1', file=args.ass_file)
-  print(f'Style: Rubi,{args.font_name},{rubi_font_size},&H00FFFFFF,&H00000000,0,1,{args.rubi_outline_size:.1f},{args.shadow_size:.1f},7,1', file=args.ass_file)
+  print(f'Style: Rubi,{args.font_name},{rubi_font_size},&H00FFFFFF,&H00000000,0,1,{args.rubi_outline_size:.1f},{args.rubi_shadow_size:.1f},7,1', file=args.ass_file)
 
   print('[Events]', file=args.ass_file)
   # we don't need "Layer" field, it seems that stacking is already bypassed by saying absolute coordinates
