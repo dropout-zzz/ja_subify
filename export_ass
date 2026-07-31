@@ -547,7 +547,7 @@ def main():
 
   font.setFamily(args.font_name)
 
-  # note: "point size" is inrelevant because ASS font sizes are in pixels
+  # note: "point size" is irrelevant because ASS font sizes are in pixels
   # we can't directly set the pixel size because
   #  Qt wants size of EM square in pixels but ASS uses OS/2 ascender plus descender in pixels.
   # it is possible to calculate how big is EM square and set it here
