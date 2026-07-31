@@ -478,6 +478,7 @@ def main():
   ap.add_argument('--margin-y', type=float, default=48.75)
   ap.add_argument('--outline-size', type=float, default=2.5)
   ap.add_argument('--rubi-outline-size', type=float, default=2.0)
+  ap.add_argument('--shadow-size', type=float, default=0.0)
 
   ap.add_argument('--loans-blacklist', '-l')
   ap.add_argument('--word-blacklist', '-w')
@@ -576,8 +577,9 @@ def main():
   # XXX: it confuses Aegisub and doesn't load in there. however, it doesn't break playback within user's video players because they use libass.
   print('Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, Spacing, BorderStyle, Outline, Shadow, Alignment, Encoding', file=args.ass_file)
 
-  print(f'Style: Default,{args.font_name},{args.font_size},&H00FFFFFF,&H00000000,0,1,{args.outline_size:.1f},0,7,1', file=args.ass_file)
-  print(f'Style: Rubi,{args.font_name},{rubi_font_size},&H00FFFFFF,&H00000000,0,1,{args.rubi_outline_size:.1f},0,7,1', file=args.ass_file)
+  # TODO: make more style settings customiziable
+  print(f'Style: Default,{args.font_name},{args.font_size},&H00FFFFFF,&H00000000,0,1,{args.outline_size:.1f},{args.shadow_size:.1f},7,1', file=args.ass_file)
+  print(f'Style: Rubi,{args.font_name},{rubi_font_size},&H00FFFFFF,&H00000000,0,1,{args.rubi_outline_size:.1f},{args.shadow_size:.1f},7,1', file=args.ass_file)
 
   print('[Events]', file=args.ass_file)
   print('Format: Start, End, Style, Text', file=args.ass_file)
