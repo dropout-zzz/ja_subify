@@ -9,7 +9,8 @@
    we want this for ordinary furigana / ruby texts to work in Mpv.
    so this program has a mini layout engine which should implement the features we need.
 
-   it has a dependency on Qt because it's much more easy to just use shaping engine from it."""
+   it has a dependency on Qt because it's much more easy to just use shaping engine from it.
+    (Aegisub uses wxWidgets similarly to measure texts for its "karaoke templater".)"""
 
 import argparse
 from argparse import ArgumentParser
