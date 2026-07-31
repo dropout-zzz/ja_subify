@@ -110,6 +110,10 @@ class SimpleTextObject(LayoutObject):
 
   @override
   def to_ass(self) -> list[AssLine]:
+    """we don't render each characters separately, this saves us output file size and
+        avoids problem like outline collisions when the text is too small and are too close to each others (e.g. Rubi)
+       this is similar to what Aegisub's karaoke templater produces."""
+
     ass_lines = [AssLine(text=self.__text, is_rubi=self.__is_rubi)]
 
     no_leading_spc = self.__text.lstrip(_ASCII_SPC)
@@ -578,10 +582,18 @@ def main():
   print('Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, Spacing, BorderStyle, Outline, Shadow, Alignment, Encoding', file=args.ass_file)
 
   # TODO: make more style settings customiziable
+  #
+  # `7' in Alignment means absolete coordinates are anchored by top-left corner (our ASS writer produces that)
+  # it actually means the start of horizontal advance of first character and ascender. (which matches with what our layout engine impl currently think)
+  # this doesn't have any meaning for subtitles alignments however any more, as its completely bypassed by saying absolute coordinates
+  # (note it's also why we are omitting Margin* values here.)
+  # the collision detection (subtitle stacking) and centering is done on our behave in the ASSWriter class.
+  # this is because ASS doesn't support Rubi natively, so as a workaround, we have to do this to be able to position Rubi texts manually
   print(f'Style: Default,{args.font_name},{args.font_size},&H00FFFFFF,&H00000000,0,1,{args.outline_size:.1f},{args.shadow_size:.1f},7,1', file=args.ass_file)
   print(f'Style: Rubi,{args.font_name},{rubi_font_size},&H00FFFFFF,&H00000000,0,1,{args.rubi_outline_size:.1f},{args.shadow_size:.1f},7,1', file=args.ass_file)
 
   print('[Events]', file=args.ass_file)
+  # we don't need "Layer" field, it seems that stacking is already bypassed by saying absolute coordinates
   print('Format: Start, End, Style, Text', file=args.ass_file)
 
   ctx = LayouterContext(os2=os2, font_size=args.font_size, rubi_font_size=rubi_font_size, fm=metrics)
