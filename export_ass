@@ -310,7 +310,9 @@ class SubtitleLineObject(LayoutObject):
       excluding pre-spacing of first child and post-spacing of last child.
 
     pre-spacing of this layout object is inherited from the first child,
-    and post-spacing of this layout object is inherited from the last child."""
+    and post-spacing of this layout object is inherited from the last child.
+
+    line wrapping is not implemented, as subtitles will use line breaks explictly."""
 
   def __init__(self, childs: list[LayoutObject]):
     self.__childs = childs
