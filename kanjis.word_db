@@ -320,3 +320,16 @@
 {"base": "お星様", "fragments": [{"inner": {"text": "お"}, "type": 0}, {"inner": {"base": "星", "reading": "ほし"}, "type": 1}, {"inner": {"base": "様", "reading": "さま"}, "type": 1}]}
 {"base": "明日", "fragments": [{"inner": {"base": "明日", "reading": "あした"}, "type": 1}]}
 {"base": "晴れ模様", "fragments": [{"inner": {"base": "晴", "reading": "は"}, "type": 1}, {"inner": {"text": "れ"}, "type": 0}, {"inner": {"base": "模", "reading": "も"}, "type": 1}, {"inner": {"base": "様", "reading": "よう"}, "type": 1}]}
+{"base": "一回", "fragments": [{"inner": {"base": "一", "reading": "いっ"}, "type": 1}, {"inner": {"base": "回", "reading": "かい"}, "type": 1}]}
+{"base": "届け", "fragments": [{"inner": {"base": "届", "reading": "とど"}, "type": 1}, {"inner": {"text": "け"}, "type": 0}]}
+{"base": "平らげて", "fragments": [{"inner": {"base": "平", "reading": "たい"}, "type": 1}, {"inner": {"text": "らげて"}, "type": 0}]}
+{"base": "洗って", "fragments": [{"inner": {"base": "洗", "reading": "あら"}, "type": 1}, {"inner": {"text": "って"}, "type": 0}]}
+{"base": "飛び起きて", "fragments": [{"inner": {"base": "飛", "reading": "と"}, "type": 1}, {"inner": {"text": "び"}, "type": 0}, {"inner": {"base": "起", "reading": "お"}, "type": 1}, {"inner": {"text": "きて"}, "type": 0}]}
+{"base": "朝", "fragments": [{"inner": {"base": "朝", "reading": "あさ"}, "type": 1}]}
+{"base": "窓", "fragments": [{"inner": {"base": "窓", "reading": "まど"}, "type": 1}]}
+{"base": "開けた", "fragments": [{"inner": {"base": "開", "reading": "あ"}, "type": 1}, {"inner": {"text": "けた"}, "type": 0}]}
+{"base": "出", "fragments": [{"inner": {"base": "出", "reading": "だ"}, "type": 1}]}
+{"base": "飛", "fragments": [{"inner": {"base": "飛", "reading": "と"}, "type": 1}]}
+{"base": "お洒落な", "fragments": [{"inner": {"text": "お"}, "type": 0}, {"inner": {"base": "洒", "reading": "しゃ"}, "type": 1}, {"inner": {"base": "落", "reading": "れ"}, "type": 1}, {"inner": {"text": "な"}, "type": 0}]}
+{"base": "仲良く", "fragments": [{"inner": {"base": "仲", "reading": "なか"}, "type": 1}, {"inner": {"base": "良", "reading": "よ"}, "type": 1}, {"inner": {"text": "く"}, "type": 0}]}
+{"base": "声合わせ", "fragments": [{"inner": {"base": "声", "reading": "こえ"}, "type": 1}, {"inner": {"base": "合", "reading": "あ"}, "type": 1}, {"inner": {"text": "わせ"}, "type": 0}]}
