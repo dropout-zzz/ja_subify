@@ -46,18 +46,43 @@ class FragmentKanjiCharacters:
   def deserialize(cls, d: dict):
     return cls(base=d['base'], reading=d['reading'])
 
+@dataclass
+class FragmentLoanword:
+  """a loan word. this is only used in a word when it's a compound consisting of
+      for example both japanese and english.
+     in other cases, please use Loanword WordDB instead of this."""
+  base: str
+  romanized: str
+
+  def serialize(self) -> dict:
+    return {"base": self.base, "romanized": self.romanized}
+
+  def validate(self):
+    if not isinstance(self.base, str):
+      raise AssertionError
+    if not isinstance(self.romanized, str):
+      raise AssertionError
+
+  @classmethod
+  def deserialize(cls, d: dict):
+    return cls(base=d['base'], romanized=d['romanized'])
+
 class FragmentType(IntEnum):
   IGNORE = 0
   KANJI_CHARACTERS = 1
+  LOAN_WORD = 2
 
 @dataclass
 class NormalTemplate:
   """a word entry inside the dictionary."""
   base: str
-  fragments: list[FragmentIgnore | FragmentKanjiCharacters] = dataclasses.field(default_factory=list)
+  fragments: list[FragmentIgnore | FragmentKanjiCharacters | FragmentLoanword] = dataclasses.field(default_factory=list)
 
   def get_normalized(self) -> str:
-    """return the word in hiragana only."""
+    """return the word in hiragana only.
+
+       if its a word containing loan words,
+        the loanwords will be converted into their romanized form."""
     buff = []
 
     for fragment in self.fragments:
@@ -65,6 +90,8 @@ class NormalTemplate:
         buff.append(fragment.text)
       elif isinstance(fragment, FragmentKanjiCharacters):
         buff.append(fragment.reading)
+      elif isinstance(fragment, FragmentLoanword):
+        buff.append(fragment.romanized)
       else:
         raise AssertionError('unhandled fragment type')
 
@@ -78,6 +105,8 @@ class NormalTemplate:
         kind = FragmentType.IGNORE
       elif isinstance(fragment, FragmentKanjiCharacters):
         kind = FragmentType.KANJI_CHARACTERS
+      elif isinstance(fragment, FragmentLoanword):
+        kind = FragmentType.LOAN_WORD
       else:
         raise AssertionError('unhandled fragment type')
 
@@ -89,7 +118,7 @@ class NormalTemplate:
     if not isinstance(self.fragments, list):
       raise AssertionError
     for fragment in self.fragments:
-      if not isinstance(fragment, (FragmentIgnore, FragmentKanjiCharacters)):
+      if not isinstance(fragment, (FragmentIgnore, FragmentKanjiCharacters, FragmentLoanword)):
         raise AssertionError
       fragment.validate()
     if not isinstance(self.base, str):
@@ -106,6 +135,8 @@ class NormalTemplate:
           fragments.append(FragmentIgnore.deserialize(fragment['inner']))
         case FragmentType.KANJI_CHARACTERS:
           fragments.append(FragmentKanjiCharacters.deserialize(fragment['inner']))
+        case FragmentType.LOAN_WORD:
+          fragments.append(FragmentLoanword.deserialize(fragment['inner']))
         case _:
           raise ValueError(f'unhandled fragment type {kind}')
 
@@ -130,6 +161,7 @@ class NormalWordList:
 
   inner: dict[str, list[NormalTemplate]] = dataclasses.field(default_factory=dict)
   known: set[tuple[str, str]] = dataclasses.field(default_factory=set)
+  known_loans: set[tuple[str, str]] = dataclasses.field(default_factory=set)
   off: int = 0
   count_known: bool = False
 
@@ -140,9 +172,10 @@ class NormalWordList:
 
 def _register_known_normal_words(nwl: NormalWordList, word: NormalTemplate):
   for fragment in word.fragments:
-    if not isinstance(fragment, FragmentKanjiCharacters):
-      continue
-    nwl.known.add((fragment.base, fragment.reading))
+    if isinstance(fragment, FragmentKanjiCharacters):
+      nwl.known.add((fragment.base, fragment.reading))
+    elif isinstance(fragment, FragmentLoanword):
+      nwl.known_loans.add((fragment.base, fragment.romanized))
 
 class NormalWordAlreadyExist(Exception):
   """thrown when trying to append a word that already exist"""
