@@ -67,7 +67,7 @@ from annotation_file import (
   DialogueLine,
 )
 from dataclasses import dataclass
-from normal_word_db import NormalWordList, load_normal_words, reload_into_normal_words, FragmentIgnore, FragmentKanjiCharacters
+from normal_word_db import NormalWordList, load_normal_words, reload_into_normal_words, FragmentIgnore, FragmentKanjiCharacters, FragmentLoanword
 from loan_word_db import LoanWordList, load_loan_words, reload_into_loan_words
 import animecho_rc
 import html
@@ -1142,6 +1142,8 @@ class AnnotationEdit(QMainWindow):
               new_annotation[-1].inner.fragments.append(KanjiCharacters(base=template_fragment.base, reading=template_fragment.reading))
             else:
               new_annotation.append(Annotation(inner=KanjiAnnotation(fragments=[KanjiCharacters(base=template_fragment.base, reading=template_fragment.reading)])))
+          elif isinstance(template_fragment, FragmentLoanword):
+            new_annotation.append(Annotation(inner=LoanAnnotation(base=template_fragment.base, romanized=template_fragment.romanized)))
           else:
             raise AssertionError('unhandled template fragment type')
       case _:
