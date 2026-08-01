@@ -10,7 +10,10 @@
    so this program has a mini layout engine which should implement the features we need.
 
    it has a dependency on Qt because it's much more easy to just use shaping engine from it.
-    (Aegisub uses wxWidgets similarly to measure texts for its "karaoke templater".)"""
+    (Aegisub uses wxWidgets similarly to measure texts for its "karaoke templater".)
+
+   if by any chance you're interested in using this renderer in your own project,
+    here's a quick guide: https://gist.github.com/dropout-zzz/7f3a4ba9c6478c55325034534047daff"""
 
 import argparse
 from argparse import ArgumentParser
