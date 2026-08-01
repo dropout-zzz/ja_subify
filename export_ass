@@ -525,7 +525,7 @@ def write_af(af: AnnotationFile, layout_ctx: LayouterContext, writer_ctx: Writer
           los.append(SimpleTextObject(ctx=layout_ctx, text=plain_texts[0]))
       elif isinstance(js_annotation.inner, LoanAnnotation):
         if opts.no_rubi or opts.no_loans or (js_annotation.inner.base, js_annotation.inner.romanized) in opts.lwl.known:
-          los.append(SimpleTextObject(ctx=layout_ctx, text=js_annotation.inner.base))
+          los.append(SimpleTextObject(ctx=layout_ctx, text=full_to_half(js_annotation.inner.base)))
         else:
           los.append(LoanwordTextObject(ctx=layout_ctx, base=js_annotation.inner.base, romanized=js_annotation.inner.romanized))
       elif isinstance(js_annotation.inner, KanjiAnnotation):
