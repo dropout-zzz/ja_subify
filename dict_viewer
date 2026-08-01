@@ -21,11 +21,12 @@ from PySide6.QtGui import (
   QKeySequence,
   QFont,
 )
-from normal_word_db import load_normal_words, NormalWordList, NormalTemplate, FragmentIgnore, FragmentKanjiCharacters, append_into_normal_words, NormalWordAlreadyExist, reload_into_normal_words
+from normal_word_db import load_normal_words, NormalWordList, NormalTemplate, FragmentIgnore, FragmentKanjiCharacters, append_into_normal_words, NormalWordAlreadyExist, reload_into_normal_words, FragmentLoanword
 from loan_word_db import load_loan_words, LoanWordList, append_into_loan_words, LoanWordAlreadyExist, LoanWord, reload_into_loan_words, LoanFragment
 import html
 from enum import Enum
 import enum
+from string import ascii_letters
 
 class InputBaseWordDialog(QDialog):
   def __init__(self, parent: QWidget):
@@ -310,6 +311,9 @@ class CutterDialog(QDialog):
       elif isinstance(fragment, FragmentKanjiCharacters):
         chunks_base.append(f'<font color="grey">{html.escape(fragment.base)}</font>')
         chunks_reading.append(f'<font color="grey">{html.escape(fragment.reading)}</font>')
+      elif isinstance(fragment, FragmentLoanword):
+        chunks_base.append(f'<font color="grey">{html.escape(fragment.base)}</font>')
+        chunks_reading.append(f'<font color="grey">{html.escape(fragment.romanized)}</font>')
       else:
         raise AssertionError('unhandled fragment type')
 
@@ -345,9 +349,13 @@ class CutterDialog(QDialog):
           print(f'commit ignore: {selection_base!r}')
           self.__staging.fragments.append(FragmentIgnore(text=selection_base))
         else:
-          # ふりがな
-          print(f'commit kanji_chars: {selection_base}({selection_reading})')
-          self.__staging.fragments.append(FragmentKanjiCharacters(base=selection_base, reading=selection_reading))
+          if any(c in ascii_letters for c in selection_reading):
+            print(f'commit loan: {selection_base} {selection_reading}')
+            self.__staging.fragments.append(FragmentLoanword(base=selection_base, romanized=selection_reading))
+          else:
+            # ふりがな
+            print(f'commit kanji_chars: {selection_base}({selection_reading})')
+            self.__staging.fragments.append(FragmentKanjiCharacters(base=selection_base, reading=selection_reading))
 
         self.__remaining_base = remaining_base
         self.__remaining_reading = remaining_reading
