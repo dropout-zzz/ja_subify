@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/ja_subify">
+    <file>icon.png</file>
+  </qresource>
+</RCC>

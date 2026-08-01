@@ -20,6 +20,7 @@ from PySide6.QtGui import (
   QShortcut,
   QKeySequence,
   QFont,
+  QIcon,
 )
 from normal_word_db import load_normal_words, NormalWordList, NormalTemplate, FragmentIgnore, FragmentKanjiCharacters, append_into_normal_words, NormalWordAlreadyExist, reload_into_normal_words, FragmentLoanword
 from loan_word_db import load_loan_words, LoanWordList, append_into_loan_words, LoanWordAlreadyExist, LoanWord, reload_into_loan_words, LoanFragment
@@ -27,6 +28,7 @@ import html
 from enum import Enum
 import enum
 from string import ascii_letters
+import eye_candies_rc
 
 class InputBaseWordDialog(QDialog):
   def __init__(self, parent: QWidget):
@@ -545,6 +547,8 @@ def main():
     ap.error('no dictionary file was specified!')
 
   app = QApplication()
+  app.setWindowIcon(QIcon(':/ja_subify/icon.png'))
+
   dv = DictViewer(nwl, args.dictionary_file, lwl, args.loan_dictionary)
   dv.show()
   app.exec()

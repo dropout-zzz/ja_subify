@@ -74,6 +74,7 @@ import html
 from typing import override
 import enum
 from enum import Enum
+import eye_candies_rc
 
 @dataclass
 class UserNormalDictionary:
@@ -1225,6 +1226,8 @@ def main():
   lwls = [UserLoanDictionary(inner=load_loan_words(x), path=x) for x in args.loan_dictionary]
 
   app = QApplication()
+  app.setWindowIcon(QIcon(':/ja_subify/icon.png'))
+
   ae = AnnotationEdit(af, args.annotation_file, nwls, lwls)
   ae.show()
   app.exec()
