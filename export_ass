@@ -506,7 +506,7 @@ def write_af(af: AnnotationFile, layout_ctx: LayouterContext, writer_ctx: Writer
     sls = []
     los = []
 
-    for js_annotation in js_dialogue.fragments:
+    for aidx, js_annotation in enumerate(js_dialogue.fragments):
       if isinstance(js_annotation.inner, PlainAnnotation):
         plain_texts = js_annotation.inner.text.split('\n')
 
@@ -524,6 +524,14 @@ def write_af(af: AnnotationFile, layout_ctx: LayouterContext, writer_ctx: Writer
         else:
           los.append(SimpleTextObject(ctx=layout_ctx, text=plain_texts[0]))
       elif isinstance(js_annotation.inner, LoanAnnotation):
+        # a single full-width middle dot was surrounded by two loans in same line. convert into half-width.
+        if aidx >= 2 and isinstance(js_dialogue.fragments[aidx - 2].inner, LoanAnnotation) and isinstance(js_dialogue.fragments[aidx - 1].inner, PlainAnnotation) and js_dialogue.fragments[aidx - 1].inner.text == '・':
+          assert len(los) >= 2
+          assert isinstance(los[len(los) - 1], SimpleTextObject) and los[len(los) - 1].get_text() == '・'
+          assert isinstance(los[len(los) - 2], LoanwordTextObject)
+          # recreate and replace in-place
+          los[len(los) - 1] = SimpleTextObject(ctx=layout_ctx, text='･')
+
         if opts.no_rubi or opts.no_loans or (js_annotation.inner.base, js_annotation.inner.romanized) in opts.lwl.known:
           los.append(SimpleTextObject(ctx=layout_ctx, text=full_to_half(js_annotation.inner.base)))
         else:
