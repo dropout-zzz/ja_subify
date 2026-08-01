@@ -630,6 +630,11 @@ class AnnotationEdit(QMainWindow):
 
     self.__status_bar.addWidget(self.__lbl_unsaved)
 
+    self.__lbl_completeness = QLabel()
+    self.__recompute_completeness()
+
+    self.__status_bar.addPermanentWidget(self.__lbl_completeness)
+
     self.__status_bar.messageChanged.connect(self.__handle_status_bar_msg)
 
     self.setStatusBar(self.__status_bar)
@@ -821,6 +826,19 @@ class AnnotationEdit(QMainWindow):
     if self.isWindowModified() or self.__lbl_unsaved.isVisible():
       self.__lbl_unsaved.setVisible(message == '')
 
+  def __recompute_completeness(self):
+    total = len(self.__af.lines)
+    finished = 0
+
+    for dialogue in self.__af.lines:
+      for annotation in dialogue.fragments:
+        if annotation.unfinished:
+          break
+      else:
+        finished += 1
+
+    self.__lbl_completeness.setText(f'Completeness: {finished * 100 / total:.2f}% ({finished} of {total})')
+
   def __update_ux_dirty(self, dirty: bool):
     self.__lbl_unsaved.setVisible(dirty and self.__status_bar.currentMessage() == '')
     self.setWindowModified(dirty)
@@ -890,6 +908,7 @@ class AnnotationEdit(QMainWindow):
 
         self.__redraw_line(lidx)
         self.__update_ux_dirty(True)
+        self.__recompute_completeness()
 
         print('clear labels')
         self.__status_bar.showMessage(f'Cleared labels on line #{lidx + 1}.', timeout=2000)
@@ -1174,6 +1193,7 @@ class AnnotationEdit(QMainWindow):
 
     self.__redraw_line(lidx)
     self.__update_ux_dirty(True)
+    self.__recompute_completeness()
 
   @Slot(int, int)
   def __handle_web_calledback(self, lidx: int, aidx: int):
