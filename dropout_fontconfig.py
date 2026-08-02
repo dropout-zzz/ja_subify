@@ -2,9 +2,10 @@ from ctypes import CDLL, POINTER, byref, c_void_p, c_int, c_char_p
 from ctypes.util import find_library
 from enum import IntEnum
 from weakref import finalize
+from mingw_fixes import fixup_dll_name
 
 def _load_libfontconfig():
-  s = find_library('fontconfig')
+  s = find_library(fixup_dll_name('fontconfig'))
   if s is None:
     raise OSError('cannot find libfontconfig')
   return CDLL(s)

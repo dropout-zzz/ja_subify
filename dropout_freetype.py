@@ -3,9 +3,10 @@ from ctypes import CDLL, POINTER, byref, Structure, addressof, c_void_p, c_int, 
 from enum import IntEnum
 from weakref import finalize
 from typing import Any
+from mingw_fixes import fixup_dll_name
 
 def _load_freetype():
-  name = find_library('freetype')
+  name = find_library(fixup_dll_name('freetype'))
   if name is None:
     raise OSError('cant find libfreetype')
   return CDLL(name)
