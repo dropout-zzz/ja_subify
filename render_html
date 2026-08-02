@@ -6,8 +6,8 @@
 # users can render the output HTML as an PDF in a
 # modern web browser for easier time viewing or for printing.
 
-import argparse
 from argparse import ArgumentParser
+from dropout_argparse_ext import FileType2
 from annotation_file import (
   annotation_parse,
   PlainAnnotation,
@@ -21,8 +21,8 @@ from normal_word_db import load_normal_words, NormalWordList
 def main():
   ap = ArgumentParser()
 
-  ap.add_argument('annotation_file', type=argparse.FileType('r', encoding='utf-8'))
-  ap.add_argument('--html-file', '-o', type=argparse.FileType('w', encoding='utf-8'), required=True)
+  ap.add_argument('annotation_file', type=FileType2('r'))
+  ap.add_argument('--html-file', '-o', type=FileType2('w'), required=True)
   ap.add_argument('--loans-blacklist', '-l')
   ap.add_argument('--word-blacklist', '-w')
   ap.add_argument('--no-labeling', '-n', action='store_true', help='disable all furigana')

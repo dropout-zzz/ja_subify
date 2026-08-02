@@ -15,8 +15,8 @@
    if by any chance you're interested in using this renderer in your own project,
     here's a quick guide: https://gist.github.com/dropout-zzz/7f3a4ba9c6478c55325034534047daff"""
 
-import argparse
 from argparse import ArgumentParser
+from dropout_argparse_ext import FileType2
 
 from dropout_fontconfig import (
   FcPatternCreate,
@@ -567,7 +567,7 @@ def main():
   ap = ArgumentParser()
 
   ap.add_argument('input_file', help='this can either be a .annotations or .manifest')
-  ap.add_argument('--ass-file', '-o', type=argparse.FileType('w', encoding='utf-8'), required=True)
+  ap.add_argument('--ass-file', '-o', type=FileType2('w'), required=True)
 
   # we chose this as default because our main supported platforms (Linux and Android) should often have them.
   ap.add_argument('--font-name', default='Noto Sans CJK JP')
@@ -600,7 +600,7 @@ def main():
 
   if args.input_file.endswith('.annotations'):
     input_type = InputType.AF
-    with open(args.input_file, 'r', encoding='utf-8') as f:
+    with open(args.input_file, 'r', encoding='utf-8', newline='\n') as f:
       af = annotation_parse(f.read())
   elif args.input_file.endswith('.manifest'):
     input_type = InputType.MANIFEST

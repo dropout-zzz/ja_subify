@@ -26,14 +26,14 @@ def main():
 
   af = AnnotationFile()
 
-  with open(args.sub_file, 'r', encoding='utf-8') as f:
+  with open(args.sub_file, 'r', encoding='utf-8', newline='\n') as f:
     for subtitle in dropout_parse_srt(f.read()):
       af.lines.append(DialogueLine(fragments=[Annotation(PlainAnnotation(subtitle.text), unfinished=True)], start_time=subtitle.timing[0] + args.offset, end_time=subtitle.timing[1] + args.offset))
 
   af.validate()
 
   if args.retime:
-    with open(args.annotation_file, 'r', encoding='utf-8') as f:
+    with open(args.annotation_file, 'r', encoding='utf-8', newline='\n') as f:
       old_af = annotation_parse(f.read())
 
     assert len(af.lines) == len(old_af.lines), 'line count not identical'
@@ -45,7 +45,7 @@ def main():
     # reuse code path
     af = old_af
 
-  with open(args.annotation_file, 'w', encoding='utf-8') as f:
+  with open(args.annotation_file, 'w', encoding='utf-8', newline='\n') as f:
     f.write(annotation_save(af))
     f.write('\n')
 

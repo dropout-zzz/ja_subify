@@ -33,14 +33,14 @@ def manifest_load(path: str) -> Manifest:
   mf = Manifest()
   basedir = dirname(realpath(path))
 
-  with open(path, 'r', encoding='utf-8') as f:
+  with open(path, 'r', encoding='utf-8', newline='\n') as f:
     for s in f:
       s_offset, s_basename = s.removesuffix('\n').split(maxsplit=1)
 
       # AF uses milliseconds. convert into it.
       offset = int(float(s_offset) * 1000)
 
-      with open(os.path.join(basedir, f'{s_basename}.annotations'), 'r', encoding='utf-8') as f2:
+      with open(os.path.join(basedir, f'{s_basename}.annotations'), 'r', encoding='utf-8', newline='\n') as f2:
         new_af = annotation_parse(f2.read())
 
       for new_dialogue in new_af.lines:
