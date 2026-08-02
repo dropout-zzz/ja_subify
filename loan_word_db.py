@@ -91,7 +91,7 @@ def append_into_loan_words(lwl: LoanWordList, path: str, word: LoanWord):
     raise LoanWordAlreadyExist
 
   with open(path, 'ab') as f:
-    n = f.write(word.serialize().encode())
+    n = f.write(word.serialize().encode(encoding='utf-8'))
     f.write(b'\n')
     lwl.off += n + 1
 
@@ -117,7 +117,7 @@ def load_loan_words(path: str, count_known: bool = False) -> LoanWordList:
   with open(path, 'rb') as f:
     lwl = LoanWordList(count_known=count_known)
 
-    _load_into_loan_words(lwl, (content := f.read()).decode())
+    _load_into_loan_words(lwl, (content := f.read()).decode(encoding='utf-8'))
     lwl.off = len(content)
 
     return lwl
@@ -132,5 +132,5 @@ def reload_into_loan_words(lwl: LoanWordList, path: str):
 
   with open(path, 'rb') as f:
     f.seek(lwl.off)
-    _load_into_loan_words(lwl, (new := f.read()).decode())
+    _load_into_loan_words(lwl, (new := f.read()).decode(encoding='utf-8'))
     lwl.off += len(new)

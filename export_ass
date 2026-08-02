@@ -567,7 +567,7 @@ def main():
   ap = ArgumentParser()
 
   ap.add_argument('input_file', help='this can either be a .annotations or .manifest')
-  ap.add_argument('--ass-file', '-o', type=argparse.FileType('w'), required=True)
+  ap.add_argument('--ass-file', '-o', type=argparse.FileType('w', encoding='utf-8'), required=True)
 
   # we chose this as default because our main supported platforms (Linux and Android) should often have them.
   ap.add_argument('--font-name', default='Noto Sans CJK JP')
@@ -600,7 +600,7 @@ def main():
 
   if args.input_file.endswith('.annotations'):
     input_type = InputType.AF
-    with open(args.input_file, 'r') as f:
+    with open(args.input_file, 'r', encoding='utf-8') as f:
       af = annotation_parse(f.read())
   elif args.input_file.endswith('.manifest'):
     input_type = InputType.MANIFEST

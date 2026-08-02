@@ -849,7 +849,7 @@ class AnnotationEdit(QMainWindow):
   def __do_save(self):
     self.__af.validate()
 
-    with open(self.__annotation_path, 'w') as f:
+    with open(self.__annotation_path, 'w', encoding='utf-8') as f:
       f.write(annotation_save(self.__af))
       f.write('\n')
 
@@ -1219,7 +1219,7 @@ def main():
 
   args = ap.parse_args()
 
-  with open(args.annotation_file, 'r') as f:
+  with open(args.annotation_file, 'r', encoding='utf-8') as f:
     af = annotation_parse(f.read())
 
   nwls = [UserNormalDictionary(inner=load_normal_words(x), path=x) for x in args.dictionary]

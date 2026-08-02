@@ -192,7 +192,7 @@ def append_into_normal_words(nwl: NormalWordList, path: str, word: NormalTemplat
       raise NormalWordAlreadyExist
 
   with open(path, 'ab') as f:
-    n = f.write(json.dumps(word.serialize(), sort_keys=True, ensure_ascii=False).encode())
+    n = f.write(json.dumps(word.serialize(), sort_keys=True, ensure_ascii=False).encode(encoding='utf-8'))
     f.write(b'\n')
     nwl.off += n + 1
 
@@ -225,7 +225,7 @@ def load_normal_words(path: str, count_known: bool = False) -> NormalWordList:
   with open(path, 'rb') as f:
     nwl = NormalWordList(count_known=count_known)
 
-    _load_into_normal_words(nwl, (content := f.read()).decode())
+    _load_into_normal_words(nwl, (content := f.read()).decode(encoding='utf-8'))
     nwl.off = len(content)
 
     return nwl
@@ -240,5 +240,5 @@ def reload_into_normal_words(nwl: NormalWordList, path: str):
 
   with open(path, 'rb') as f:
     f.seek(nwl.off)
-    _load_into_normal_words(nwl, (new := f.read()).decode())
+    _load_into_normal_words(nwl, (new := f.read()).decode(encoding='utf-8'))
     nwl.off += len(new)

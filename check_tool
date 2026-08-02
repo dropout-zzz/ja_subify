@@ -21,7 +21,7 @@ def main():
 
   args = ap.parse_args()
 
-  with open(args.annotation_file, 'r') as f:
+  with open(args.annotation_file, 'r', encoding='utf-8') as f:
     af = annotation_parse(f.read())
 
   todo = []

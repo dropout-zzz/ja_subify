@@ -21,8 +21,8 @@ from normal_word_db import load_normal_words, NormalWordList
 def main():
   ap = ArgumentParser()
 
-  ap.add_argument('annotation_file', type=argparse.FileType('r'))
-  ap.add_argument('--html-file', '-o', type=argparse.FileType('w'), required=True)
+  ap.add_argument('annotation_file', type=argparse.FileType('r', encoding='utf-8'))
+  ap.add_argument('--html-file', '-o', type=argparse.FileType('w', encoding='utf-8'), required=True)
   ap.add_argument('--loans-blacklist', '-l')
   ap.add_argument('--word-blacklist', '-w')
   ap.add_argument('--no-labeling', '-n', action='store_true', help='disable all furigana')
