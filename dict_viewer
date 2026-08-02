@@ -548,6 +548,7 @@ def main():
 
   app = QApplication()
   app.setWindowIcon(QIcon(':/ja_subify/icon.png'))
+  app.setApplicationDisplayName('Dictionary Viewer')
 
   dv = DictViewer(nwl, args.dictionary_file, lwl, args.loan_dictionary)
   dv.show()

@@ -1227,6 +1227,7 @@ def main():
 
   app = QApplication()
   app.setWindowIcon(QIcon(':/ja_subify/icon.png'))
+  app.setApplicationDisplayName('Annotation Editor')
 
   ae = AnnotationEdit(af, args.annotation_file, nwls, lwls)
   ae.show()
