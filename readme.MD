@@ -21,11 +21,7 @@ However, if you can, it's probably more recommended to use `Rounded M+ 1p` as it
 
 2. Simply start program files.
 
-This software was developed upon the archlinux environment. Using [MSYS2](https://www.msys2.org/) works when running on Windows (except `annotation_edit`).
-
-In order to use `annotation_edit` on Windows, install an MSVC build of Python and install PySide6 via `pip`.
-
-To get `export_ass` to work with MSVC Python, you also need a copy of `fontconfig.dll` and `freetype.dll` compiled for MSVC.
+This software was developed upon the archlinux environment. It's also been tested to work on Windows. Other platforms weren't fully tested as the time of writing.
 
 Android users: [Termux](https://termux.dev/) is your friend (technically), [TUR](https://github.com/termux-user-repository/tur) might useful too.
 

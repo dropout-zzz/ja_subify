@@ -4,6 +4,7 @@ from enum import IntEnum
 from weakref import finalize
 from typing import Any
 from mingw_fixes import fixup_dll_name
+import msvc_binaries
 
 def _load_freetype():
   name = find_library(fixup_dll_name('freetype'))

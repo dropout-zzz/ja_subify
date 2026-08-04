@@ -3,6 +3,7 @@ from ctypes.util import find_library
 from enum import IntEnum
 from weakref import finalize
 from mingw_fixes import fixup_dll_name
+import msvc_binaries
 
 def _load_libfontconfig():
   s = find_library(fixup_dll_name('fontconfig'))
