@@ -1,5 +1,9 @@
-animecho_rc.py linguist-generated
-eye_candies_rc.py linguist-generated
+*_rc.py linguist-generated
 ep*.html linguist-generated
 ncop.html linguist-generated
 nced.html linguist-generated
+
+# in this case, `merge' does nothing useful in vanilla git,
+#  we use a slightly patched git:
+# https://gist.github.com/dropout-zzz/630035c56d76af2673ddc0c09c97123a
+*.word_db diff merge
