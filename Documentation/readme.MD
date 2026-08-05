@@ -37,7 +37,7 @@ flowchart TD
 
 ## Table of contents
 
-* [WordDB Dictionary File](worddb.MD)
+* [WordDB Dictionary File (and related utilities)](worddb.MD)
 * [Annotation File (and related utilities)](af.MD)
 * [Manifest File](mf.MD)
 
