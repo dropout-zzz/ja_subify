@@ -41,4 +41,6 @@ flowchart TD
 
 - read `--help` outputs of ja_subify programs.
 
+- sometimes in the beginning of source code files there is a short explanation of that topic. if you're a developer, public methods and classes have comments before its body, which contains some information potentially useful.
+
 - ja_subify uses UTF-8 encoding with UNIX LF newline breaks (`\n`), not UTF-16 with Windows CRLF style (`\r\n`). Note on this especially if you're on Windows and modifying files created by ja_subify using other programs, messing up these assumptions might confuse ja_subify. (This includes the input files you feed into ja_subify, for example, `.srt` files you feed into `import_srt`. You need to convert any input files into the right encoding and line-break style using other tools (for example, `iconv` and `dos2unix` commands from Msys2) before trying to feed them into ja_subify.)
