@@ -6,6 +6,8 @@ ja_subify is a monorepo collection of command-line and graphical programs.
 
 In ja_subify, anime subtitles are not created from scratch. Ultimately, they all come from official releases by Japanese anime streaming services. Using unofficial subtitles or subtitles created by yourself may or may not work well.
 
+External runtime dependencies of ja_subify is kept at minimum, currently they're: [FreeType library](https://freetype.org/), [Fontconfig library](https://www.freedesktop.org/wiki/Software/fontconfig/), [PySide6 package](https://pypi.org/project/PySide6/).
+
 ## work-flow outlines
 
 ```mermaid
