@@ -29,6 +29,8 @@ On macOS, try [Homebrew](https://brew.sh/) or [MacPorts](https://www.macports.or
 
 ## Documentation
 
+Read the [user manual](Documentation/readme.MD).
+
 ### Blacklisting words
 
 It is not desirable to always show every furigana or romanized loan words.
