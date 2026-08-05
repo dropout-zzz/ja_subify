@@ -69,7 +69,7 @@ user canceled or error occurred
 
 let's see another example, say you want to add word "優しい" into your dictionary
 
-when you have non kanji characters on both row, just select them on both rows, just like in the images below.
+when you have non kanji characters in the word, just select them on both rows, just like in the images below.
 
 ![](viewer_cutter_yasasii_0.png)
 
