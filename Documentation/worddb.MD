@@ -107,6 +107,10 @@ then, open the dictionary file in a text editor, delete the line containing the 
 
 there is two kind of dictionary files in ja_subify, "loan word db" and "normal word db", they both use the same extension `.word_db`.
 
+each line in a "normal word db" file contains a JSON object. "loan word db" uses a simpler format, based on [TSV](https://en.wikipedia.org/wiki/Tab-separated_values).
+
+the reason to have two kind of dictionary files is that most words with loan words are simple enough so its more elegant to just use TSV instead of JSON.
+
 > [!NOTE]
 >
 > You can skip the contents below in this section if you're not a developer or attempting to modify the contents manually.
@@ -114,10 +118,6 @@ there is two kind of dictionary files in ja_subify, "loan word db" and "normal w
 when loaded in Python, they're a `LoanWordList` or `NormalWordList` object.
 
 to detect type of a `.word_db` programmatically, peek at the first character in its contents. if it's a "{" then it's a "normal word db", otherwise it's a "loan word db". (doesn't work if when the dictionary is empty.)
-
-each line in a "normal word db" file contains a JSON object. "loan word db" uses a simpler format, based on [TSV](https://en.wikipedia.org/wiki/Tab-separated_values).
-
-the reason to have two kind of dictionary files is that most words with loan words are simple enough so its more elegant to just use TSV instead of JSON.
 
 there is trivial checks on duplicate word entries. the `dict_viewer` program also rejects adding duplicating word entries.
 
