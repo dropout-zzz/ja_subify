@@ -10,6 +10,93 @@ implemented as [normal_word_db.py](../normal_word_db.py) and [loan_word_db.py](.
 
 just create an empty text file without any content. (absoletely no characters, not even spaces or line breaks. the file size should be zero.)
 
+## adding word into dictionary
+
+ja_subify includes a program called `dict_viewer`, despite the name it currently only support adding new words into dictionary files. in this section we will demonstrate how to do this.
+
+launch the dictionary viewer with `-f` option followed by location of your dictionary file (use the `-l` to pass a "loan word db"), it should show a screen like this:
+
+![](viewer_idle.png)
+
+press "1" on your keyboard will open a dialog with a input box like this image:
+
+![](viewer_stage_1.png)
+
+type the japanese word, for example, "最高" and hit ENTER key. it should bring up yet another dialog with a new empty text box:
+
+![](viewer_saikou.png)
+
+in the new text box, type the pronunciation of the japanese word, in this case, "さいこう" and hit ENTER. it would show a window like this:
+
+![](viewer_cutter_saikou_0.png)
+
+tweak the selection until it highlights the first one or more kanji characters that has inseparatable pronunciation (more on this [later](#kanji-characters-fragment-object) in this documentation.) then hit ENTER key once.
+
+in this case, we want to ensure that we have selected "最".
+
+the program ensures that you will always select at least one character.
+
+the filled blue triangle indicates which row your selection cursor is currently at.
+
+![](viewer_cutter_saikou_1.png)
+
+after you hit ENTER, the filled blue triangle moves to the 2nd row, which allows you to select the pronunciation for the range you just have selected in the first row.
+
+we want to select "さい" and hit ENTER once.
+
+![](viewer_cutter_saikou_2.png)
+
+once you did that and hit ENTER, the process restart and you can repeat the same step until you have assigned pronunciation for everything in the word you wanted to add.
+
+the window will close after you have finished the process, and you should see a success message in your terminal output:
+
+```
+$ ./dict_viewer -f my_dict.word_db
+new word
+base: '最高'
+flat: 'さいこう'
+commit kanji_chars: 最(さい)
+commit kanji_chars: 高(こう)
+word added successfully
+```
+
+if anything goes wrong, for example if you ran out of character on a row but not on the other row the program will close the window and print an error in the terminal:
+
+```
+ran out of chars
+user canceled or error occurred
+```
+
+let's see another example, say you want to add word "優しい" into your dictionary
+
+when you have non kanji characters on both row, just select them on both rows, just like in the images below.
+
+![](viewer_cutter_yasasii_0.png)
+
+![](viewer_cutter_yasasii_1.png)
+
+then ENTER.
+
+now let's see a different case, assume you have a word consist of both kanji and english, an example, "決めポーズ", input them like this:
+
+![](viewer_kimepoozu.png)
+
+note that if your word contains two adjacent english words, dont add spaces between them here.
+
+then just line up the selections on both row using the old theory.
+
+Okay, now, I guess you have already guessed how to add loan (English) words, but here is an example:
+
+![](viewer_loan_enadori.png)
+
+when adding loan words, you can only move selection on the first row. the second row is determined automatically by spaces that you inputted in the last dialog with input boxes.
+
+![](viewer_cutter_loan_enadori.png)
+
+everything else should work very similarly.
+
+some other information: pressing ESC key would close any window or dialog and cancel the action you're doing, or even quit `dict_viewer`.
+
 ## removing words from a dictionary
 
 first, ensure you have closed all programs that have loaded the dictionary. this is because it messes up ja_subify's partial reloading of dictionary files.
