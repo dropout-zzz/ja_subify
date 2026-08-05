@@ -38,6 +38,7 @@ flowchart TD
 ## Table of contents
 
 * [Annotation File (and related utilities)](af.MD)
+* [Manifest File](mf.MD)
 
 ## General tips
 
