@@ -23,6 +23,3 @@ https://github.com/dropout-zzz/fontconfig
 for more information, if you want to build these yourself,
  reading this Gist writeup should help:
 https://gist.github.com/dropout-zzz/5711fc0e4a487200ed7f7916b03bb5e1
-
-if you are on ARM or other unsupported architectures, or, if you have
- difficulties compiling from sources yourself, please let me know.
