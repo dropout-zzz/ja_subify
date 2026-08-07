@@ -86,4 +86,4 @@ however if #1 has labels, #4 will apply some extra spacing over #3:
 
 so that #4 has same Y position as #2.
 
-Moreover, if stacked subtitle stay longer than the subtitle under it, ja_subify can reuse the space for new subtitles even before the stacked subtitle disappear just like normal video players. it always pick a room or create a new stacking level from bottom to top depending on availability of each stacking level slot.
+Moreover, if stacked subtitle stay longer than the subtitle under it, ja_subify can reuse the space for new appeared subtitles even before the stacked subtitle disappear just like normal video players. it always pick a room or create a new stacking level from bottom to top depending on availability of each stacking level slot.
