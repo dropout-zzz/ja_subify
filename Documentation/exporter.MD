@@ -42,6 +42,12 @@ if you package ja_subify yourself, be sure to take this into accounts otherwise 
 
 this section mentions behavior facts of the `export_ass` program, but the behaviors is not currently tweakable.
 
+* ja_subify centers the subtitle line based on video width and width of subtitle lines. if the first and last word in a subtitle line has labels extended out of the word, its not counted into width for centering.
+
+* ja_subify place subtitle at bottom based on the video height minus the height of the subtitle, furthermore applying the Y margin value specified.
+
+* outline and shadow size values are floating pointer number that has same meaning as in Aegisub and ASS styles.
+
 * Font size of Furigana is always half of the font size configured using the `--font-size` option. this value has the same meaning as font size values in Aegisub and ASS styles. It must be an integer.
 
 * there is two different handling mode for Furigana display as demonstrated in the pictures below
@@ -77,3 +83,7 @@ if #1 doesn't have labels, it looks like this:
 however if #1 has labels, #4 will apply some extra spacing over #3:
 
 ![](exported_ass_stacking_2.png) ![](exported_ass_stacking_3.png)
+
+so that #4 has same Y position as #2.
+
+Moreover, if stacked subtitle stay longer than the subtitle under it, ja_subify can reuse the space for new subtitles even before the stacked subtitle disappear just like normal video players. it always pick a room or create a new stacking level from bottom to top depending on availability of each stacking level slot.
