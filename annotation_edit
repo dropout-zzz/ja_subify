@@ -75,16 +75,19 @@ from typing import override
 import enum
 from enum import Enum
 import eye_candies_rc
+import traceback
 
 @dataclass
 class UserNormalDictionary:
   inner: NormalWordList
   path: str
+  auto_reload: bool = True
 
 @dataclass
 class UserLoanDictionary:
   inner: LoanWordList
   path: str
+  auto_reload: bool = True
 
 class AnimechoWebBridge(QObject):
   # -- called from web into native --
@@ -1077,7 +1080,20 @@ class AnnotationEdit(QMainWindow):
         matches = []
 
         for loaded_dict in self.__lwls:
-          reload_into_loan_words(loaded_dict.inner, loaded_dict.path)
+          if loaded_dict.auto_reload:
+            try:
+              reload_into_loan_words(loaded_dict.inner, loaded_dict.path)
+            except OSError as e:
+              QMessageBox.warning(self, None, f'Unable to open dictionary {loaded_dict.path!r}: {e.strerror}'
+                                               '\n\n'
+                                               'ja_subify will not try to reload it again in this session.')
+              loaded_dict.auto_reload = False
+            except ValueError:
+              traceback.print_exc()
+              QMessageBox.warning(self, None, f'Dictionary {loaded_dict.path!r} is invalid.'
+                                               '\n\n'
+                                               'ja_subify will not try to reload it again in this session.')
+              loaded_dict.auto_reload = False
 
           if sel_text in loaded_dict.inner.inner:
             matches.append(loaded_dict.inner.inner[sel_text])
@@ -1109,7 +1125,20 @@ class AnnotationEdit(QMainWindow):
         matches = []
 
         for loaded_dict in self.__nwls:
-          reload_into_normal_words(loaded_dict.inner, loaded_dict.path)
+          if loaded_dict.auto_reload:
+            try:
+              reload_into_normal_words(loaded_dict.inner, loaded_dict.path)
+            except OSError as e:
+              QMessageBox.warning(self, None, f'Unable to open dictionary {loaded_dict.path!r}: {e.strerror}'
+                                               '\n\n'
+                                               'ja_subify will not try to reload it again in this session.')
+              loaded_dict.auto_reload = False
+            except ValueError:
+              traceback.print_exc()
+              QMessageBox.warning(self, None, f'Dictionary {loaded_dict.path!r} is invalid.'
+                                               '\n\n'
+                                               'ja_subify will not try to reload it again in this session.')
+              loaded_dict.auto_reload = False
 
           if sel_text in loaded_dict.inner.inner:
             matches.extend(loaded_dict.inner.inner[sel_text])
