@@ -37,3 +37,43 @@ another limitation is `export_ass` doesn't currently have much ability to change
 ja_subify shipped a folder named `msvc_sup` which contains these files, see more details in [here](../msvc_sup/readme.TXT).
 
 if you package ja_subify yourself, be sure to take this into accounts otherwise you will see erorrs complaining the DLLs are not found.
+
+### ASS rendering behavior
+
+this section mentions behavior facts of the `export_ass` program, but the behaviors is not currently tweakable.
+
+* Font size of Furigana is always half of the font size configured using the `--font-size` option. this value has the same meaning as font size values in Aegisub and ASS styles. It must be an integer.
+
+* there is two different handling mode for Furigana display as demonstrated in the pictures below
+
+![](exported_ass_wataten_0.png)
+
+![](exported_ass_wataten_1.png)
+
+the first picture demonstrates the first mode, when Furigana is simply centered over the text it belongs to.
+
+note Furigana characters on the word "私" is longer than the word under it, so it extends and leaves gaps before and after.
+
+This mode is used when the word itself is only one Kanji character or if the label is longer than the word under it.
+
+in the second picture, Furiganas on top of words "今日" and "明日" are spread evenly over the text under it, even though "きょう" and "あした" is shorter than the text under it.
+
+This mode is used if the label treats the word under it as a whole (more information about it [here](worddb.MD#adding-word-into-dictionary)) and the word is more than one Kanji character, and the text above it (the label) is shorter than the word itself.
+
+* For loan words, english is displayed on top of those words just like Furigana on top of kanjis. And Katakana and middle dots are converted into half-width characters, as demonstrated by the picture below:
+
+![](exported_ass_wataten_2.png)
+
+* If two subtitle lines are displayed at same time (because their timing collide), ja_subify pre-calculates and stack the subtitles just like normal video players. ja_subify may leave extra spacing between two stacked subtitles lines, to ensure stacked subtitles always appear at same Y coordinate when the stacking level is same. This is relevant when subtitles contains lines with no labels, which has smaller height, and on the same stacking level a different subtitle line with labels would show somewhere in the time line (which is taller). then for all subtitles that should be placed above this stacking level, ja_subify always position the subtitle lines above using the maximum subtitle height ever appeared under the line. This is to prevent subtitles from shifting veritically as playback progresses.
+
+for example if you have 4 subtitles where #1 and #2 is showed together first in the video and #3, #4 are showed together later in the video
+
+#2 will be stacked over #1. so as #3 should be stack on top of #4.
+
+if #1 doesn't have labels, it looks like this:
+
+![](exported_ass_stacking_0.png) ![](exported_ass_stacking_1.png)
+
+however if #1 has labels, #4 will apply some extra spacing over #3:
+
+![](exported_ass_stacking_2.png) ![](exported_ass_stacking_3.png)
