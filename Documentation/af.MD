@@ -24,11 +24,11 @@ An screenshot of the editor is provided below:
 
 In this image, the yellow highlighted text represents current location of the virtual cursor.
 
-This cursor moves around between dialogue lines (using W and S keys on your keyboard) and text chunks (using A and D keys).
+This cursor moves around between dialogue lines (using <kbd>W</kbd> and <kbd>S</kbd> keys on your keyboard) and text chunks (using <kbd>A</kbd> and <kbd>D</kbd> keys).
 
 Unfinished dialogue lines (those you haven't fully labeled or marked as ignore segment) will show in a normal black text color.
 
-The editor allows you to move cursor only through lines or unfinished chunks, if a line is fully finished, tryign to move left / right will just bring you to the previous / next line.
+The editor allows you to move cursor only through lines or unfinished chunks, if a line is fully finished, trying to move left / right will just bring you to the previous / next line.
 
 The `annotation_edit` program can be used with mostly just keyboard controls.
 
@@ -44,7 +44,7 @@ A dialog window similar to the one in Dictionary Viewer program is opened, allow
 
 Upon opening, it selects everything by default.
 
-This window has two stages, initially, the blue triangle faces right, this means you can now tweak the beginning of your selection. After you hit ENTER, the triangles will face left, which means you should select the end of your selection. When you enter the second stage, your selection is automatically trimmed to a single character started by the beginning position you just selected. Your current selection is highlighted as red color.
+This window has two stages, initially, the blue triangle faces right, this means you can now tweak the beginning of your selection. After you hit ENTER, the triangles will face left, which means you should select the end of your selection. When you enter the second stage, your selection is automatically trimmed down to a single character started by the beginning position you just selected. Your current selection is highlighted as red color.
 
 ![](edit_cutter_1.png)
 
@@ -69,9 +69,9 @@ In this dialog window, you can use a few shortcut keys:
 
 After you selected both end of your selection, the dialog will close if you're marking an ignore segment. It will open yet another window if you are labeling Kanji or loan word, if any candidate was found for labeling. If the word you are trying to label doesn't exist in any dictionary you loaded, the window closes and it shows an erorr message on the status bar. In that case, you should open the same dictionary in Dictionary Viewer program and add the missing word. You don't have to restart `annotation_edit`, as it supports automatic partially reloading for dictionaries. You can also keep both Dictionary Viewer and `annotation_edit` running at same time.
 
-It's a trade off left to you to add word entries for every kanji or for every whole word in a dictionary, if you added dictionary entries to every kanji, the downside is every time you have to select from a potentially longer candidate list. Upsides are it needs less dictionary entries than the other option. If you added dictionary entries to every whole words (maybe compounds or inflections), the down side is more entries is needed in the dictionary while means bigger dictionary and more entries to add, but the up side is it becomes handy when you label things in the editor.
+It's a trade off left to you to add word entries for every kanji or for every whole word in a dictionary, if you added dictionary entries for every kanji, the downside is every time you have to select from a potentially longer candidate list. Upsides are it needs less dictionary entries than the other option. If you added dictionary entries for every whole words (maybe compounds or inflections), the down side is more entries is needed in the dictionary which means bigger dictionary and more entries to add, but the up side is it becomes handy when you label things in the editor.
 
-Samples in ja_subify repo uses the 2nd approach when managing dictionary entries. But you can invent your own policy when doing work locally. An Annotation File doesn't have any dependencies on external files, for example, it doesn't depend on the dictionaries you loaded in the edit when labeling. It's self-contained.
+Samples in ja_subify repo uses the 2nd approach when managing dictionary entries. But you can invent your own policy when doing work locally. An Annotation File doesn't have any dependencies on external files, for example, it doesn't depend on the dictionaries you loaded in the editor when labeling. It's self-contained.
 
 ![](edit_candidate.png)
 
@@ -79,7 +79,7 @@ Text belong to a labeled loan word highlights as blue, kanji portions highlights
 
 ![](edit_wataten_ep01.png)
 
-To clear labels, right click a line or use the key binding <kbd>Alt</kbd> + <kbd>ENTER</kbd> which opens a dialog:
+To clear labels, right click a line or use the key binding <kbd>Alt</kbd> + <kbd>Enter</kbd> (if you do so, it uses current cursor location) which opens a dialog:
 
 ![](edit_context_menu.png)
 
