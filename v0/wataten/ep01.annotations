@@ -11749,8 +11749,18 @@
           "checked": false,
           "ignore": false,
           "inner": {
-            "base": "コスプレ",
-            "romanized": "cosplay"
+            "base": "コス",
+            "romanized": "costume"
+          },
+          "type": 2,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "base": "プレ",
+            "romanized": "play"
           },
           "type": 2,
           "unfinished": false
@@ -21757,8 +21767,18 @@
           "checked": false,
           "ignore": false,
           "inner": {
-            "base": "コスプレ",
-            "romanized": "cosplay"
+            "base": "コス",
+            "romanized": "costume"
+          },
+          "type": 2,
+          "unfinished": false
+        },
+        {
+          "checked": false,
+          "ignore": false,
+          "inner": {
+            "base": "プレ",
+            "romanized": "play"
           },
           "type": 2,
           "unfinished": false

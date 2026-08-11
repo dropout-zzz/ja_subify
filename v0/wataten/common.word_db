@@ -1,3 +1,8 @@
 {"base": "みゃー姉", "fragments": [{"inner": {"text": "みゃー"}, "type": 0}, {"inner": {"base": "姉", "reading": "ねえ"}, "type": 1}]}
 {"base": "花ちゃん", "fragments": [{"inner": {"base": "花", "reading": "はな"}, "type": 1}, {"inner": {"text": "ちゃん"}, "type": 0}]}
 {"base": "千鶴", "fragments": [{"inner": {"base": "千", "reading": "ち"}, "type": 1}, {"inner": {"base": "鶴", "reading": "づる"}, "type": 1}]}
+{"base": "乃愛", "fragments": [{"inner": {"base": "乃", "reading": "ノ"}, "type": 1}, {"inner": {"base": "愛", "reading": "ア"}, "type": 1}]}
+{"base": "乃愛ちゃん", "fragments": [{"inner": {"base": "乃", "reading": "ノ"}, "type": 1}, {"inner": {"base": "愛", "reading": "ア"}, "type": 1}, {"inner": {"text": "ちゃん"}, "type": 0}]}
+{"base": "夏音", "fragments": [{"inner": {"base": "夏", "reading": "か"}, "type": 1}, {"inner": {"base": "音", "reading": "のん"}, "type": 1}]}
+{"base": "小依", "fragments": [{"inner": {"base": "小", "reading": "こ"}, "type": 1}, {"inner": {"base": "依", "reading": "より"}, "type": 1}]}
+{"base": "私", "fragments": [{"inner": {"base": "私", "reading": "アタシ"}, "type": 1}]}
