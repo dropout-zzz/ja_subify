@@ -8,6 +8,81 @@ The purpose of AF is it can store furigana information (in this documentation, w
 
 implemented in [annotation_file.py](../annotation_file.py).
 
+## `annotation_edit`
+
+The `annotation_edit` program is a graphical editor based on Qt and some Web stuff via WebEngineView (which is based on Chromium). Whole manual labeling process for an Annotation File is done using this app.
+
+Despite being partially based on Web stuffs, this app supports dark mode (it follows system theme) and tries to avoid flickers at least on KDE desktop.
+
+Currently, you must launch this program from command-line. This program takes a path to an Annotation File to edit, additionally, WordDB dictionaries to load. You should load at least one dictionary to be able to label stuffs.
+
+An screenshot of the editor is provided below:
+
+![](edit_sakura_trick_ep01.png)
+
+(You can use <kbd>Ctrl</kbd> and mouse wheel to adjust font size in the app.)
+
+In this image, the yellow highlighted text represents current location of the virtual cursor.
+
+This cursor moves around between dialogue lines (using W and S keys on your keyboard) and text chunks (using A and D keys).
+
+Unfinished dialogue lines (those you haven't fully labeled or marked as ignore segment) will show in a normal black text color.
+
+The editor allows you to move cursor only through lines or unfinished chunks, if a line is fully finished, tryign to move left / right will just bring you to the previous / next line.
+
+The `annotation_edit` program can be used with mostly just keyboard controls.
+
+Once you have selected an unfinished chunk using the cursor, you can hit ENTER key on your keyboard, or, don't use / move cursor at all but just simply click an unfinished chunk, will bring up a dialog menu for labeling. (The virtual cursor will still be moved automatically when you click or when you use the "Go to line..." feature and so on.)
+
+![](edit_annotation_menu.png)
+
+Press number keys to select one of the annotation types. Select "Label Kanji word..." if you have some kanji that belong to a word. Select "Label loan word..." for English loan words inside the original Japanese text. Select "Ignore segments..." to mark a portion as ignored, that only contains Hiragana and Katakana or other characters that don't need labeling. (Marking as ignored for these is optional, but if you don't do it you won't be able to use "Go to next unfinished line" feature and the "Completeness" metre on status bar will show incorrect values.)
+
+![](edit_cutter_0.png)
+
+A dialog window similar to the one in Dictionary Viewer program is opened, allowing you to select portions that contains the word / chunk you intended.
+
+Upon opening, it selects everything by default.
+
+This window has two stages, initially, the blue triangle faces right, this means you can now tweak the beginning of your selection. After you hit ENTER, the triangles will face left, which means you should select the end of your selection. When you enter the second stage, your selection is automatically trimmed to a single character started by the beginning position you just selected. Your current selection is highlighted as red color.
+
+![](edit_cutter_1.png)
+
+![](edit_cutter_2.png)
+
+![](edit_cutter_3.png)
+
+Special characters like spaces or line breaks are made visible in this program.
+
+In this dialog window, you can use a few shortcut keys:
+
+| Key binding | What it does |
+| --- | --- |
+| <kbd>Ctrl</kbd> + <kbd>←</kbd> | Move to previous word |
+| <kbd>Ctrl</kbd> + <kbd>→</kbd> | Move to next word |
+| <kbd>Home</kbd> | Move left until reaching a line break |
+| <kbd>End</kbd> | Move right until reaching a line break |
+| <kbd>↑</kbd> | Move up by one row |
+| <kbd>↓</kbd> | Move down by one row |
+
+<kbd>Ctrl</kbd> + <kbd>←</kbd> / <kbd>→</kbd> moves based on boundaries of Kanji characters, Katakanas and other characters that ain't Kanji nor Katakana.
+
+After you selected both end of your selection, the dialog will close if you're marking an ignore segment. It will open yet another window if you are labeling Kanji or loan word, if any candidate was found for labeling. If the word you are trying to label doesn't exist in any dictionary you loaded, the window closes and it shows an erorr message on the status bar. In that case, you should open the same dictionary in Dictionary Viewer program and add the missing word. You don't have to restart `annotation_edit`, as it supports automatic partially reloading for dictionaries. You can also keep both Dictionary Viewer and `annotation_edit` running at same time.
+
+It's a trade off left to you to add word entries for every kanji or for every whole word in a dictionary, if you added dictionary entries to every kanji, the downside is every time you have to select from a potentially longer candidate list. Upsides are it needs less dictionary entries than the other option. If you added dictionary entries to every whole words (maybe compounds or inflections), the down side is more entries is needed in the dictionary while means bigger dictionary and more entries to add, but the up side is it becomes handy when you label things in the editor.
+
+Samples in ja_subify repo uses the 2nd approach when managing dictionary entries. But you can invent your own policy when doing work locally. An Annotation File doesn't have any dependencies on external files, for example, it doesn't depend on the dictionaries you loaded in the edit when labeling. It's self-contained.
+
+![](edit_candidate.png)
+
+Text belong to a labeled loan word highlights as blue, kanji portions highlights as red, ignored portions highlights as gray.
+
+![](edit_wataten_ep01.png)
+
+To clear labels, right click a line or use the key binding <kbd>Alt</kbd> + <kbd>ENTER</kbd> which opens a dialog:
+
+![](edit_context_menu.png)
+
 ## the format of AF
 
 > [!NOTE]
