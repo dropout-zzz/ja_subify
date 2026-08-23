@@ -21,7 +21,7 @@ def parse_timestamp(s: str) -> int:
   except ValueError as e:
     raise ValueError('cant parse time value') from e
 
-  return ms + (secs + (mins + hrs * 60) * 60) * 1000
+  return ms * 10 + (secs + (mins + hrs * 60) * 60) * 1000
 
 def dropout_parse_ass(s: str):
   """parse the input string as ASS.
