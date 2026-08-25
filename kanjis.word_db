@@ -503,3 +503,20 @@
 {"base": "保護者", "fragments": [{"inner": {"base": "保", "reading": "ほ"}, "type": 1}, {"inner": {"base": "護", "reading": "ご"}, "type": 1}, {"inner": {"base": "者", "reading": "しゃ"}, "type": 1}]}
 {"base": "見てる", "fragments": [{"inner": {"base": "見", "reading": "み"}, "type": 1}, {"inner": {"text": "てる"}, "type": 0}]}
 {"base": "刷り込み", "fragments": [{"inner": {"base": "刷", "reading": "す"}, "type": 1}, {"inner": {"text": "り"}, "type": 0}, {"inner": {"base": "込", "reading": "こ"}, "type": 1}, {"inner": {"text": "み"}, "type": 0}]}
+{"base": "吸", "fragments": [{"inner": {"base": "吸", "reading": "す"}, "type": 1}]}
+{"base": "夜行性", "fragments": [{"inner": {"base": "夜", "reading": "や"}, "type": 1}, {"inner": {"base": "行", "reading": "こう"}, "type": 1}, {"inner": {"base": "性", "reading": "せい"}, "type": 1}]}
+{"base": "君", "fragments": [{"inner": {"base": "君", "reading": "きみ"}, "type": 1}]}
+{"base": "めぐり合い", "fragments": [{"inner": {"text": "めぐり"}, "type": 0}, {"inner": {"base": "合", "reading": "あ"}, "type": 1}, {"inner": {"text": "い"}, "type": 0}]}
+{"base": "大切", "fragments": [{"inner": {"base": "大", "reading": "たい"}, "type": 1}, {"inner": {"base": "切", "reading": "せつ"}, "type": 1}]}
+{"base": "真っ暗な", "fragments": [{"inner": {"base": "真", "reading": "ま"}, "type": 1}, {"inner": {"text": "っ"}, "type": 0}, {"inner": {"base": "暗", "reading": "くら"}, "type": 1}, {"inner": {"text": "な"}, "type": 0}]}
+{"base": "空", "fragments": [{"inner": {"base": "空", "reading": "そら"}, "type": 1}]}
+{"base": "お月様", "fragments": [{"inner": {"text": "お"}, "type": 0}, {"inner": {"base": "月", "reading": "つき"}, "type": 1}, {"inner": {"base": "様", "reading": "さま"}, "type": 1}]}
+{"base": "素敵な", "fragments": [{"inner": {"base": "素", "reading": "す"}, "type": 1}, {"inner": {"base": "敵", "reading": "てき"}, "type": 1}, {"inner": {"text": "な"}, "type": 0}]}
+{"base": "鏡", "fragments": [{"inner": {"base": "鏡", "reading": "かがみ"}, "type": 1}]}
+{"base": "映らない", "fragments": [{"inner": {"base": "映", "reading": "うつ"}, "type": 1}, {"inner": {"text": "らない"}, "type": 0}]}
+{"base": "愛嬌", "fragments": [{"inner": {"base": "愛", "reading": "あい"}, "type": 1}, {"inner": {"base": "嬌", "reading": "きょう"}, "type": 1}]}
+{"base": "不思議", "fragments": [{"inner": {"base": "不", "reading": "ふ"}, "type": 1}, {"inner": {"base": "思", "reading": "し"}, "type": 1}, {"inner": {"base": "議", "reading": "ぎ"}, "type": 1}]}
+{"base": "愛し", "fragments": [{"inner": {"base": "愛", "reading": "あい"}, "type": 1}, {"inner": {"text": "し"}, "type": 0}]}
+{"base": "友達", "fragments": [{"inner": {"base": "友", "reading": "とも"}, "type": 1}, {"inner": {"base": "達", "reading": "だち"}, "type": 1}]}
+{"base": "星空", "fragments": [{"inner": {"base": "星", "reading": "ほし"}, "type": 1}, {"inner": {"base": "空", "reading": "ぞら"}, "type": 1}]}
+{"base": "自由時間", "fragments": [{"inner": {"base": "自", "reading": "じ"}, "type": 1}, {"inner": {"base": "由", "reading": "ゆう"}, "type": 1}, {"inner": {"base": "時", "reading": "じ"}, "type": 1}, {"inner": {"base": "間", "reading": "かん"}, "type": 1}]}
