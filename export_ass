@@ -699,7 +699,7 @@ def main():
   # it actually means the start of horizontal advance of first character and ascender. (which matches with what our layout engine impl currently think)
   # this doesn't have any meaning for subtitles alignments however any more, as its completely bypassed by saying absolute coordinates
   # (note it's also why we are omitting Margin* values here.)
-  # the collision detection (subtitle stacking) and centering is done on our behave in the ASSWriter class.
+  # the collision detection (subtitle stacking) and centering is done on our behalf in the ASSWriter class.
   # this is because ASS doesn't support Rubi natively, so as a workaround, we have to do this to be able to position Rubi texts manually
   print(f'Style: Default,{args.font_name},{args.font_size},&H00FFFFFF,&H00000000,0,1,{args.outline_size:.1f},{args.shadow_size:.1f},7,1', file=args.ass_file)
   print(f'Style: Rubi,{args.font_name},{rubi_font_size},&H00FFFFFF,&H00000000,0,1,{args.rubi_outline_size:.1f},{args.rubi_shadow_size:.1f},7,1', file=args.ass_file)
